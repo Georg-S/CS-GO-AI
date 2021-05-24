@@ -43,11 +43,11 @@ add_custom_command(TARGET NavmeshPointsaver
 add_custom_command(TARGET NavmeshPointsaver 
 					POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy 
-					${CMAKE_SOURCE_DIR}"/memoryOffsets.txt"
+					${CMAKE_SOURCE_DIR}"/offsets.json"
 					${CMAKE_SOURCE_DIR}"/build/debug/memoryOffsets.txt")
 
 add_custom_command(TARGET NavmeshPointsaver 
 					POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy 
-					${CMAKE_SOURCE_DIR}"/memoryOffsets.txt"
+					${CMAKE_SOURCE_DIR}"/offsets.json"
 					${CMAKE_SOURCE_DIR}"/build/Release/memoryOffsets.txt")

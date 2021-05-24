@@ -11,7 +11,7 @@ class Offsets
 public:
 	static bool load_offsets_from_file();
 
-	//Will be read from the Offset file
+//Will be read from the Offset file
 	//client.dll
 	static DWORD local_player_offset;
 	static DWORD crosshair_offset;
