@@ -2,6 +2,9 @@
 #include <memory>
 #include "FileReader.h"
 #include <wtypes.h>
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class Offsets
 {
@@ -25,7 +28,7 @@ public:
 	static DWORD bone_matrix;
 
 private:
-	static bool initialized_succesful;
 	static constexpr int HEX = 16;
+	static json offsets_json;
 };
 
