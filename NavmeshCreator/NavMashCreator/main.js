@@ -1,4 +1,9 @@
+var POINT_BAR_WITDTH = 150;
+
 displayImageOnCanvas(true);
+test_function()
+console.log(render_info.test)
+
 
 
 function draw_line()
@@ -8,6 +13,22 @@ function draw_line()
   ctx.moveTo(0, 0);
   ctx.lineTo(200, 100);
   ctx.stroke();
+}
+
+function draw_circle(canvas, y)
+{
+  var canvas_context = canvas.getContext("2d");
+  var radius = 30;
+
+  canvas_context.beginPath();
+  canvas_context.arc(canvas.width - (POINT_BAR_WITDTH / 2), y, radius, 0, 2 * Math.PI, false);
+  canvas_context.fillStyle = 'red';
+  canvas_context.fill();
+  canvas_context.lineWidth = 2;
+  canvas_context.strokeStyle = '#003300';
+  canvas_context.stroke();
+  /*
+  */
 }
 
 function displayImageOnCanvas(debug)
@@ -32,10 +53,16 @@ function displayImageOnCanvas(debug)
   // Make sure the image is loaded first otherwise nothing will draw.
   background.onload = function()
   {
-    canvas.width = background.width;
+    canvas.width = background.width + POINT_BAR_WITDTH;
     canvas.height = background.height;
+    canvas_context.lineWidth = 10;
+    canvas_context.strokeRect(0, 0, canvas.width, canvas.height);
     
     canvas_context.drawImage(background,0,0);  
+    draw_circle(canvas, 100);
+    draw_circle(canvas, 300);
+    draw_circle(canvas, 500);
+    draw_circle(canvas, 700);
   }
 }
 
