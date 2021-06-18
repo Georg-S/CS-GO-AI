@@ -15,7 +15,14 @@ function displayImageOnCanvas(debug)
   var canvas = document.getElementById("myCanvas");
   var canvas_context = canvas.getContext("2d");
 
-  file_input = document.getElementById("file-input");
+  file_input = document.getElementById("image-input");
+  if(!debug && (!file_input || !file_input.files || !file_input.files[0]))
+  {
+    console.log("Error loading file");
+    return;
+  }
+
+
   var background = new Image();
   if (debug)
     background.src = "../MapImages/1v1Map.PNG"
@@ -71,4 +78,34 @@ function export2txt() {
 function loadImage()
 {
   alert("Hallo")
+}
+
+function loadFile() {
+  var input, file, fr;
+
+  if (typeof window.FileReader !== 'function') 
+  {
+    alert("The file API isn't supported on this browser yet.");
+    return;
+  }
+
+  input = document.getElementById('json-input');
+  if (!input || !input.files ||!input.files[0]) 
+  {
+    alert("Problem getting json");
+    return;
+  }
+
+  file = input.files[0];
+  fr = new FileReader();
+  fr.onload = load_json;
+  fr.readAsText(file);
+
+  function load_json(e) 
+  {
+    let lines = e.target.result;
+    var json = JSON.parse(lines); 
+
+    console.log(json)
+  }
 }
