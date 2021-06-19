@@ -1,14 +1,17 @@
 <html>
 <body>
-    <button onclick="test_func()"> Test function to play with </button>
-    <br/>
+    <div>
+        <button onclick="test_func()"> Test function to play with </button>
+        <label for="selected-node">Selected Node:</label>
+        <input type="text" id="selected-node" value="None" readonly>
+    </div>
     <p> 
-        Image
+        <label for="image-input">Image:</label>
         <input type="file" id="image-input" onchange="load_image(false)" >
-        Json
+        <label for="json-input">JSON:</label>
         <input type="file" id="json-input" onchange="load_file(false)"/>
     </p>
-    <canvas id="myCanvas" width="200" height="100"></canvas>
+    <canvas id="myCanvas" width="200" height="100" onclick="on_canvas_click()"></canvas>
     <image id="testimg" src="#" hidden="true" />
     <script src="canvas.js"></script>
     <script src="test.js"></script>

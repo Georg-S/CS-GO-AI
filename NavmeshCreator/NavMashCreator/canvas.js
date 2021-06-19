@@ -37,6 +37,8 @@ class Canvas
         this.only_draw_corner_nodes = true;
         this.mouse_x = 0;
         this.mouse_y = 0;
+        this.selected_node = null;
+        this.last_selected_node = null;
     }
 
     set_map(map)
@@ -79,7 +81,6 @@ class Canvas
         
         var count = 0;
         const top_offset = 50;
-        console.log(nodes)
         for(node of this.nodes) 
         {
             if(node["corner"] === true) 
@@ -169,11 +170,56 @@ class Canvas
         return this.height;
     }
 
-    update_mouse_position(x, y)
+    on_mouse_move(x, y)
     {
         this.mouse_x = x;
         this.mouse_y = y;
 
-        console.log(this.mouse_x, this.mouse_y)
+        if(this.selected_node == null)
+            return;
+        
+        this.selected_node.canvas_x = this.mouse_x;
+        this.selected_node.canvas_y = this.mouse_y;
+        this.update_rendering();
+    }
+
+    get_distance(x1, y1, x2, y2)
+    {
+        var x = x1 - x2;
+        var y = y1 - y2;
+
+        return Math.sqrt(x * x + y * y);
+    }
+
+    get_node_clicked()
+    {
+        for(node of this.nodes)
+        {
+            let distance = this.get_distance(node.canvas_x, node.canvas_y, this.mouse_x, this.mouse_y);
+            if(distance <= node.radius)
+                return node;
+        }
+        return null;
+    }
+
+    on_click()
+    {
+        if(this.selected_node == null)
+        {
+            this.selected_node = this.get_node_clicked();
+
+            if(this.selected_node == null)
+                return;
+
+            var selected = document.getElementById("selected-node");
+            selected.value = this.selected_node.id;
+            return;
+        }
+        this.last_selected_node = this.selected_node;
+        this.selected_node = null;
+
+
+        
+
     }
 }

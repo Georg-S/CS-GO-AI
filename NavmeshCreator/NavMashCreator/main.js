@@ -13,7 +13,12 @@ function mouse_move(e)
   var canvasX = Math.round(e.clientX - cRect.left);  // Subtract the 'left' of the canvas 
   var canvasY = Math.round(e.clientY - cRect.top);   // from the X/Y positions to make  
 
-  canvas.update_mouse_position(canvasX, canvasY);
+  canvas.on_mouse_move(canvasX, canvasY);
+}
+
+function on_canvas_click()
+{
+  canvas.on_click();
 }
 
 if(debugging) 
