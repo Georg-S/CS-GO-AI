@@ -1,32 +1,37 @@
 var POINT_BAR_WITDTH = 150;
 
 
-function draw_line()
+class Canvas
 {
-  var c = document.getElementById("myCanvas");
-  var ctx = c.getContext("2d");
-  ctx.moveTo(0, 0);
-  ctx.lineTo(200, 100);
-  ctx.stroke();
-}
+    constructor()
+    {
+        this.canvas = document.getElementById("myCanvas");
+        this.context = this.canvas.getContext("2d");
+    }
 
-function draw_circle(canvas, y)
-{
-  var canvas_context = canvas.getContext("2d");
-  var radius = 30;
+    draw_line()
+    {
+        this.context.moveTo(0, 0);
+        this.context.lineTo(200, 100);
+        this.context.stroke();
+    }
 
-  canvas_context.beginPath();
-  canvas_context.arc(canvas.width - (POINT_BAR_WITDTH / 2), y, radius, 0, 2 * Math.PI, false);
-  canvas_context.fillStyle = 'red';
-  canvas_context.fill();
-  canvas_context.lineWidth = 2;
-  canvas_context.strokeStyle = '#003300';
-  canvas_context.stroke();
-}
+    draw_circle(y)
+    {
+        var radius = 30;
+        var context = this.context
 
-function clear_canvas()
-{
-    var canvas = document.getElementById("myCanvas");
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
+        context.beginPath();
+        context.arc(this.canvas.width - (POINT_BAR_WITDTH / 2), y, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = 'red';
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = '#003300';
+        context.stroke();
+    }
+
+    clear_canvas()
+    {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 }
