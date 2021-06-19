@@ -1,15 +1,16 @@
 <html>
 <body>
-    <button onclick="canvas_test()"> Test function to play with </button>
+    <button onclick="test_func()"> Test function to play with </button>
     <br/>
     <p> 
         Image
-        <input type="file" id="image-input" onchange="displayImageOnCanvas(false)" >
+        <input type="file" id="image-input" onchange="load_image(false)" >
         Json
-        <input type="file" id="json-input" onchange="loadFile()"/>
+        <input type="file" id="json-input" onchange="load_file(false)"/>
     </p>
     <canvas id="myCanvas" width="200" height="100"></canvas>
     <image id="testimg" src="#" hidden="true" />
+    <script src="canvas.js"></script>
     <script src="test.js"></script>
     <script src="main.js"></script>
 </body>

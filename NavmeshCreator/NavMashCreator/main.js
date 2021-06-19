@@ -1,37 +1,17 @@
-var POINT_BAR_WITDTH = 150;
+var debug = true;
 
-displayImageOnCanvas(true);
-test_function()
-console.log(render_info.test)
-
-
-
-function draw_line()
+if(debug) 
 {
-  var c = document.getElementById("myCanvas");
-  var ctx = c.getContext("2d");
-  ctx.moveTo(0, 0);
-  ctx.lineTo(200, 100);
-  ctx.stroke();
+  load_image(true);
+//  load_file(true);
 }
 
-function draw_circle(canvas, y)
+function test_func()
 {
-  var canvas_context = canvas.getContext("2d");
-  var radius = 30;
-
-  canvas_context.beginPath();
-  canvas_context.arc(canvas.width - (POINT_BAR_WITDTH / 2), y, radius, 0, 2 * Math.PI, false);
-  canvas_context.fillStyle = 'red';
-  canvas_context.fill();
-  canvas_context.lineWidth = 2;
-  canvas_context.strokeStyle = '#003300';
-  canvas_context.stroke();
-  /*
-  */
+  clear_canvas()
 }
 
-function displayImageOnCanvas(debug)
+function load_image(debug)
 {
   var canvas = document.getElementById("myCanvas");
   var canvas_context = canvas.getContext("2d");
@@ -75,40 +55,8 @@ function processFile()
     console.log(element.files[0]);
 }
 
-function export2txt() {
-  const originalData = {
-    members: [{
-        name: "cliff",
-        age: "34"
-      },
-      {
-        name: "ted",
-        age: "42"
-      },
-      {
-        name: "bob",
-        age: "12"
-      }
-    ]
-  };
-
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(originalData, null, 2)], {
-    type: "text/plain"
-  }));
-  a.setAttribute("download", "data.txt");
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-function loadImage()
-{
-  alert("Hallo")
-}
-
-function loadFile() {
-  var input, file, fr;
+function load_file() {
+  var input, file, file_reader;
 
   if (typeof window.FileReader !== 'function') 
   {
@@ -124,9 +72,9 @@ function loadFile() {
   }
 
   file = input.files[0];
-  fr = new FileReader();
-  fr.onload = load_json;
-  fr.readAsText(file);
+  file_reader = new FileReader();
+  file_reader.onload = load_json;
+  file_reader.readAsText(file);
 
   function load_json(e) 
   {
