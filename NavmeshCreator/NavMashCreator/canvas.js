@@ -35,6 +35,8 @@ class Canvas
         this.map = null;
         this.nodes = [];
         this.only_draw_corner_nodes = true;
+        this.mouse_x = 0;
+        this.mouse_y = 0;
     }
 
     set_map(map)
@@ -69,21 +71,35 @@ class Canvas
         context.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    draw_nodes(nodes)
+    update_node_position_for_start(nodes)
     {
+
         if(nodes == null || this.map == null)
             return;
         
         var count = 0;
+        const top_offset = 50;
+        console.log(nodes)
         for(node of this.nodes) 
         {
             if(node["corner"] === true) 
             {
                 node.canvas_x = this.canvas.width - (POINT_BAR_WITDTH / 2);
-                node.canvas_y = 180 * count;
-                this.draw_Node(node);
+                node.canvas_y = 180 * count + top_offset;
                 count++;
             }
+        }
+    }
+
+    draw_nodes(nodes)
+    {
+        if(nodes == null || this.map == null)
+            return;
+
+        for(node of this.nodes) 
+        {
+            if(!this.only_draw_corner_nodes || node["corner"] === true) 
+                this.draw_Node(node);
         }
     }
 
@@ -117,11 +133,10 @@ class Canvas
 
     draw_Node(node) 
     {
-        const top_offset = 50;
         var context = this.canvas.getContext("2d");
 
         context.beginPath();
-        context.arc(node.canvas_x, node.canvas_y + top_offset, node.radius, 0, 2 * Math.PI, false);
+        context.arc(node.canvas_x, node.canvas_y, node.radius, 0, 2 * Math.PI, false);
         context.fillStyle = 'red';
         context.fill();
         context.lineWidth = 2;
@@ -141,6 +156,24 @@ class Canvas
 
         context.font = font_size + "px Arial";
         context.fillStyle = 'black';
-        context.fillText(text, node.canvas_x - diameter, node.canvas_y + diameter + y_offset * font_size + 50);
+        context.fillText(text, node.canvas_x - diameter, node.canvas_y + diameter + y_offset * font_size);
+    }
+
+    width()
+    {
+        return this.width;
+    }
+
+    height()
+    {
+        return this.height;
+    }
+
+    update_mouse_position(x, y)
+    {
+        this.mouse_x = x;
+        this.mouse_y = y;
+
+        console.log(this.mouse_x, this.mouse_y)
     }
 }
