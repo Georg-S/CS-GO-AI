@@ -83,7 +83,7 @@ void NavmeshPoints::save_to_file()
 		nav_json["nodes"][i]["y"] = this->points[i].y;
 		nav_json["nodes"][i]["z"] = this->points[i].z;
 		nav_json["nodes"][i]["id"] = i;
-		nav_json["nodes"][i]["corner"] = (i < 4);
+		nav_json["nodes"][i]["corner"] = (i < 2);
 	}
 	my_file << nav_json;
 

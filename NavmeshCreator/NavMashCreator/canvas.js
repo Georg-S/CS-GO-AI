@@ -6,7 +6,7 @@ class Node
     {
         this.id = id
         this.corner = corner
-        this.radius = 30;
+        this.radius = 10;
         this.canvas_x = -100;
         this.canvas_y = -100;
         this.game_x = game_x;
@@ -39,6 +39,8 @@ class Canvas
         this.mouse_y = 0;
         this.selected_node = null;
         this.last_selected_node = null;
+        this.canvas_distance_per_game_distance_x = null;
+        this.canvas_distance_per_game_distance_y = null;
     }
 
     set_map(map)
@@ -215,11 +217,51 @@ class Canvas
             selected.value = this.selected_node.id;
             return;
         }
+        
         this.last_selected_node = this.selected_node;
         this.selected_node = null;
+    }
 
+    update_nodes_canvas_position_relative_to_node(reference_node)
+    {
+        for(node of this.nodes) 
+        {
+            if(reference_node.id == node.id)
+                continue;
 
+            var x = node.game_x - reference_node.game_x;
+            var y = node.game_y - reference_node.game_y;
+
+            node.canvas_x = reference_node.canvas_x + (x * this.canvas_distance_per_game_distance_x)
+            node.canvas_y = reference_node.canvas_y - (y * this.canvas_distance_per_game_distance_y)
+        }
+    }
+
+    draw_all_nodes()
+    {
+        var corner1 = null;
+        var corner2 = null;
+
+        for(node of this.nodes)
+        {
+            if(!node.corner)
+                continue;
+            
+            if(corner1 == null)
+                corner1 = node;
+            else if(corner2 == null)
+                corner2 = node;
+        }
         
+        var game_distance_x = Math.abs(corner1.game_x - corner2.game_x);
+        var game_distance_y = Math.abs(corner1.game_y - corner2.game_y);
+        var canvas_distance_x = Math.abs(corner1.canvas_x - corner2.canvas_x);
+        var canvas_distance_y = Math.abs(corner1.canvas_y - corner2.canvas_y);
 
+        this.canvas_distance_per_game_distance_x = canvas_distance_x / game_distance_x
+        this.canvas_distance_per_game_distance_y = canvas_distance_y / game_distance_y
+        this.only_draw_corner_nodes = false;
+        this.update_nodes_canvas_position_relative_to_node(corner1);
+        this.update_rendering();
     }
 }
