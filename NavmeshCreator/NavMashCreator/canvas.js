@@ -41,6 +41,7 @@ class Canvas
         this.last_selected_node = null;
         this.canvas_distance_per_game_distance_x = null;
         this.canvas_distance_per_game_distance_y = null;
+        this.show_additional_node_information = true;
     }
 
     set_map(map)
@@ -146,9 +147,12 @@ class Canvas
         context.strokeStyle = '#003300';
         context.stroke();
 
-        this.draw_node_information(node,"ID: " + node.id, 0);
-        this.draw_node_information(node,"X: " + node.game_x,  1);
-        this.draw_node_information(node,"Y: " + node.game_y,  2);
+        if(this.show_additional_node_information) 
+        {
+            this.draw_node_information(node,"ID: " + node.id, 0);
+            this.draw_node_information(node,"X: " + node.game_x,  1);
+            this.draw_node_information(node,"Y: " + node.game_y,  2);
+        }
     }
 
     draw_node_information(node, text, y_offset)
@@ -222,7 +226,7 @@ class Canvas
         this.selected_node = null;
     }
 
-    update_nodes_canvas_position_relative_to_node(reference_node)
+    update_nodes_canvas_position_relative_to_reference_node(reference_node)
     {
         for(node of this.nodes) 
         {
@@ -261,7 +265,8 @@ class Canvas
         this.canvas_distance_per_game_distance_x = canvas_distance_x / game_distance_x
         this.canvas_distance_per_game_distance_y = canvas_distance_y / game_distance_y
         this.only_draw_corner_nodes = false;
-        this.update_nodes_canvas_position_relative_to_node(corner1);
+        this.show_additional_node_information = false;
+        this.update_nodes_canvas_position_relative_to_reference_node(corner1);
         this.update_rendering();
     }
 }
