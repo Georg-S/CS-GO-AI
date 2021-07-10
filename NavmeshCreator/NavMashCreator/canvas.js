@@ -1,4 +1,8 @@
-var POINT_BAR_WITDTH = 150;
+const POINT_BAR_WITDTH = 150;
+const operation_radio_name = "operation_mode";
+const operation_radio_node_value = "node_placing";
+const operation_radio_edge_value = "edge_creation";
+
 
 class Node
 {
@@ -268,5 +272,41 @@ class Canvas
         this.show_additional_node_information = false;
         this.update_nodes_canvas_position_relative_to_reference_node(corner1);
         this.update_rendering();
+    }
+
+    is_mode_edge_creation()
+    {
+        this.set_operation_mode_checked(operation_radio_edge_value);
+
+        return this.is_operation_mode_checked(operation_radio_edge_value);
+    }
+
+    is_operation_mode_checked(mode)
+    {   
+        var radios = document.getElementsByName('operation_mode');
+
+        for (var i = 0, length = radios.length; i < length; i++) 
+        {
+            if (radios[i].checked) 
+                return mode === radios[i].value
+        }
+
+        return false;
+    }
+
+    set_operation_mode_checked(name) 
+    {
+        var radios = document.getElementsByName('operation_mode');
+
+        for (var i = 0, length = radios.length; i < length; i++) 
+        {
+            if (radios[i].value == name) 
+            {
+                radios[i].checked = true;
+                return true;
+            }
+        }
+
+        return false;
     }
 }
