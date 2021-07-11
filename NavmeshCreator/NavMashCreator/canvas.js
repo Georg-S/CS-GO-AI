@@ -97,7 +97,6 @@ class Canvas
         this.mouse_x = 0;
         this.mouse_y = 0;
         this.selected_node = null;
-        this.last_selected_node = null;
         this.show_additional_node_information = true;
     }
 
@@ -211,6 +210,12 @@ class Canvas
 
     on_mouse_move(x, y)
     {
+        if(ModeRadio.is_mode_node_moving()) 
+            this.on_mouse_move_node_placing(x, y);
+    }
+
+    on_mouse_move_node_placing(x, y)
+    {
         this.mouse_x = x;
         this.mouse_y = y;
 
@@ -243,6 +248,14 @@ class Canvas
 
     on_click()
     {
+        if(ModeRadio.is_mode_node_moving())
+            this.on_click_node_placing();
+        else
+            this.on_click_edge_creation();
+    }
+
+    on_click_node_placing()
+    {
         if(this.selected_node == null)
         {
             this.selected_node = this.get_node_clicked();
@@ -250,19 +263,36 @@ class Canvas
             if(this.selected_node == null)
                 return;
 
-            var selected = document.getElementById("selected-node");
-            selected.value = this.selected_node.id;
+            this.set_text_of_selected_node_textbox(this.selected_node.id);
             return;
         }
         
-        this.last_selected_node = this.selected_node;
+        this.deselect_node();
+    }
+
+    set_text_of_selected_node_textbox(text)
+    {
+        var selected = document.getElementById("selected-node");
+        selected.value = text;
+    }
+
+    deselect_node()
+    {
         this.selected_node = null;
+        this.set_text_of_selected_node_textbox("None")
+    }
+
+    on_click_edge_creation()
+    {
+        alert("Clicked")
     }
 
     place_and_render_all_nodes()
     {
         this.update_all_node_positions();
         this.update_rendering();
+        ModeRadio.set_mode_to_edge_creation();
+        this.deselect_node();
     }
 
     update_all_node_positions()
