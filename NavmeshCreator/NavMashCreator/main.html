@@ -15,6 +15,7 @@
         <input type="file" id="image-input" onchange="load_image(false)" >
         <label for="json-input">JSON:</label>
         <input type="file" id="json-input" onchange="load_file(false)"/>
+        <button onclick="save_created_json()"> Save json </button>
     </p>
     <canvas id="myCanvas" width="200" height="100" onclick="on_canvas_click()"></canvas>
     <image id="testimg" src="#" hidden="true" />

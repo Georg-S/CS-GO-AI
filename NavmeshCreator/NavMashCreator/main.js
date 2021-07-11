@@ -106,10 +106,18 @@ function create_points(nodes_json)
   canvas.update_node_position_for_start(canvas.nodes)
 }
 
-function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
-  return {
-    x: evt.clientX - rect.left,
-    y: evt.clientY - rect.top
-  };
+function save_created_json()
+{
+  navmesh_json.edges = canvas.edges;
+  save_json(navmesh_json);
+}
+
+function save_json(json_input)
+ {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(json_input, null, 2)], { type: "text/plain" }));
+  a.setAttribute("download", "nav_mesh.json");
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
