@@ -93,6 +93,7 @@ class Canvas
         this.canvas = document.getElementById("myCanvas");
         this.map = null;
         this.nodes = [];
+        this.edges = [];
         this.only_draw_corner_nodes = true;
         this.mouse_x = 0;
         this.mouse_y = 0;
@@ -113,6 +114,21 @@ class Canvas
         this.draw_map(this.map);
         this.draw_canvas_border();
         this.draw_nodes(this.nodes);
+        this.draw_edges(this.edges);
+    }
+
+    draw_edges(edges)
+    {
+        if(edges == null || this.map == null)
+            return;
+
+        for(var edge of this.edges) 
+            this.draw_edge(edge);
+    }
+
+    draw_edge(edge) 
+    {
+
     }
 
     draw_map(map)
@@ -140,7 +156,7 @@ class Canvas
         
         var count = 0;
         const top_offset = 50;
-        for(node of this.nodes) 
+        for(var node of this.nodes) 
         {
             if(node["corner"] === true) 
             {
@@ -156,7 +172,7 @@ class Canvas
         if(nodes == null || this.map == null)
             return;
 
-        for(node of this.nodes) 
+        for(let node of this.nodes) 
         {
             if(!this.only_draw_corner_nodes || node["corner"] === true) 
                 this.draw_Node(node);
@@ -210,15 +226,15 @@ class Canvas
 
     on_mouse_move(x, y)
     {
+        this.mouse_x = x;
+        this.mouse_y = y;
+
         if(ModeRadio.is_mode_node_moving()) 
             this.on_mouse_move_node_placing(x, y);
     }
 
     on_mouse_move_node_placing(x, y)
     {
-        this.mouse_x = x;
-        this.mouse_y = y;
-
         if(this.selected_node == null)
             return;
         
@@ -233,17 +249,6 @@ class Canvas
         var y = y1 - y2;
 
         return Math.sqrt(x * x + y * y);
-    }
-
-    get_node_clicked()
-    {
-        for(node of this.nodes)
-        {
-            let distance = this.get_distance_2d(node.canvas_x, node.canvas_y, this.mouse_x, this.mouse_y);
-            if(distance <= node.radius)
-                return node;
-        }
-        return null;
     }
 
     on_click()
@@ -270,6 +275,17 @@ class Canvas
         this.deselect_node();
     }
 
+    get_node_clicked()
+    {
+        for(let node of this.nodes)
+        {
+            let distance = this.get_distance_2d(node.canvas_x, node.canvas_y, this.mouse_x, this.mouse_y);
+            if(distance <= node.radius)
+                return node;
+        }
+        return null;
+    }
+
     set_text_of_selected_node_textbox(text)
     {
         var selected = document.getElementById("selected-node");
@@ -284,7 +300,39 @@ class Canvas
 
     on_click_edge_creation()
     {
-        alert("Clicked")
+        var selected = this.get_node_clicked();
+
+       if (this.selected_node == null) 
+       {
+            if(selected == null)
+                return;
+
+            this.select_node(selected);
+       }
+       else if(selected != null) 
+       {
+            this.create_edge(this.selected_node, selected);
+            this.deselect_node();
+            this.update_rendering();
+       }
+       else 
+       {
+           this.deselect_node();
+       }
+    }
+
+    select_node(node) 
+    {
+        this.selected_node = node;
+        this.set_text_of_selected_node_textbox(node.id)
+    }
+
+    create_edge(node1, node2)
+    {
+        var json_edge = {"from" : node1.id, "to" : node2.id};
+
+        this.edges.push(json_edge);
+        console.log(this.edges);
     }
 
     place_and_render_all_nodes()
@@ -316,7 +364,7 @@ class Canvas
         var corner1 = null;
         var corner2 = null;
 
-        for(node of this.nodes)
+        for(let node of this.nodes)
         {
             if(!node.corner)
                 continue;
@@ -331,7 +379,7 @@ class Canvas
 
     update_nodes_canvas_position_relative_to_reference_node(reference_node, canvas_distance_per_game_distance_x, canvas_distance_per_game_distance_y)
     {
-        for(node of this.nodes) 
+        for(let node of this.nodes) 
         {
             if(reference_node.id == node.id)
                 continue;
