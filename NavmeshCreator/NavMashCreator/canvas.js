@@ -276,7 +276,26 @@ class Canvas
         }
     }
 
+
+
     draw_all_nodes()
+    {
+        var [corner1, corner2] = this.get_corner_nodes();
+        
+        var game_distance_x = Math.abs(corner1.game_x - corner2.game_x);
+        var game_distance_y = Math.abs(corner1.game_y - corner2.game_y);
+        var canvas_distance_x = Math.abs(corner1.canvas_x - corner2.canvas_x);
+        var canvas_distance_y = Math.abs(corner1.canvas_y - corner2.canvas_y);
+
+        this.canvas_distance_per_game_distance_x = canvas_distance_x / game_distance_x
+        this.canvas_distance_per_game_distance_y = canvas_distance_y / game_distance_y
+        this.only_draw_corner_nodes = false;
+        this.show_additional_node_information = false;
+        this.update_nodes_canvas_position_relative_to_reference_node(corner1);
+        this.update_rendering();
+    }
+
+    get_corner_nodes()
     {
         var corner1 = null;
         var corner2 = null;
@@ -291,17 +310,6 @@ class Canvas
             else if(corner2 == null)
                 corner2 = node;
         }
-        
-        var game_distance_x = Math.abs(corner1.game_x - corner2.game_x);
-        var game_distance_y = Math.abs(corner1.game_y - corner2.game_y);
-        var canvas_distance_x = Math.abs(corner1.canvas_x - corner2.canvas_x);
-        var canvas_distance_y = Math.abs(corner1.canvas_y - corner2.canvas_y);
-
-        this.canvas_distance_per_game_distance_x = canvas_distance_x / game_distance_x
-        this.canvas_distance_per_game_distance_y = canvas_distance_y / game_distance_y
-        this.only_draw_corner_nodes = false;
-        this.show_additional_node_information = false;
-        this.update_nodes_canvas_position_relative_to_reference_node(corner1);
-        this.update_rendering();
+        return [corner1, corner2];
     }
 }
