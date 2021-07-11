@@ -166,34 +166,6 @@ class Canvas
         }
     }
 
-    draw_line()
-    {
-        context = this.canvas.getContext("2d");
-
-        context.moveTo(0, 0);
-        context.lineTo(200, 100);
-        context.stroke();
-    }
-
-    draw_circle(y)
-    {
-        var radius = 30;
-        var context = this.canvas.getContext("2d");
-
-        context.beginPath();
-        context.arc(this.canvas.width - (POINT_BAR_WITDTH / 2), y, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = 'red';
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = '#003300';
-        context.stroke();
-    }
-
-    clear_canvas()
-    {
-        this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
     draw_Node(node) 
     {
         var context = this.canvas.getContext("2d");
@@ -225,14 +197,18 @@ class Canvas
         context.fillText(text, node.canvas_x - diameter, node.canvas_y + diameter + y_offset * font_size);
     }
 
-    width()
+    clear_canvas()
     {
-        return this.width;
+        this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    height()
+    draw_line()
     {
-        return this.height;
+        context = this.canvas.getContext("2d");
+
+        context.moveTo(0, 0);
+        context.lineTo(200, 100);
+        context.stroke();
     }
 
     on_mouse_move(x, y)
@@ -248,7 +224,7 @@ class Canvas
         this.update_rendering();
     }
 
-    get_distance(x1, y1, x2, y2)
+    get_distance_2d(x1, y1, x2, y2)
     {
         var x = x1 - x2;
         var y = y1 - y2;
@@ -260,7 +236,7 @@ class Canvas
     {
         for(node of this.nodes)
         {
-            let distance = this.get_distance(node.canvas_x, node.canvas_y, this.mouse_x, this.mouse_y);
+            let distance = this.get_distance_2d(node.canvas_x, node.canvas_y, this.mouse_x, this.mouse_y);
             if(distance <= node.radius)
                 return node;
         }
