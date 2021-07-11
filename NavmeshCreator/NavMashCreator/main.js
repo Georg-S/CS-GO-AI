@@ -101,7 +101,7 @@ function create_points(nodes_json)
 {
   canvas.nodes = []
   for(let node of nodes_json["nodes"])
-    canvas.nodes.push(new Node(node.id, node.corner, node.x, node.y))
+    canvas.nodes.push(new Node(node.id, node.corner, node.x, node.y, node.z))
 
   canvas.update_node_position_for_start(canvas.nodes)
 }

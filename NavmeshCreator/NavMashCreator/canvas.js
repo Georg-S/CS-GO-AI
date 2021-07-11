@@ -59,7 +59,7 @@ class ModeRadio
 
 class Node
 {
-    constructor(id, corner, game_x, game_y)
+    constructor(id, corner, game_x, game_y, game_z)
     {
         this.id = id
         this.corner = corner
@@ -68,12 +68,11 @@ class Node
         this.canvas_y = -100;
         this.game_x = game_x;
         this.game_y = game_y;
+        this.game_z = game_z;
 
         if(corner == null)
             this.corner = "false"
     }
-
-    
 }
 
 class Map 
@@ -113,8 +112,8 @@ class Canvas
         this.clear_canvas();
         this.draw_map(this.map);
         this.draw_canvas_border();
-        this.draw_nodes(this.nodes);
         this.draw_edges(this.edges);
+        this.draw_nodes(this.nodes);
     }
 
     draw_edges(edges)
@@ -128,7 +127,34 @@ class Canvas
 
     draw_edge(edge) 
     {
+        var from_node = this.get_node_by_id(edge.from);
+        var to_node = this.get_node_by_id(edge.to);
 
+        if(from_node == null || to_node == null)
+            return;
+
+        this.draw_line(from_node.canvas_x, from_node.canvas_y, to_node.canvas_x, to_node.canvas_y);
+    }
+
+    get_node_by_id(id) 
+    {
+        for(let node of this.nodes) 
+        {
+            if(node.id == id)
+                return node;
+        }
+        return null;
+    }
+
+    draw_line(from_x, from_y, to_x, to_y)
+    {
+        var context = this.canvas.getContext("2d");
+        context.lineWidth = 3;
+        context.strokeStyle = '#000000';
+
+        context.moveTo(from_x, from_y);
+        context.lineTo(to_x, to_y);
+        context.stroke();
     }
 
     draw_map(map)
@@ -145,6 +171,7 @@ class Canvas
         var context = this.canvas.getContext("2d");
 
         context.lineWidth = 10;
+        context.strokeStyle = '#000000';
         context.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -181,22 +208,26 @@ class Canvas
 
     draw_Node(node) 
     {
-        var context = this.canvas.getContext("2d");
-
-        context.beginPath();
-        context.arc(node.canvas_x, node.canvas_y, node.radius, 0, 2 * Math.PI, false);
-        context.fillStyle = 'red';
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = '#003300';
-        context.stroke();
-
+        this.draw_node_circle(node.canvas_x, node.canvas_y, node.radius);
         if(this.show_additional_node_information) 
         {
             this.draw_node_information(node,"ID: " + node.id, 0);
             this.draw_node_information(node,"X: " + node.game_x,  1);
             this.draw_node_information(node,"Y: " + node.game_y,  2);
         }
+    }
+
+    draw_node_circle(x, y, radius) 
+    {
+        var context = this.canvas.getContext("2d");
+
+        context.beginPath();
+        context.arc(x, y, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = 'red';
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = '#003300';
+        context.stroke();
     }
 
     draw_node_information(node, text, y_offset)
@@ -213,15 +244,6 @@ class Canvas
     clear_canvas()
     {
         this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    draw_line()
-    {
-        context = this.canvas.getContext("2d");
-
-        context.moveTo(0, 0);
-        context.lineTo(200, 100);
-        context.stroke();
     }
 
     on_mouse_move(x, y)
@@ -249,6 +271,15 @@ class Canvas
         var y = y1 - y2;
 
         return Math.sqrt(x * x + y * y);
+    }
+
+    get_distance_3d(x1, y1, z1, x2, y2, z2) 
+    {
+        var x = x1 - x2;
+        var y = y1 - y2;
+        var z = z1 - z2;
+
+        return Math.sqrt(x * x + y * y + z * z); 
     }
 
     on_click()
@@ -312,6 +343,7 @@ class Canvas
        else if(selected != null) 
        {
             this.create_edge(this.selected_node, selected);
+            this.create_edge(selected, this.selected_node);
             this.deselect_node();
             this.update_rendering();
        }
@@ -329,10 +361,10 @@ class Canvas
 
     create_edge(node1, node2)
     {
-        var json_edge = {"from" : node1.id, "to" : node2.id};
+        let distance = this.get_distance_3d(node1.game_x, node1.game_y, node1.game_z, node2.game_x, node2.game_y, node2.game_z);
+        var json_edge = {"from" : node1.id, "to" : node2.id, "distance" : distance};
 
         this.edges.push(json_edge);
-        console.log(this.edges);
     }
 
     place_and_render_all_nodes()
