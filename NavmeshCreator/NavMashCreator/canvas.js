@@ -1,6 +1,5 @@
 const POINT_BAR_WITDTH = 150;
 
-
 class ModeRadio
 {
     static operation_radio_name = "operation_mode";

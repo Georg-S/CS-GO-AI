@@ -9,8 +9,8 @@ canvas.canvas.addEventListener("mousemove", mouse_move);
 function mouse_move(e)
 {
   var cRect = canvas.canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
-  var canvasX = Math.round(e.clientX - cRect.left);  // Subtract the 'left' of the canvas 
-  var canvasY = Math.round(e.clientY - cRect.top);   // from the X/Y positions to make  
+  var canvasX = Math.round(e.clientX - cRect.left);         // Subtract the 'left' of the canvas 
+  var canvasY = Math.round(e.clientY - cRect.top);          // from the X/Y positions to make  
 
   canvas.on_mouse_move(canvasX, canvasY);
 }
@@ -42,7 +42,6 @@ function load_image(debug)
     console.log("Error loading file");
     return;
   }
-
 
   var background = new Image();
   if (debug)
@@ -86,15 +85,15 @@ function load_file(debug) {
   file_reader = new FileReader();
   file_reader.onload = load_json;
   file_reader.readAsText(file);
-  create_points(navmesh_json);
-  canvas.update_node_position_for_start(canvas.nodes)
-  canvas.update_rendering();
 }
 
 function load_json(e) 
 {
   let lines = e.target.result;
   navmesh_json = JSON.parse(lines);
+  create_points(navmesh_json);
+  canvas.update_node_position_for_start(canvas.nodes)
+  canvas.update_rendering();
 }
 
 function create_points(nodes_json)
