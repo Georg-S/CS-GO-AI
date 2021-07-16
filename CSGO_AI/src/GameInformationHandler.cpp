@@ -4,11 +4,11 @@ GameInformationhandler::GameInformationhandler(const ConfigData& configData)
 {
 }
 
-void GameInformationhandler::updateGameInformation()
+void GameInformationhandler::update_game_information()
 {
 }
 
-GameInformation GameInformationhandler::getGameInformation() const
+GameInformation GameInformationhandler::get_game_information() const
 {
     return this->gameInformation;
 }

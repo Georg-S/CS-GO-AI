@@ -21,8 +21,8 @@ class GameInformationhandler
 {
 public:
 	GameInformationhandler(const ConfigData& configData);
-	void updateGameInformation();
-	GameInformation getGameInformation() const;
+	void update_game_information();
+	GameInformation get_game_information() const;
 
 private:
 	GameInformation gameInformation;

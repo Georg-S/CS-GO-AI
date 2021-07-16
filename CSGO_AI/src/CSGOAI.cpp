@@ -13,7 +13,7 @@ bool CSGOAi::init()
 	}
 
 	ConfigData data;
-	if (!ConfigReader::readInConfigData(data)) 
+	if (!ConfigReader::read_in_config_data(data)) 
 	{
 		std::cout << "Config couldn't be read, make sure you have a valid config" << std::endl;
 		return false;

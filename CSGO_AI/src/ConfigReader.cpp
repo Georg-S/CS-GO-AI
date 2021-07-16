@@ -1,6 +1,6 @@
 #include "ConfigReader.h"
 
-bool ConfigReader::readInConfigData(ConfigData& destination)
+bool ConfigReader::read_in_config_data(ConfigData& destination)
 {
 	static constexpr int DEC = 10;
 	static constexpr int HEX = 16;

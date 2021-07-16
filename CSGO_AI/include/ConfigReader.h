@@ -16,5 +16,5 @@ struct ConfigData
 class ConfigReader 
 {
 public:
-	static bool readInConfigData(ConfigData& destination);
+	static bool read_in_config_data(ConfigData& destination);
 };
