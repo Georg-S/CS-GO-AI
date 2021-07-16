@@ -2,13 +2,27 @@
 project(CSGO_AI)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+
 set (HEADERS
+	"include/MemoryManager.h"
+	"include/FileReader.h"
+	"include/Button.h"
+	"include/Offsets.h"
+	"include/Vec3D.h"
+	"include/Vec2D.h"
+	"include/ConfigData.h"
+	"include/json.hpp"
+	"include/GameInformationHandler.h"
 	)
 
 set(SOURCES 
 	"src/main.cpp"
+	"src/MemoryManager.cpp"
+	"src/FileReader.cpp"
+	"src/Button.cpp"
+	"src/Offsets.cpp"
+	"src/GameInformationHandler.cpp"
 	)
-
 
 add_executable(CSGO_AI ${SOURCES} ${HEADERS})
 target_include_directories(CSGO_AI PUBLIC "include")
