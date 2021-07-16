@@ -12,7 +12,7 @@ class CSGOAi
 public:
 	CSGOAi();
 	bool init();
-
+	void run();
 
 private:
 	std::unique_ptr<GameInformationhandler> gameInfoHandler = nullptr;

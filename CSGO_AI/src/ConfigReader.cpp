@@ -14,5 +14,5 @@ bool ConfigReader::read_in_config_data(ConfigData& destination)
 	if (destination.windowname == "" || destination.client_dll_name == "" || destination.trigger_button == 0)
 		return false;
 
-	return false;
+	return true;
 }

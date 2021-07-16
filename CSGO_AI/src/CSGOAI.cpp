@@ -19,7 +19,18 @@ bool CSGOAi::init()
 		return false;
 	}
 
-	this->gameInfoHandler = std::make_unique<GameInformationhandler>(data);
+	this->gameInfoHandler = std::make_unique<GameInformationhandler>();
+	if (!this->gameInfoHandler->init(data)) 
+	{
+		std::cout << "Error getting dll address " << std::endl;
+		return false;
+	}
 
 	return true;
+}
+
+void CSGOAi::run()
+{
+	while (true)
+		;
 }

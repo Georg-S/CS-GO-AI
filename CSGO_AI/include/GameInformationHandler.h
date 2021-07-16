@@ -17,13 +17,21 @@ struct GameInformation
 {
 };
 
-class GameInformationhandler 
+class GameInformationhandler
 {
 public:
-	GameInformationhandler(const ConfigData& configData);
+	GameInformationhandler();
+	bool init(const ConfigData& config);
 	void update_game_information();
+
 	GameInformation get_game_information() const;
 
+
 private:
-	GameInformation gameInformation;
+	ConfigData config_data;
+	GameInformation game_information;
+	MemoryManager mem_manager;
+
+	DWORD client_dll_address;
+	DWORD engine_address;
 };
