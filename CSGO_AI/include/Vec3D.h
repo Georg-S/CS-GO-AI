@@ -6,7 +6,7 @@ class Vec3D
 {
 public:
 	Vec3D() : x(0), y(0), z(0) {}
-	Vec3D(int x, int y, int z) : x(x), y(y), z(z)  {}
+	Vec3D(T x, T y, T z) : x(x), y(y), z(z)  {}
 
 
 	T calc_abs() const

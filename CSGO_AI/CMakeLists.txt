@@ -10,9 +10,10 @@ set (HEADERS
 	"include/Offsets.h"
 	"include/Vec3D.h"
 	"include/Vec2D.h"
-	"include/ConfigData.h"
 	"include/json.hpp"
 	"include/GameInformationHandler.h"
+	"include/ConfigReader.h"
+	"include/CSGOAI.h"
 	)
 
 set(SOURCES 
@@ -22,6 +23,8 @@ set(SOURCES
 	"src/Button.cpp"
 	"src/Offsets.cpp"
 	"src/GameInformationHandler.cpp"
+	"src/ConfigReader.cpp"
+	"src/CSGOAI.cpp"
 	)
 
 add_executable(CSGO_AI ${SOURCES} ${HEADERS})
