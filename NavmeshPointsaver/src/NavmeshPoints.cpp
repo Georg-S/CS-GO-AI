@@ -77,7 +77,7 @@ void NavmeshPoints::save_to_file()
 	my_file.open("navmesh.json");
 	json nav_json = json::parse(R"({"nodes" : []})");
 
-	for (int i = 0; i < this->points.size(); i++) 
+	for (unsigned int i = 0; i < this->points.size(); i++) 
 	{
 		nav_json["nodes"][i]["x"] = this->points[i].x;
 		nav_json["nodes"][i]["y"] = this->points[i].y;

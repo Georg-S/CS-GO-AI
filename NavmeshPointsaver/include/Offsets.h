@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
-#include "FileReader.h"
 #include <wtypes.h>
+#include "FileReader.h"
 #include "json.hpp"
 
 using json = nlohmann::json;

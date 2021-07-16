@@ -35,6 +35,7 @@ bool Offsets::load_offsets_from_file()
 	}
 	catch (std::exception const& e)
 	{
+		std::cout << e.what() << std::endl;
 		return false;
 	}
 	return true;

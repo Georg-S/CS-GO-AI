@@ -32,22 +32,22 @@ add_custom_command(TARGET NavmeshPointsaver
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy 
 				   ${CMAKE_SOURCE_DIR}"/config.txt"
-				   ${CMAKE_SOURCE_DIR}"/build/debug/config.txt")
+				   ${CMAKE_CURRENT_BINARY_DIR}"/Debug/config.txt")
 
 add_custom_command(TARGET NavmeshPointsaver 
 					POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy 
 					${CMAKE_SOURCE_DIR}"/config.txt"
-					${CMAKE_SOURCE_DIR}"/build/Release/config.txt")
+					${CMAKE_CURRENT_BINARY_DIR}"/Release/config.txt")
 
 add_custom_command(TARGET NavmeshPointsaver 
 					POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy 
 					${CMAKE_SOURCE_DIR}"/offsets.json"
-					${CMAKE_SOURCE_DIR}"/build/debug/memoryOffsets.txt")
+					${CMAKE_CURRENT_BINARY_DIR}"/Debug/offsets.json")
 
 add_custom_command(TARGET NavmeshPointsaver 
 					POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy 
 					${CMAKE_SOURCE_DIR}"/offsets.json"
-					${CMAKE_SOURCE_DIR}"/build/Release/memoryOffsets.txt")
+					${CMAKE_CURRENT_BINARY_DIR}"/Release/offsets.json")
