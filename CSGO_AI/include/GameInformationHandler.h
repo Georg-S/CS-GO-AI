@@ -25,6 +25,7 @@ struct PlayerInformation
 struct GameInformation 
 {
 	ControlledPlayer controlled_player;
+	std::shared_ptr<PlayerInformation> player_in_crosshair = nullptr;
 	std::vector<PlayerInformation> other_players;
 };
 
@@ -42,6 +43,7 @@ private:
 	ControlledPlayer read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address);
 	std::vector<PlayerInformation> read_other_players(DWORD player_address, DWORD engine_client_state_address);
 	Vec3D<float> get_head_bone_position(DWORD entity);
+	std::shared_ptr<PlayerInformation> read_player_in_crosshair(DWORD player_address);
 
 	GameInformation game_information;
 	ConfigData config_data;

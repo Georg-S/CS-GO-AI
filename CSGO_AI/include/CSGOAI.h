@@ -6,6 +6,8 @@
 #include "Offsets.h"
 #include "ConfigReader.h"
 #include "GameInformationHandler.h"
+#include "Triggerbot.h"
+#include "Aimbot.h"
 
 class CSGOAi 
 {
@@ -15,5 +17,8 @@ public:
 	void run();
 
 private:
-	std::unique_ptr<GameInformationhandler> gameInfoHandler = nullptr;
+	ConfigData config;
+	std::unique_ptr<GameInformationhandler> game_info_handler = nullptr;
+	Triggerbot triggerbot;
+	Aimbot aimbot;
 };

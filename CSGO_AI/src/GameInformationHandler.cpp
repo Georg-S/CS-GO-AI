@@ -20,6 +20,7 @@ void GameInformationhandler::update_game_information()
     DWORD engine_client_state = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
 
     game_information.controlled_player = read_controlled_player_information(player_address, engine_client_state);
+    game_information.player_in_crosshair = read_player_in_crosshair(player_address);
     game_information.other_players = read_other_players(player_address, engine_client_state);
 }
 
@@ -83,4 +84,22 @@ Vec3D<float> GameInformationhandler::get_head_bone_position(DWORD entity)
     pos.z = mem_manager.read_memory<float>(bones_address + matrix_size * head_bone_index + 0x2C);
 
     return pos;
+}
+
+std::shared_ptr<PlayerInformation> GameInformationhandler::read_player_in_crosshair(DWORD player_address)
+{
+    int cross_hair_ID = mem_manager.read_memory<int>(player_address + Offsets::crosshair_offset);
+
+    if (cross_hair_ID <= 0 || cross_hair_ID > 300)
+        return nullptr;
+
+    auto player_info = std::make_shared<PlayerInformation>();
+
+    DWORD enemy_in_crosshair_address = mem_manager.read_memory<DWORD>(
+        client_dll_address + Offsets::entity_list_start_offset + ((cross_hair_ID - 1) * Offsets::entity_listelement_size));
+    player_info->health = mem_manager.read_memory<int>(enemy_in_crosshair_address + Offsets::player_health_offset);
+    player_info->team = mem_manager.read_memory<int>(enemy_in_crosshair_address + Offsets::team_offset);
+    player_info->head_position = get_head_bone_position(enemy_in_crosshair_address);
+
+    return player_info;
 }

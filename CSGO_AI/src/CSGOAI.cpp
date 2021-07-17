@@ -12,15 +12,14 @@ bool CSGOAi::init()
 		return false;
 	}
 
-	ConfigData data;
-	if (!ConfigReader::read_in_config_data(data)) 
+	if (!ConfigReader::read_in_config_data(config)) 
 	{
 		std::cout << "Config couldn't be read, make sure you have a valid config" << std::endl;
 		return false;
 	}
 
-	this->gameInfoHandler = std::make_unique<GameInformationhandler>();
-	if (!this->gameInfoHandler->init(data)) 
+	this->game_info_handler = std::make_unique<GameInformationhandler>();
+	if (!this->game_info_handler->init(config)) 
 	{
 		std::cout << "Error getting dll address " << std::endl;
 		return false;
@@ -33,9 +32,8 @@ void CSGOAi::run()
 {
 	while (true) 
 	{
-		gameInfoHandler->update_game_information();
-		GameInformation game_info = gameInfoHandler->get_game_information();
-
-
+		this->game_info_handler->update_game_information();
+		this->triggerbot.update(game_info_handler.get());
+		this->aimbot.update(game_info_handler.get());
 	}
 }
