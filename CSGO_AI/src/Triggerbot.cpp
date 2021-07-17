@@ -7,6 +7,9 @@ void Triggerbot::update(GameInformationhandler* handler)
 
 	GameInformation game_info = handler->get_game_information();
 
+	if (!game_info.player_in_crosshair)
+		return;
+
 	if (game_info.player_in_crosshair->team == game_info.controlled_player.team)
 		return;
 

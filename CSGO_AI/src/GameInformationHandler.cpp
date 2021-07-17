@@ -8,6 +8,8 @@ GameInformationhandler::GameInformationhandler()
 
 bool GameInformationhandler::init(const ConfigData& config)
 {
+    mem_manager.attach_to_process(config.windowname.c_str());
+
     client_dll_address = mem_manager.get_module_address(config.client_dll_name.c_str());
     engine_address = mem_manager.get_module_address(config.engine_dll_name.c_str());
 
@@ -31,6 +33,9 @@ GameInformation GameInformationhandler::get_game_information() const
 
 void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
 {
+    if (isnan(view_vec.x) || isnan(view_vec.y))
+        return;
+
     DWORD engine_client_state_address = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
 
     mem_manager.write_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle, view_vec);

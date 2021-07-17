@@ -8,6 +8,7 @@
 #include "GameInformationHandler.h"
 #include "Triggerbot.h"
 #include "Aimbot.h"
+#include "Button.h"
 
 class CSGOAi 
 {
@@ -21,4 +22,5 @@ private:
 	std::unique_ptr<GameInformationhandler> game_info_handler = nullptr;
 	Triggerbot triggerbot;
 	Aimbot aimbot;
+	Button toggle_button;
 };
