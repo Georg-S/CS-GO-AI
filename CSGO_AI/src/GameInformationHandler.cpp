@@ -28,6 +28,13 @@ GameInformation GameInformationhandler::get_game_information() const
     return game_information;
 }
 
+void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
+{
+    DWORD engine_client_state_address = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
+
+    mem_manager.write_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle, view_vec);
+}
+
 ControlledPlayer GameInformationhandler::read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address)
 {
     ControlledPlayer dest{};

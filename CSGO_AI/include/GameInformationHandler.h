@@ -36,6 +36,7 @@ public:
 	void update_game_information();
 
 	GameInformation get_game_information() const;
+	void set_view_vec(const Vec2D<float>& view_vec);
 
 private:
 	ControlledPlayer read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address);
