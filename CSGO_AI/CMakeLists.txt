@@ -14,6 +14,9 @@ set (HEADERS
 	"include/GameInformationHandler.h"
 	"include/ConfigReader.h"
 	"include/CSGOAI.h"
+	"include/Triggerbot.h"
+	"include/Aimbot.h"
+	"include/MovementStrategy.h"
 	)
 
 set(SOURCES 
@@ -25,6 +28,9 @@ set(SOURCES
 	"src/GameInformationHandler.cpp"
 	"src/ConfigReader.cpp"
 	"src/CSGOAI.cpp"
+	"src/Triggerbot.cpp"
+	"src/Aimbot.cpp"
+	"src/MovementStrategy.cpp"
 	)
 
 add_executable(CSGO_AI ${SOURCES} ${HEADERS})
