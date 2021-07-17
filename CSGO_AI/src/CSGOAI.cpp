@@ -25,6 +25,12 @@ bool CSGOAi::init()
 		return false;
 	}
 
+	if (!movement_strategy.load_in_navmesh("nav_mesh.json"))
+	{
+		std::cout << "Error loading/parsing Navmesh, make sure you have a valid nav-mesh file" << std::endl;
+		return false;
+	}
+
 	toggle_button.set_toggle_button(config.trigger_button);
 
 	return true;
@@ -46,6 +52,7 @@ void CSGOAi::run()
 			this->game_info_handler->update_game_information();
 			this->triggerbot.update(game_info_handler.get());
 			this->aimbot.update(game_info_handler.get());
+			this->movement_strategy.load_in_navmesh("nav_mesh.json");
 		}
 	}
 }
