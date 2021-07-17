@@ -38,8 +38,8 @@ public:
 	GameInformation get_game_information() const;
 
 private:
-	bool read_controlled_player_information(ControlledPlayer& dest, DWORD player_address, DWORD engine_client_state_address);
-	void update_other_players(DWORD player_address, DWORD engine_client_state_address);
+	ControlledPlayer read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address);
+	std::vector<PlayerInformation> read_other_players(DWORD player_address, DWORD engine_client_state_address);
 	Vec3D<float> get_head_bone_position(DWORD entity);
 
 	GameInformation game_information;

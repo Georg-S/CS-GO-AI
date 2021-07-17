@@ -31,6 +31,11 @@ bool CSGOAi::init()
 
 void CSGOAi::run()
 {
-	while (true)
-		;
+	while (true) 
+	{
+		gameInfoHandler->update_game_information();
+		GameInformation game_info = gameInfoHandler->get_game_information();
+
+
+	}
 }

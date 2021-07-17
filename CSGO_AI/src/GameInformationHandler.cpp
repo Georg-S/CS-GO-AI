@@ -18,6 +18,9 @@ void GameInformationhandler::update_game_information()
 {
     DWORD player_address = mem_manager.read_memory<DWORD>(client_dll_address + Offsets::local_player_offset);
     DWORD engine_client_state = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
+
+    game_information.controlled_player = read_controlled_player_information(player_address, engine_client_state);
+    game_information.other_players = read_other_players(player_address, engine_client_state);
 }
 
 GameInformation GameInformationhandler::get_game_information() const
@@ -25,16 +28,38 @@ GameInformation GameInformationhandler::get_game_information() const
     return game_information;
 }
 
-bool GameInformationhandler::read_controlled_player_information(ControlledPlayer& dest, DWORD player_address, DWORD engine_client_state_address)
+ControlledPlayer GameInformationhandler::read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address)
 {
+    ControlledPlayer dest{};
     dest.view_vec = mem_manager.read_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle);
     dest.health = mem_manager.read_memory<int>(player_address + Offsets::player_health_offset);
     dest.team = mem_manager.read_memory<int>(player_address + Offsets::team_offset);
     dest.head_position = get_head_bone_position(player_address);
+
+    return dest;
 }
 
-void GameInformationhandler::update_other_players(DWORD player_address, DWORD engine_client_state_address)
+std::vector<PlayerInformation> GameInformationhandler::read_other_players(DWORD player_address, DWORD engine_client_state_address)
 {
+    int max_players = mem_manager.read_memory<int>(engine_client_state_address + Offsets::client_state_max_players);
+    std::vector<PlayerInformation> other_players;
+
+    for (int i = 0; i < max_players; i++)
+    {
+        DWORD entity_address = mem_manager.read_memory<DWORD>(client_dll_address + Offsets::entity_list_start_offset
+            + Offsets::entity_listelement_size * i);
+
+        if (!entity_address || entity_address == player_address)
+            continue;
+
+        PlayerInformation ent;
+        ent.head_position = get_head_bone_position(entity_address);
+        ent.health = mem_manager.read_memory<DWORD>(entity_address + Offsets::player_health_offset);
+        ent.team = mem_manager.read_memory<int>(entity_address + Offsets::team_offset);
+        other_players.push_back(ent);
+    }
+
+    return other_players;
 }
 
 Vec3D<float> GameInformationhandler::get_head_bone_position(DWORD entity)
