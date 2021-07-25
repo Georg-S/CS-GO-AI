@@ -52,7 +52,6 @@ void CSGOAi::run()
 			this->game_info_handler->update_game_information();
 			this->triggerbot.update(game_info_handler.get());
 			this->aimbot.update(game_info_handler.get());
-			this->movement_strategy.load_in_navmesh("nav_mesh.json");
 		}
 	}
 }

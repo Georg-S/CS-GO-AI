@@ -19,7 +19,7 @@ public:
 		std::cout << "X: " << x << " Y: " << y << " Z: " << z << std::endl;
 	}
 
-	void normalize() 
+	void normalize()
 	{
 		T length = calc_abs();
 		x /= length;
@@ -27,9 +27,14 @@ public:
 		z /= length;
 	}
 
-	T dot_product(const Vec3D<T> other) const
+	T dot_product(const Vec3D<T>& other) const
 	{	
 		return x * other.x + y * other.y + z * other.z;
+	}
+
+	T distance(const Vec3D<T>& other) const
+	{
+		return (*this - other).calc_abs();
 	}
 
 	T x;

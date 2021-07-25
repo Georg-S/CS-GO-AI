@@ -1,5 +1,10 @@
 #include "MovementStrategy.h"
 
+void MovementStrategy::update(GameInformationhandler* game_info_handler)
+{
+	GameInformation game_info = game_info_handler->get_game_information();
+}
+
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
 {
 	try
@@ -61,4 +66,23 @@ std::shared_ptr<Node> MovementStrategy::get_node_by_id(int id) const
 	}
 
 	return nullptr;
+}
+
+std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D<float>& position)
+{
+	std::shared_ptr<Node> closest_node = nullptr;
+	float closest_distance = FLT_MAX;
+
+	for (auto node : nodes) 
+	{
+		float distance_to_node = node->position.distance(position);
+
+		if (distance_to_node <= closest_distance) 
+		{
+			closest_distance = distance_to_node;
+			closest_node = node;
+		}
+	}
+
+	return closest_node;
 }
