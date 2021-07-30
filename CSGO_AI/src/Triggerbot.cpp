@@ -16,7 +16,16 @@ void Triggerbot::update(GameInformationhandler* handler)
 	if ((game_info.player_in_crosshair->health <= 0) || (game_info.player_in_crosshair->health >=200))
 		return;
 
-	simulate_left_click();
+
+	auto current_time = std::chrono::system_clock::now();
+	auto current_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time).time_since_epoch().count();
+
+	constexpr int delay_in_ms = 500;
+	if (current_time_ms >= delay_time)
+	{
+		delay_time = current_time_ms + delay_in_ms;
+		simulate_left_click();
+	}
 }
 
 void Triggerbot::simulate_left_click()

@@ -8,6 +8,10 @@ void Aimbot::update(GameInformationhandler* info_handler)
 
 	GameInformation game_info = info_handler->get_game_information();
 	Vec3D<float> closest_enemy = get_closest_enemy(game_info);
+
+	if ((closest_enemy.x == 0) && (closest_enemy.y == 0) && (closest_enemy.z == 0))
+		return;
+
 	Vec2D<float> new_view_vec = calc_view_vec_aim_to_head(game_info.controlled_player.head_position, closest_enemy);
 	info_handler->set_view_vec(new_view_vec);
 }
