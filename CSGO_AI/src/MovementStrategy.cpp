@@ -4,7 +4,21 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	GameInformation game_info = game_info_handler->get_game_information();
 
-	auto player_pos = get_closest_node_to_position(game_info.controlled_player.head_position);
+	if (!game_info.closest_enemy_player)
+		return;
+	auto current_player_node = get_closest_node_to_position(game_info.controlled_player.head_position);
+	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->head_position);
+
+	if (!current_player_node || !current_closest_enemy_node)
+		return;
+
+	if (current_closest_enemy_node != closest_enemy_locked_node)
+		current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
+	if (current_player_node != player_locked_node) 
+	{
+		if((current_route.size() > 0) && (current_route[0] != current_player_node))
+			current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
+	}
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -87,4 +101,104 @@ std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D
 	}
 
 	return closest_node;
+}
+
+std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to)
+{
+	auto closed_list = dijkstra_algorithm(from);
+	return get_route(closed_list, to);
+}
+
+std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
+{
+	auto is_inside_list = [](const std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	{
+		for (const auto& list_element : list)
+		{
+			if (list_element.node == node)
+				return true;
+		}
+
+		return false;
+	};
+
+	auto get_weight_of_node_in_list = [](const std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	{
+		for (const auto& list_element : list)
+		{
+			if (list_element.node == node)
+				return list_element.weight;
+		}
+		return 0.f;
+	};
+
+	auto update_list_entry = [](std::vector<DijkstraListentry>& list, const DijkstraListentry& update)
+	{
+		for (auto& list_element : list)
+		{
+			if (list_element.node == update.node)
+			{
+				list_element.previous_node = update.previous_node;
+				list_element.weight = update.weight;
+			}
+		}
+	};
+
+	auto remove_list_element = [](std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	{
+		DijkstraListentry return_entry;
+
+		for (int i = 0; i < list.size(); i++)
+		{
+			if (list[i].node == node)
+			{
+				return_entry = list[i];
+				list.erase(list.begin() + i);
+				return return_entry;
+			}
+		}
+		return return_entry;
+	};
+
+	std::vector<DijkstraListentry> open_list;
+	std::vector<DijkstraListentry> closed_list;
+
+	auto current_node = from;
+	float current_weight = 0;
+
+	open_list.push_back(DijkstraListentry{ current_node, nullptr, current_weight });
+
+	while (open_list.size() > 0)
+	{
+		current_node = open_list[0].node;
+		current_weight = open_list[0].weight;
+
+		for (const auto& edge : current_node->edges)
+		{
+			if (is_inside_list(closed_list, edge.toNode))
+				continue;
+
+			const float new_weight = current_weight + edge.weight;
+
+			if (!is_inside_list(open_list, edge.toNode))
+			{
+				open_list.push_back(DijkstraListentry{ edge.toNode, current_node, new_weight });
+			}
+			else
+			{
+				if (new_weight < get_weight_of_node_in_list(open_list, edge.toNode))
+					update_list_entry(open_list, DijkstraListentry{ edge.toNode, current_node, new_weight });
+			}
+		}
+		DijkstraListentry element = remove_list_element(open_list, current_node);
+		closed_list.push_back(element);
+		std::sort(open_list.begin(), open_list.end());
+	}
+
+	return closed_list;
+}
+
+std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector<DijkstraListentry>& closed_list, const std::shared_ptr<Node> to_node)
+{
+	return std::vector<std::shared_ptr<Node>>();
 }

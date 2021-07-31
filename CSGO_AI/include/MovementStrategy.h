@@ -27,6 +27,18 @@ struct Node
 	std::vector<Edge> edges;
 };
 
+struct DijkstraListentry
+{
+	std::shared_ptr<Node> node;
+	std::shared_ptr<Node> previous_node;
+	float weight;
+
+	bool operator<(const DijkstraListentry& a) const
+	{
+		return weight < a.weight;
+	}
+};
+
 class MovementStrategy 
 {
 public:
@@ -38,7 +50,13 @@ private:
 	void load_edges(const json& json);
 	std::shared_ptr<Node> get_node_by_id(int id) const;
 	std::shared_ptr<Node> get_closest_node_to_position(const Vec3D<float>& position);
+	std::vector<std::shared_ptr<Node>> calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to);
+	std::vector<DijkstraListentry> dijkstra_algorithm(std::shared_ptr<Node> from);
+	std::vector<std::shared_ptr<Node>> get_route(const std::vector<DijkstraListentry>& closed_list, const std::shared_ptr<Node> to_node);
 
 	json navmesh_json;
 	std::vector<std::shared_ptr<Node>> nodes;
+	std::shared_ptr<Node> player_locked_node = nullptr;
+	std::shared_ptr<Node> closest_enemy_locked_node = nullptr;
+	std::vector<std::shared_ptr<Node>> current_route;
 };
