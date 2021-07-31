@@ -3,6 +3,8 @@
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	GameInformation game_info = game_info_handler->get_game_information();
+
+	auto player_pos = get_closest_node_to_position(game_info.controlled_player.head_position);
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)

@@ -7,34 +7,12 @@ void Aimbot::update(GameInformationhandler* info_handler)
 		return;
 
 	GameInformation game_info = info_handler->get_game_information();
-	Vec3D<float> closest_enemy = get_closest_enemy(game_info);
-
-	if ((closest_enemy.x == 0) && (closest_enemy.y == 0) && (closest_enemy.z == 0))
+	if (!game_info.closest_enemy_player)
 		return;
 
-	Vec2D<float> new_view_vec = calc_view_vec_aim_to_head(game_info.controlled_player.head_position, closest_enemy);
+	Vec3D<float> closest_enemy_head = game_info.closest_enemy_player->head_position;
+	Vec2D<float> new_view_vec = calc_view_vec_aim_to_head(game_info.controlled_player.head_position, closest_enemy_head);
 	info_handler->set_view_vec(new_view_vec);
-}
-
-Vec3D<float> Aimbot::get_closest_enemy(const GameInformation& game_info)
-{
-	Vec3D<float> closest_vec;
-	const auto& controlled_player = game_info.controlled_player;
-	float closest_distance = FLT_MAX;
-
-	for (const auto& enemy : game_info.other_players)
-	{
-		Vec3D<float> buf = controlled_player.head_position - enemy.head_position;
-		float distance = buf.calc_abs();
-
-		if ((distance <= closest_distance) && (enemy.team != controlled_player.team) && (enemy.health > 0))
-		{
-			closest_distance = distance;
-			closest_vec = enemy.head_position;
-		}
-	}
-
-	return closest_vec;
 }
 
 Vec2D<float> Aimbot::calc_view_vec_aim_to_head(const Vec3D<float>& player_head, const Vec3D<float>& enemy_head)

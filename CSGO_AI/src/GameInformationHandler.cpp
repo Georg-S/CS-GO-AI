@@ -24,6 +24,7 @@ void GameInformationhandler::update_game_information()
     game_information.controlled_player = read_controlled_player_information(player_address, engine_client_state);
     game_information.player_in_crosshair = read_player_in_crosshair(player_address);
     game_information.other_players = read_other_players(player_address, engine_client_state);
+    game_information.closest_enemy_player = get_closest_enemy(game_information);
 }
 
 GameInformation GameInformationhandler::get_game_information() const
@@ -39,6 +40,26 @@ void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
     DWORD engine_client_state_address = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
 
     mem_manager.write_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle, view_vec);
+}
+
+std::shared_ptr<PlayerInformation> GameInformationhandler::get_closest_enemy(const GameInformation& game_info)
+{
+    std::shared_ptr<PlayerInformation> closest_enemy = nullptr;
+    const auto& controlled_player = game_info.controlled_player;
+    float closest_distance = FLT_MAX;
+
+    for (const auto& enemy : game_info.other_players)
+    {
+        float distance = controlled_player.head_position.distance(enemy.head_position);
+
+        if ((distance <= closest_distance) && (enemy.team != controlled_player.team) && (enemy.health > 0))
+        {
+            closest_distance = distance;
+            closest_enemy = std::make_shared<PlayerInformation>(enemy);
+        }
+    }
+
+    return closest_enemy;
 }
 
 ControlledPlayer GameInformationhandler::read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address)
