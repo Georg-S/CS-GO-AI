@@ -75,7 +75,7 @@ void MovementStrategy::load_edges(const json& json)
 
 std::shared_ptr<Node> MovementStrategy::get_node_by_id(int id) const
 {
-	for (const auto node : this->nodes) 
+	for (const auto& node : this->nodes) 
 	{
 		if (node->id == id)
 			return node;
@@ -89,7 +89,7 @@ std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D
 	std::shared_ptr<Node> closest_node = nullptr;
 	float closest_distance = FLT_MAX;
 
-	for (auto node : nodes) 
+	for (auto& node : nodes) 
 	{
 		float distance_to_node = node->position.distance(position);
 
@@ -122,45 +122,50 @@ void MovementStrategy::print_current_route() const
 	}
 }
 
-std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
+std::vector<std::shared_ptr<DijkstraListentry>> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
 {
-	auto is_inside_list = [](const std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	auto compare_weight = [](std::shared_ptr<DijkstraListentry> a, std::shared_ptr<DijkstraListentry> b) 
+	{
+		return a->weight < b->weight;
+	};
+
+	auto is_inside_list = [](const std::vector<std::shared_ptr<DijkstraListentry>>& list, const std::shared_ptr<Node> node)
 	{
 		for (const auto& list_element : list)
 		{
-			if (list_element.node == node)
+			if (list_element->node == node)
 				return true;
 		}
 
 		return false;
 	};
 
-	auto get_weight_of_node_in_list = [](const std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	auto get_weight_of_node_in_list = [](const std::vector<std::shared_ptr<DijkstraListentry>>& list, const std::shared_ptr<Node> node)
 	{
 		for (const auto& list_element : list)
 		{
-			if (list_element.node == node)
-				return list_element.weight;
+			if (list_element->node == node)
+				return list_element->weight;
 		}
 		return 0.f;
 	};
 
-	auto update_list_entry = [](std::vector<DijkstraListentry>& list, const DijkstraListentry& update)
+	auto update_list_entry = [](std::vector<std::shared_ptr<DijkstraListentry>>& list, const std::shared_ptr<DijkstraListentry>& update)
 	{
 		for (auto& list_element : list)
 		{
-			if (list_element.node == update.node)
+			if (list_element->node == update->node)
 				list_element = update;
 		}
 	};
 
-	auto remove_list_element = [](std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	auto remove_list_element = [](std::vector<std::shared_ptr<DijkstraListentry>>& list, const std::shared_ptr<Node> node)
 	{
-		DijkstraListentry return_entry;
+		std::shared_ptr<DijkstraListentry> return_entry = nullptr;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
-			if (list[i].node == node)
+			if (list[i]->node == node)
 			{
 				return_entry = list[i];
 				list.erase(list.begin() + i);
@@ -170,18 +175,20 @@ std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_
 		return return_entry;
 	};
 
-	std::vector<DijkstraListentry> open_list;
-	std::vector<DijkstraListentry> closed_list;
+	std::vector<std::shared_ptr<DijkstraListentry>> open_list;
+	std::vector<std::shared_ptr<DijkstraListentry>> closed_list;
 
-	auto current_node = from;
+	std::shared_ptr<Node> current_node = from;
 	float current_weight = 0;
+	auto current_list_entry = std::make_shared<DijkstraListentry>(current_node, nullptr, nullptr, current_weight);
 
-	open_list.push_back(DijkstraListentry{ current_node, nullptr, current_weight });
+	open_list.push_back(current_list_entry);
 
 	while (open_list.size() > 0)
 	{
-		current_node = open_list[0].node;
-		current_weight = open_list[0].weight;
+		current_list_entry = open_list[0];
+		current_node = open_list[0]->node;
+		current_weight = open_list[0]->weight;
 
 		for (const auto& edge : current_node->edges)
 		{
@@ -192,52 +199,53 @@ std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_
 
 			if (!is_inside_list(open_list, edge.toNode))
 			{
-				open_list.push_back(DijkstraListentry{ edge.toNode, current_node, new_weight });
+				open_list.push_back(std::make_shared<DijkstraListentry>(edge.toNode, current_node, current_list_entry, new_weight));
 			}
 			else
 			{
 				if (new_weight < get_weight_of_node_in_list(open_list, edge.toNode))
-					update_list_entry(open_list, DijkstraListentry{ edge.toNode, current_node, new_weight });
+					update_list_entry(open_list, std::make_shared<DijkstraListentry>(edge.toNode, current_node, current_list_entry, new_weight));
 			}
 		}
-		DijkstraListentry element = remove_list_element(open_list, current_node);
-		closed_list.push_back(element);
-		std::sort(open_list.begin(), open_list.end());
+		std::shared_ptr<DijkstraListentry> element = remove_list_element(open_list, current_node);
+		if(element)
+			closed_list.push_back(element);
+		std::sort(open_list.begin(), open_list.end(), compare_weight);
 	}
 
 	return closed_list;
 }
 
-std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector<DijkstraListentry>& closed_list, const std::shared_ptr<Node> to_node)
+std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector<std::shared_ptr<DijkstraListentry>>& closed_list, const std::shared_ptr<Node> to_node)
 {
 	std::vector<std::shared_ptr<Node>> result;
 
-	auto get_list_entry_by_node = [](const std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	auto get_list_entry_by_node = [](const std::vector<std::shared_ptr<DijkstraListentry>>& list, const std::shared_ptr<Node> node)
 	{
-		DijkstraListentry entry;
+		std::shared_ptr<DijkstraListentry> entry;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
-			if (node == list[i].node)
+			if (node == list[i]->node)
 				return list[i];
 		}
 
 		return entry;
 	};
 
-	DijkstraListentry entry = get_list_entry_by_node(closed_list, to_node);
+	std::shared_ptr<DijkstraListentry> entry = get_list_entry_by_node(closed_list, to_node);
 
-	if (!entry.node)
+	if (!entry && entry->node)
 		return result;
 
-	result.insert(result.begin(),entry.node);
+	result.insert(result.begin(),entry->node);
 
-	while (entry.previous_node) 
+	while (entry->previous_node_list_entry) 
 	{
-		entry = get_list_entry_by_node(closed_list, entry.previous_node);
+		entry = entry->previous_node_list_entry;
 
-		if (entry.node) 
-			result.insert(result.begin(), entry.node);
+		if (entry->node) 
+			result.insert(result.begin(), entry->node);
 	}
 
 	return result;

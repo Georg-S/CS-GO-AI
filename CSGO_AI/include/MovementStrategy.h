@@ -29,9 +29,18 @@ struct Node
 
 struct DijkstraListentry
 {
+	DijkstraListentry(std::shared_ptr<Node> node, std::shared_ptr<Node> previous_node, std::shared_ptr<DijkstraListentry> previous_node_list_entry, float weight)
+	{
+		this->node = node;
+		this->previous_node = previous_node;
+		this->previous_node_list_entry = previous_node_list_entry;
+		this->weight = weight;
+	}
+
 	std::shared_ptr<Node> node;
 	std::shared_ptr<Node> previous_node;
-	float weight = 0.0;
+	std::shared_ptr<DijkstraListentry> previous_node_list_entry;
+	float weight = 0.f;
 
 	bool operator<(const DijkstraListentry& a) const
 	{
@@ -52,8 +61,8 @@ private:
 	void load_nodes(const json& json);
 	void load_edges(const json& json);
 	std::shared_ptr<Node> get_closest_node_to_position(const Vec3D<float>& position);
-	std::vector<DijkstraListentry> dijkstra_algorithm(std::shared_ptr<Node> from);
-	std::vector<std::shared_ptr<Node>> get_route(const std::vector<DijkstraListentry>& closed_list, const std::shared_ptr<Node> to_node);
+	std::vector<std::shared_ptr<DijkstraListentry>> dijkstra_algorithm(std::shared_ptr<Node> from);
+	std::vector<std::shared_ptr<Node>> get_route(const std::vector<std::shared_ptr<DijkstraListentry>>& closed_list, const std::shared_ptr<Node> to_node);
 
 	json navmesh_json;
 	std::vector<std::shared_ptr<Node>> nodes;
