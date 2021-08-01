@@ -106,7 +106,20 @@ std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D
 std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to)
 {
 	auto closed_list = dijkstra_algorithm(from);
-	return get_route(closed_list, to);
+	current_route =  get_route(closed_list, to);
+
+	return current_route;
+}
+
+void MovementStrategy::print_current_route() const
+{
+	for (int i = 0; i < current_route.size(); i++)
+	{
+		if (i == current_route.size() - 1)
+			std::cout << current_route[i]->id << std::endl;
+		else
+			std::cout << current_route[i]->id << " -> ";
+	}
 }
 
 std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
@@ -200,5 +213,35 @@ std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_
 
 std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector<DijkstraListentry>& closed_list, const std::shared_ptr<Node> to_node)
 {
-	return std::vector<std::shared_ptr<Node>>();
+	std::vector<std::shared_ptr<Node>> result;
+
+	auto get_list_entry_by_node = [](const std::vector<DijkstraListentry>& list, const std::shared_ptr<Node> node)
+	{
+		DijkstraListentry entry;
+
+		for (int i = 0; i < list.size(); i++)
+		{
+			if (node == list[i].node)
+				return list[i];
+		}
+
+		return entry;
+	};
+
+	DijkstraListentry entry = get_list_entry_by_node(closed_list, to_node);
+
+	if (!entry.node)
+		return result;
+
+	result.insert(result.begin(),entry.node);
+
+	while (entry.previous_node) 
+	{
+		entry = get_list_entry_by_node(closed_list, entry.previous_node);
+
+		if (entry.node) 
+			result.insert(result.begin(), entry.node);
+	}
+
+	return result;
 }
