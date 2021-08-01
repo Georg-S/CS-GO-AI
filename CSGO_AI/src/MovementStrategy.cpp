@@ -6,6 +6,7 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 
 	if (!game_info.closest_enemy_player)
 		return;
+
 	auto current_player_node = get_closest_node_to_position(game_info.controlled_player.head_position);
 	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->head_position);
 
@@ -13,12 +14,27 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		return;
 
 	if (current_closest_enemy_node != closest_enemy_locked_node)
-		current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
-	if (current_player_node != player_locked_node) 
 	{
-		if((current_route.size() > 0) && (current_route[0] != current_player_node))
-			current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
+		current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
+		// system("cls");
+		// print_current_route();
 	}
+	else if (current_player_node != player_locked_node)
+	{
+		if ((current_route.size() > 0) && (current_route[0] != current_player_node))
+		{
+			current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
+			// system("cls");
+			// print_current_route();
+		}
+	}
+
+	closest_enemy_locked_node = current_closest_enemy_node;
+	if (!player_locked_node)
+		player_locked_node = current_player_node;
+
+	if (current_route.size() > 0)
+		walk_to_node(game_info, current_closest_enemy_node);
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -39,6 +55,69 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 		return false;
 	}
 	return true;
+}
+
+void MovementStrategy::walk_to_node(const GameInformation& game_info, const std::shared_ptr<Node> node)
+{
+	if (!game_info.closest_enemy_player)
+		return;
+
+	float position_angle = calc_angle_between_two_positions(game_info.controlled_player.head_position, game_info.closest_enemy_player->head_position);
+	float walk_angle = calc_walk_angle(game_info.controlled_player.view_vec.y, position_angle);
+	interprete_walking_angle(walk_angle);
+}
+
+float MovementStrategy::calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const
+{
+	auto vec = pos2 - pos1;
+	return (std::atan2(vec.y, vec.x) / M_PI * 180);
+}
+
+float MovementStrategy::calc_walk_angle(float view_angle, float position_angle) const
+{
+	float new_angle = position_angle - view_angle;
+	if (new_angle < 0)
+		new_angle += 360;
+
+	return new_angle;
+}
+
+void MovementStrategy::interprete_walking_angle(float walking_angle)
+{
+	if ((walking_angle > 360) || (walking_angle < 0))
+		return;
+
+	if ((walking_angle > 337.5) || (walking_angle <= 22.5))
+	{
+		movement_keys.push_back(0x57);
+	}
+	if ((walking_angle > 22.5) && (walking_angle <= 67.5))
+	{
+	}
+	//TODO: find a way to make the player move
+}
+
+void MovementStrategy::press_key_down(DWORD key_code)
+{
+	//Not working 1
+	//keybd_event(key_code, 0, KEYEVENT_KEYDOWN, 0);
+
+
+	//Not working 2
+	/*
+	INPUT input; // INPUT structure
+	memset(&input, 0, sizeof(input));
+
+	// fill it out for keyboard key presses...
+	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = VkKeyScanA('w');
+//	input.ki.wVk = VK_ESCAPE;
+
+	Sleep(1000);
+	SendInput(1, &input, sizeof(INPUT)); // 3rd param is size of an INPUT structure
+	input.ki.dwFlags = KEYEVENTF_KEYUP;
+	SendInput(1, &input, sizeof(INPUT));
+	*/
 }
 
 void MovementStrategy::load_nodes(const json& json)
@@ -68,14 +147,14 @@ void MovementStrategy::load_edges(const json& json)
 
 		if (!to)
 			continue;
-		
-		from->edges.push_back(Node::Edge{weight, to});
+
+		from->edges.push_back(Node::Edge{ weight, to });
 	}
 }
 
 std::shared_ptr<Node> MovementStrategy::get_node_by_id(int id) const
 {
-	for (const auto& node : this->nodes) 
+	for (const auto& node : this->nodes)
 	{
 		if (node->id == id)
 			return node;
@@ -89,11 +168,11 @@ std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D
 	std::shared_ptr<Node> closest_node = nullptr;
 	float closest_distance = FLT_MAX;
 
-	for (auto& node : nodes) 
+	for (auto& node : nodes)
 	{
 		float distance_to_node = node->position.distance(position);
 
-		if (distance_to_node <= closest_distance) 
+		if (distance_to_node <= closest_distance)
 		{
 			closest_distance = distance_to_node;
 			closest_node = node;
@@ -106,9 +185,8 @@ std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D
 std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to)
 {
 	auto closed_list = dijkstra_algorithm(from);
-	current_route =  get_route(closed_list, to);
 
-	return current_route;
+	return  get_route(closed_list, to);
 }
 
 void MovementStrategy::print_current_route() const
@@ -124,7 +202,7 @@ void MovementStrategy::print_current_route() const
 
 std::vector<std::shared_ptr<DijkstraListentry>> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
 {
-	auto compare_weight = [](std::shared_ptr<DijkstraListentry> a, std::shared_ptr<DijkstraListentry> b) 
+	auto compare_weight = [](std::shared_ptr<DijkstraListentry> a, std::shared_ptr<DijkstraListentry> b)
 	{
 		return a->weight < b->weight;
 	};
@@ -208,7 +286,7 @@ std::vector<std::shared_ptr<DijkstraListentry>> MovementStrategy::dijkstra_algor
 			}
 		}
 		std::shared_ptr<DijkstraListentry> element = remove_list_element(open_list, current_node);
-		if(element)
+		if (element)
 			closed_list.push_back(element);
 		std::sort(open_list.begin(), open_list.end(), compare_weight);
 	}
@@ -238,13 +316,13 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector
 	if (!entry && entry->node)
 		return result;
 
-	result.insert(result.begin(),entry->node);
+	result.insert(result.begin(), entry->node);
 
-	while (entry->previous_node_list_entry) 
+	while (entry->previous_node_list_entry)
 	{
 		entry = entry->previous_node_list_entry;
 
-		if (entry->node) 
+		if (entry->node)
 			result.insert(result.begin(), entry->node);
 	}
 
