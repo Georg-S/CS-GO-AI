@@ -113,7 +113,7 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::sh
 
 void MovementStrategy::print_current_route() const
 {
-	for (int i = 0; i < current_route.size(); i++)
+	for (unsigned int i = 0; i < current_route.size(); i++)
 	{
 		if (i == current_route.size() - 1)
 			std::cout << current_route[i]->id << std::endl;
@@ -150,10 +150,7 @@ std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_
 		for (auto& list_element : list)
 		{
 			if (list_element.node == update.node)
-			{
-				list_element.previous_node = update.previous_node;
-				list_element.weight = update.weight;
-			}
+				list_element = update;
 		}
 	};
 
@@ -161,7 +158,7 @@ std::vector<DijkstraListentry> MovementStrategy::dijkstra_algorithm(std::shared_
 	{
 		DijkstraListentry return_entry;
 
-		for (int i = 0; i < list.size(); i++)
+		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			if (list[i].node == node)
 			{
@@ -219,7 +216,7 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector
 	{
 		DijkstraListentry entry;
 
-		for (int i = 0; i < list.size(); i++)
+		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			if (node == list[i].node)
 				return list[i];

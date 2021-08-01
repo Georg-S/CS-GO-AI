@@ -31,7 +31,7 @@ struct DijkstraListentry
 {
 	std::shared_ptr<Node> node;
 	std::shared_ptr<Node> previous_node;
-	float weight;
+	float weight = 0.0;
 
 	bool operator<(const DijkstraListentry& a) const
 	{
