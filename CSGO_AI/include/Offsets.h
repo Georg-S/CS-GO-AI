@@ -20,6 +20,11 @@ public:
 	static DWORD team_offset;
 	static DWORD entity_listelement_size;
 	static DWORD position;
+	static DWORD force_attack;
+	static DWORD force_forward;
+	static DWORD force_backward;
+	static DWORD force_left;
+	static DWORD force_right;
 
 	//engine.dll
 	static DWORD clientState;

@@ -11,6 +11,12 @@ DWORD Offsets::clientState;
 DWORD Offsets::client_state_view_angle;
 DWORD Offsets::client_state_max_players;
 DWORD Offsets::bone_matrix;
+DWORD Offsets::force_attack;
+DWORD Offsets::force_forward;
+DWORD Offsets::force_backward;
+DWORD Offsets::force_left;
+DWORD Offsets::force_right;
+
 json Offsets::offsets_json;
 
 bool Offsets::load_offsets_from_file(const std::string& filename)
@@ -31,6 +37,13 @@ bool Offsets::load_offsets_from_file(const std::string& filename)
 		clientState = (DWORD)offsets_json["signatures"]["dwClientState"];
 		client_state_view_angle = (DWORD)offsets_json["signatures"]["dwClientState_ViewAngles"];
 		client_state_max_players = (DWORD)offsets_json["signatures"]["dwClientState_MaxPlayer"];
+		force_attack = (DWORD)offsets_json["signatures"]["dwForceAttack"];
+
+		force_forward = (DWORD)offsets_json["signatures"]["dwForceForward"];
+		force_backward = (DWORD)offsets_json["signatures"]["dwForceBackward"];
+		force_left = (DWORD)offsets_json["signatures"]["dwForceLeft"];
+		force_right = (DWORD)offsets_json["signatures"]["dwForceRight"];
+
 		bone_matrix = (DWORD)offsets_json["netvars"]["m_dwBoneMatrix"];
 	}
 	catch (std::exception const& e)

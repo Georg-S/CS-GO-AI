@@ -7,10 +7,19 @@
 #include "MemoryManager.h"
 #include "ConfigReader.h"
 
+struct Movement
+{
+	bool forward = false;
+	bool backward = false;
+	bool left = false;
+	bool right = false;
+};
+
 struct ControlledPlayer 
 {
 	Vec2D<float> view_vec;
 	Vec3D<float> head_position;
+	Movement movement;
 	int team;
 	int health;
 };
@@ -39,10 +48,12 @@ public:
 
 	GameInformation get_game_information() const;
 	void set_view_vec(const Vec2D<float>& view_vec);
+	void set_player_movement(const Movement& movement);
 
 private:
 	ControlledPlayer read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address);
 	std::vector<PlayerInformation> read_other_players(DWORD player_address, DWORD engine_client_state_address);
+	Movement read_controlled_player_movement(DWORD player_address);
 	Vec3D<float> get_head_bone_position(DWORD entity);
 	std::shared_ptr<PlayerInformation> read_player_in_crosshair(DWORD player_address);
 	std::shared_ptr<PlayerInformation> get_closest_enemy(const GameInformation& game_info);

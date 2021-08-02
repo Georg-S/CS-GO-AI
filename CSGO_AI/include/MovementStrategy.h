@@ -61,10 +61,10 @@ private:
 	std::shared_ptr<Node> get_node_by_id(int id) const;
 	std::vector<std::shared_ptr<Node>> calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to);
 	void print_current_route() const;
-	void walk_to_node(const GameInformation& game_info, const std::shared_ptr<Node> node);
+	Movement calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node);
 	float calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const;
 	float calc_walk_angle(float view_angle, float position_angle) const;
-	void interprete_walking_angle(float walking_angle);
+	Movement get_movement_from_walking_angle(float walking_angle) const;
 	void press_key_down(DWORD key_code);
 
 	void load_nodes(const json& json);

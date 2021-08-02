@@ -42,6 +42,14 @@ void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
     mem_manager.write_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle, view_vec);
 }
 
+void GameInformationhandler::set_player_movement(const Movement& movement)
+{
+    mem_manager.write_memory<bool>(client_dll_address + Offsets::force_forward, movement.forward);
+    mem_manager.write_memory<bool>(client_dll_address + Offsets::force_backward, movement.backward);
+    mem_manager.write_memory<bool>(client_dll_address + Offsets::force_left, movement.left);
+    mem_manager.write_memory<bool>(client_dll_address + Offsets::force_right, movement.right);
+}
+
 std::shared_ptr<PlayerInformation> GameInformationhandler::get_closest_enemy(const GameInformation& game_info)
 {
     std::shared_ptr<PlayerInformation> closest_enemy = nullptr;
@@ -69,6 +77,7 @@ ControlledPlayer GameInformationhandler::read_controlled_player_information(DWOR
     dest.health = mem_manager.read_memory<int>(player_address + Offsets::player_health_offset);
     dest.team = mem_manager.read_memory<int>(player_address + Offsets::team_offset);
     dest.head_position = get_head_bone_position(player_address);
+    dest.movement = read_controlled_player_movement(player_address);
 
     return dest;
 }
@@ -94,6 +103,18 @@ std::vector<PlayerInformation> GameInformationhandler::read_other_players(DWORD 
     }
 
     return other_players;
+}
+
+Movement GameInformationhandler::read_controlled_player_movement(DWORD player_address)
+{
+    Movement return_value;
+
+    return_value.forward = mem_manager.read_memory<bool>(client_dll_address + Offsets::force_forward);
+    return_value.backward = mem_manager.read_memory<bool>(client_dll_address + Offsets::force_backward);
+    return_value.left = mem_manager.read_memory<bool>(client_dll_address + Offsets::force_left);
+    return_value.right = mem_manager.read_memory<bool>(client_dll_address + Offsets::force_right);
+
+    return return_value;
 }
 
 Vec3D<float> GameInformationhandler::get_head_bone_position(DWORD entity)

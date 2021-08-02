@@ -33,8 +33,11 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	if (!player_locked_node)
 		player_locked_node = current_player_node;
 
-	if (current_route.size() > 0)
-		walk_to_node(game_info, current_closest_enemy_node);
+	if (current_route.size() > 0) 
+	{
+		Movement move = calculate_move_info(game_info, current_closest_enemy_node);
+		game_info_handler->set_player_movement(move);
+	}
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -57,14 +60,14 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 	return true;
 }
 
-void MovementStrategy::walk_to_node(const GameInformation& game_info, const std::shared_ptr<Node> node)
+Movement MovementStrategy::calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node)
 {
 	if (!game_info.closest_enemy_player)
-		return;
+		return Movement{};
 
 	float position_angle = calc_angle_between_two_positions(game_info.controlled_player.head_position, game_info.closest_enemy_player->head_position);
 	float walk_angle = calc_walk_angle(game_info.controlled_player.view_vec.y, position_angle);
-	interprete_walking_angle(walk_angle);
+	return get_movement_from_walking_angle(walk_angle);
 }
 
 float MovementStrategy::calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const
@@ -82,19 +85,51 @@ float MovementStrategy::calc_walk_angle(float view_angle, float position_angle) 
 	return new_angle;
 }
 
-void MovementStrategy::interprete_walking_angle(float walking_angle)
+Movement MovementStrategy::get_movement_from_walking_angle(float walking_angle) const
 {
+	Movement new_movement;
+
 	if ((walking_angle > 360) || (walking_angle < 0))
-		return;
+		return new_movement;
 
 	if ((walking_angle > 337.5) || (walking_angle <= 22.5))
 	{
-		movement_keys.push_back(0x57);
+		new_movement.forward = true;
 	}
 	if ((walking_angle > 22.5) && (walking_angle <= 67.5))
 	{
+		new_movement.forward = true;
+		new_movement.left = true;
 	}
-	//TODO: find a way to make the player move
+	if ((walking_angle > 67.5) && (walking_angle <= 112.5))
+	{
+		new_movement.left = true;
+	}
+	if ((walking_angle > 112.5) && (walking_angle <= 157.5))
+	{
+		new_movement.left = true;
+		new_movement.backward = true;
+	}
+	if ((walking_angle > 157.5) && (walking_angle <= 202.5))
+	{
+		new_movement.backward = true;
+	}
+	if ((walking_angle > 202.5) && (walking_angle <= 247.5)) 
+	{
+		new_movement.backward = true;
+		new_movement.right = true;
+	}
+	if ((walking_angle > 247.5) && (walking_angle <= 292.5))
+	{
+		new_movement.right = true;
+	}
+	if ((walking_angle > 292.5) && (walking_angle <= 337.5)) 
+	{
+		new_movement.right = true;
+		new_movement.forward = true;
+	}
+
+	return new_movement;
 }
 
 void MovementStrategy::press_key_down(DWORD key_code)
