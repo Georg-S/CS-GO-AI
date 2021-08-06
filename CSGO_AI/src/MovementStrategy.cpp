@@ -16,16 +16,22 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	if (current_closest_enemy_node != closest_enemy_locked_node)
 	{
 		current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
-		// system("cls");
-		// print_current_route();
+		if (debug_print_route) 
+		{
+			system("cls");		//TODO not use system
+			print_current_route();
+		}
 	}
 	else if (current_player_node != player_locked_node)
 	{
 		if ((current_route.size() > 0) && (current_route[0] != current_player_node))
 		{
 			current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
-			// system("cls");
-			// print_current_route();
+			if (debug_print_route)
+			{
+				system("cls");		//TODO not use system
+				print_current_route();
+			}
 		}
 	}
 
@@ -58,6 +64,11 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 		return false;
 	}
 	return true;
+}
+
+void MovementStrategy::set_debug_print_route(bool value)
+{
+	this->debug_print_route = value;
 }
 
 Movement MovementStrategy::calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node)

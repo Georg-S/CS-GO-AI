@@ -56,6 +56,7 @@ class MovementStrategy
 public:
 	void update(GameInformationhandler* game_info_handler);
 	bool load_in_navmesh(const std::string& filename);
+	void set_debug_print_route(bool value);
 
 private:
 	std::shared_ptr<Node> get_node_by_id(int id) const;
@@ -80,6 +81,7 @@ private:
 	std::vector<std::shared_ptr<Node>> current_route;
 	std::vector<DWORD> movement_keys;
 
+	bool debug_print_route = true;
 	const DWORD w_key_code = 0x57;
 	const DWORD s_key_code = 0x53;
 	const DWORD probably_a_key_code = 0x41;
