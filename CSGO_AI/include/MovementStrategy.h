@@ -77,7 +77,7 @@ private:
 	json navmesh_json;
 	std::vector<std::shared_ptr<Node>> nodes;
 	std::shared_ptr<Node> player_locked_node = nullptr;
-	std::shared_ptr<Node> closest_enemy_locked_node = nullptr;
+	std::shared_ptr<Node> next_node = nullptr;
 	std::vector<std::shared_ptr<Node>> current_route;
 	std::vector<DWORD> movement_keys;
 

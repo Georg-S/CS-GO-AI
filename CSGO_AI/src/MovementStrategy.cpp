@@ -4,8 +4,19 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	GameInformation game_info = game_info_handler->get_game_information();
 
-	if (!game_info.closest_enemy_player)
+	if (!game_info.closest_enemy_player) 
+	{
+		player_locked_node = nullptr;
+		next_node = nullptr;
 		return;
+	}
+
+	if (!game_info.controlled_player.health) 
+	{
+		player_locked_node = nullptr;
+		next_node = nullptr;
+		return;
+	}
 
 	auto current_player_node = get_closest_node_to_position(game_info.controlled_player.head_position);
 	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->head_position);
@@ -13,36 +24,28 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	if (!current_player_node || !current_closest_enemy_node)
 		return;
 
-	if (current_closest_enemy_node != closest_enemy_locked_node)
+	if (player_locked_node == nullptr && next_node == nullptr) 
 	{
-		current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
-		if (debug_print_route) 
-		{
-			system("cls");		//TODO not use system
-			print_current_route();
-		}
-	}
-	else if (current_player_node != player_locked_node)
-	{
-		if ((current_route.size() > 0) && (current_route[0] != current_player_node))
-		{
-			current_route = calculate_new_route(current_player_node, current_closest_enemy_node);
-			if (debug_print_route)
-			{
-				system("cls");		//TODO not use system
-				print_current_route();
-			}
-		}
+		next_node = current_player_node;
 	}
 
-	closest_enemy_locked_node = current_closest_enemy_node;
-	if (!player_locked_node)
-		player_locked_node = current_player_node;
+	auto distance = next_node->position.distance(game_info.controlled_player.head_position);
+	if ( distance <= 100)
+	{
+		current_route = calculate_new_route(next_node, current_closest_enemy_node);
+		if (current_route.size() > 1)
+			next_node = current_route[1];
+	}
+
+	if (next_node) 
+	{
+		Movement move = calculate_move_info(game_info, next_node);
+		game_info_handler->set_player_movement(move);
+	}
 
 	if (current_route.size() > 0) 
 	{
-		Movement move = calculate_move_info(game_info, current_closest_enemy_node);
-		game_info_handler->set_player_movement(move);
+		print_current_route();
 	}
 }
 
@@ -76,7 +79,7 @@ Movement MovementStrategy::calculate_move_info(const GameInformation& game_info,
 	if (!game_info.closest_enemy_player)
 		return Movement{};
 
-	float position_angle = calc_angle_between_two_positions(game_info.controlled_player.head_position, game_info.closest_enemy_player->head_position);
+	float position_angle = calc_angle_between_two_positions(game_info.controlled_player.head_position, node->position);
 	float walk_angle = calc_walk_angle(game_info.controlled_player.view_vec.y, position_angle);
 	return get_movement_from_walking_angle(walk_angle);
 }
