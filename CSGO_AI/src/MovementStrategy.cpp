@@ -6,28 +6,33 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 
 	if (!game_info.closest_enemy_player) 
 	{
-		player_locked_node = nullptr;
 		next_node = nullptr;
 		return;
 	}
 
 	if (!game_info.controlled_player.health) 
 	{
-		player_locked_node = nullptr;
 		next_node = nullptr;
 		return;
+	}
+
+	if (game_info.player_in_crosshair) 
+	{
+		if (game_info.player_in_crosshair->team != game_info.controlled_player.team) 
+		{
+			game_info_handler->set_player_movement(Movement{});
+			return;
+		}
 	}
 
 	auto current_player_node = get_closest_node_to_position(game_info.controlled_player.head_position);
 	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->head_position);
 
-	if (!current_player_node || !current_closest_enemy_node)
+	if (!current_closest_enemy_node)
 		return;
 
-	if (player_locked_node == nullptr && next_node == nullptr) 
-	{
+	if (next_node == nullptr) 
 		next_node = current_player_node;
-	}
 
 	auto distance = next_node->position.distance(game_info.controlled_player.head_position);
 	if ( distance <= 100)
