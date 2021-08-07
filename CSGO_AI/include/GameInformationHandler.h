@@ -18,6 +18,7 @@ struct Movement
 struct ControlledPlayer 
 {
 	Vec2D<float> view_vec;
+	Vec3D<float> position;
 	Vec3D<float> head_position;
 	Movement movement;
 	int team;
@@ -26,6 +27,7 @@ struct ControlledPlayer
 
 struct PlayerInformation 
 {
+	Vec3D<float> position;
 	Vec3D<float> head_position;
 	int team;
 	int health;

@@ -76,6 +76,7 @@ ControlledPlayer GameInformationhandler::read_controlled_player_information(DWOR
     dest.view_vec = mem_manager.read_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle);
     dest.health = mem_manager.read_memory<int>(player_address + Offsets::player_health_offset);
     dest.team = mem_manager.read_memory<int>(player_address + Offsets::team_offset);
+    dest.position = mem_manager.read_memory<Vec3D<float>>(player_address + Offsets::position);
     dest.head_position = get_head_bone_position(player_address);
     dest.movement = read_controlled_player_movement(player_address);
 
@@ -96,6 +97,7 @@ std::vector<PlayerInformation> GameInformationhandler::read_other_players(DWORD 
             continue;
 
         PlayerInformation ent;
+        ent.position = mem_manager.read_memory<Vec3D<float>>(entity_address + Offsets::position);
         ent.head_position = get_head_bone_position(entity_address);
         ent.health = mem_manager.read_memory<DWORD>(entity_address + Offsets::player_health_offset);
         ent.team = mem_manager.read_memory<int>(entity_address + Offsets::team_offset);
@@ -146,6 +148,7 @@ std::shared_ptr<PlayerInformation> GameInformationhandler::read_player_in_crossh
         client_dll_address + Offsets::entity_list_start_offset + ((cross_hair_ID - 1) * Offsets::entity_listelement_size));
     player_info->health = mem_manager.read_memory<int>(enemy_in_crosshair_address + Offsets::player_health_offset);
     player_info->team = mem_manager.read_memory<int>(enemy_in_crosshair_address + Offsets::team_offset);
+    player_info->position = mem_manager.read_memory<Vec3D<float>>(enemy_in_crosshair_address + Offsets::position);
     player_info->head_position = get_head_bone_position(enemy_in_crosshair_address);
 
     return player_info;

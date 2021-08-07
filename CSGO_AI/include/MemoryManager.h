@@ -46,5 +46,5 @@ public:
 
 private:
 	HANDLE process = NULL;
-	static constexpr bool debug_print = true;
+	static constexpr bool debug_print = false;
 };

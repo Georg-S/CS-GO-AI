@@ -22,16 +22,14 @@ bool NavmeshPoints::init()
 		return false;
 	}
 
-	if (!mem_manager.attach_to_process(config.windowname.c_str()))
+	this->game_info_handler = std::make_unique<GameInformationhandler>();
+	if (!this->game_info_handler->init(config))
 	{
-		std::cout << "Couldn't find process: Quiting " << std::endl;
-		std::cout << "Make Sure CS-GO is open " << std::endl;
+		std::cout << "Error getting dll address " << std::endl;
 		return false;
 	}
 
-	client_dll_address = mem_manager.get_module_address(config.client_dll_name.c_str());
-	engine_address = mem_manager.get_module_address(config.engine_dll_name.c_str());
-	return client_dll_address != NULL && engine_address != NULL;
+	return true;
 }
 
 void NavmeshPoints::run()
@@ -40,11 +38,13 @@ void NavmeshPoints::run()
 	{
 		close_button.update();
 		save_button.update();
-		auto position = get_current_position();
+		game_info_handler->update_game_information();
+		auto game_info = game_info_handler->get_game_information();
+		auto position = game_info.controlled_player.position;
 
 		if (save_button.was_clicked()) 
 		{
-			put_vec3d_in_vec(position);
+			points.push_back(position);
 			position.print();
 		}
 	}
@@ -54,7 +54,7 @@ void NavmeshPoints::run()
 void NavmeshPoints::save_to_file()
 {
 	std::ofstream my_file;
-	my_file.open("navmesh.json");
+	my_file.open("nav_points.json");
 	json nav_json = json::parse(R"({"nodes" : []})");
 
 	for (unsigned int i = 0; i < this->points.size(); i++) 
@@ -68,24 +68,6 @@ void NavmeshPoints::save_to_file()
 	my_file << nav_json;
 
 	my_file.close();
-}
-
-Vec3D<float> NavmeshPoints::get_current_position()
-{
-	DWORD engine_client_state_address = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
-	DWORD player_address = mem_manager.read_memory<DWORD>(client_dll_address + Offsets::local_player_offset);
-
-	auto player_position = mem_manager.read_memory<Vec3D<float>>(player_address + Offsets::position);
-	auto buf = mem_manager.read_memory<Vec3D<float>>(engine_client_state_address + Offsets::position);
-
-	return player_position;
-}
-
-void NavmeshPoints::put_vec3d_in_vec(const Vec3D<float>& vec)
-{
-	static int count = 0;
-	this->points.push_back(vec);
-	count++;
 }
 
 template<typename T>

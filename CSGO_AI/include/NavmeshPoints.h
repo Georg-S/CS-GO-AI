@@ -18,8 +18,6 @@ public:
 	NavmeshPoints();
 	bool init();
 	void run();
-	Vec3D<float> get_current_position();
-	void put_vec3d_in_vec(const Vec3D<float>& vec);
 
 private:
 	template <typename T>
@@ -34,5 +32,5 @@ private:
 	DWORD client_dll_address;
 	DWORD engine_address;
 	std::vector<Vec3D<float>> points;
-	std::unique_ptr<GameInformationhandler> gameInfoHandler = nullptr;
+	std::unique_ptr<GameInformationhandler> game_info_handler = nullptr;
 };
