@@ -4,13 +4,7 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	GameInformation game_info = game_info_handler->get_game_information();
 
-	if (!game_info.closest_enemy_player) 
-	{
-		next_node = nullptr;
-		return;
-	}
-
-	if (!game_info.controlled_player.health) 
+	if (!game_info.closest_enemy_player || !game_info.controlled_player.health)
 	{
 		next_node = nullptr;
 		return;
@@ -19,7 +13,6 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	auto current_time = std::chrono::system_clock::now();
 	auto current_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time).time_since_epoch().count();
 	constexpr int delay_in_ms = 500;
-
 
 	if (current_time_ms < delay_time)
 	{
@@ -36,15 +29,12 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 			return;
 		}
 	}
+
 	Vec3D<float> player_pos = game_info.controlled_player.position;
-	auto current_player_node = get_closest_node_to_position(player_pos);
 	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->position);
 
-	if (!current_closest_enemy_node)
-		return;
-
 	if (next_node == nullptr) 
-		next_node = current_player_node;
+		next_node = get_closest_node_to_position(player_pos);
 
 	auto distance = next_node->position.distance(player_pos);
 	if ( distance <= 15)

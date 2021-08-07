@@ -78,7 +78,7 @@ private:
 	std::shared_ptr<Node> next_node = nullptr;
 	std::vector<std::shared_ptr<Node>> current_route;
 	std::vector<DWORD> movement_keys;
-	double delay_time = 0;
+	long long delay_time = 0;
 
 	bool debug_print_route = false;
 	const DWORD w_key_code = 0x57;
