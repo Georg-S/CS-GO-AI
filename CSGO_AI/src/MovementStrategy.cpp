@@ -16,17 +16,29 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		return;
 	}
 
+	auto current_time = std::chrono::system_clock::now();
+	auto current_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time).time_since_epoch().count();
+	constexpr int delay_in_ms = 500;
+
+
+	if (current_time_ms < delay_time)
+	{
+		game_info_handler->set_player_movement(Movement{});
+		return;
+	}
+
 	if (game_info.player_in_crosshair) 
 	{
 		if (game_info.player_in_crosshair->team != game_info.controlled_player.team) 
 		{
 			game_info_handler->set_player_movement(Movement{});
+			delay_time = current_time_ms + delay_in_ms;
 			return;
 		}
 	}
-
-	auto current_player_node = get_closest_node_to_position(game_info.controlled_player.head_position);
-	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->head_position);
+	Vec3D<float> player_pos = game_info.controlled_player.position;
+	auto current_player_node = get_closest_node_to_position(player_pos);
+	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->position);
 
 	if (!current_closest_enemy_node)
 		return;
@@ -34,8 +46,8 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	if (next_node == nullptr) 
 		next_node = current_player_node;
 
-	auto distance = next_node->position.distance(game_info.controlled_player.head_position);
-	if ( distance <= 100)
+	auto distance = next_node->position.distance(player_pos);
+	if ( distance <= 15)
 	{
 		current_route = calculate_new_route(next_node, current_closest_enemy_node);
 		if (current_route.size() > 1)
@@ -48,10 +60,8 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		game_info_handler->set_player_movement(move);
 	}
 
-	if (current_route.size() > 0) 
-	{
+	if(debug_print_route)
 		print_current_route();
-	}
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -149,29 +159,6 @@ Movement MovementStrategy::get_movement_from_walking_angle(float walking_angle) 
 	}
 
 	return new_movement;
-}
-
-void MovementStrategy::press_key_down(DWORD key_code)
-{
-	//Not working 1
-	//keybd_event(key_code, 0, KEYEVENT_KEYDOWN, 0);
-
-
-	//Not working 2
-	/*
-	INPUT input; // INPUT structure
-	memset(&input, 0, sizeof(input));
-
-	// fill it out for keyboard key presses...
-	input.type = INPUT_KEYBOARD;
-	input.ki.wVk = VkKeyScanA('w');
-//	input.ki.wVk = VK_ESCAPE;
-
-	Sleep(1000);
-	SendInput(1, &input, sizeof(INPUT)); // 3rd param is size of an INPUT structure
-	input.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &input, sizeof(INPUT));
-	*/
 }
 
 void MovementStrategy::load_nodes(const json& json)

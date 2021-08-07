@@ -139,7 +139,7 @@ std::shared_ptr<PlayerInformation> GameInformationhandler::read_player_in_crossh
 {
     int cross_hair_ID = mem_manager.read_memory<int>(player_address + Offsets::crosshair_offset);
 
-    if (cross_hair_ID <= 0 || cross_hair_ID > 300)
+    if (cross_hair_ID <= 0 || cross_hair_ID > 100)
         return nullptr;
 
     auto player_info = std::make_shared<PlayerInformation>();

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <Windows.h>
+#include <chrono>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Vec3D.h"
@@ -66,8 +67,6 @@ private:
 	float calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const;
 	float calc_walk_angle(float view_angle, float position_angle) const;
 	Movement get_movement_from_walking_angle(float walking_angle) const;
-	void press_key_down(DWORD key_code);
-
 	void load_nodes(const json& json);
 	void load_edges(const json& json);
 	std::shared_ptr<Node> get_closest_node_to_position(const Vec3D<float>& position);
@@ -79,8 +78,9 @@ private:
 	std::shared_ptr<Node> next_node = nullptr;
 	std::vector<std::shared_ptr<Node>> current_route;
 	std::vector<DWORD> movement_keys;
+	double delay_time = 0;
 
-	bool debug_print_route = true;
+	bool debug_print_route = false;
 	const DWORD w_key_code = 0x57;
 	const DWORD s_key_code = 0x53;
 	const DWORD probably_a_key_code = 0x41;

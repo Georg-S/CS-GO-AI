@@ -12,7 +12,6 @@ struct ConfigData
 	DWORD trigger_button = 0;
 };
 
-
 class ConfigReader 
 {
 public:
