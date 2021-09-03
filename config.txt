@@ -1,5 +1,0 @@
-client Dll Name = "client.dll"
-engine Dll Name = "engine.dll"
-windowName = "Counter-Strike: Global Offensive"
-triggerButton = "0x4F"   // o
-delay = "100"

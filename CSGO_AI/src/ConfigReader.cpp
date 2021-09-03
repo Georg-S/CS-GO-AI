@@ -1,18 +1,23 @@
 #include "ConfigReader.h"
 
-bool ConfigReader::read_in_config_data(ConfigData& destination)
+bool ConfigReader::read_in_config_data(ConfigData& destination, const std::string& file_name)
 {
-	static constexpr int DEC = 10;
-	static constexpr int HEX = 16;
+	try
+	{
+		std::ifstream ifs(file_name);
+		auto config_json = json::parse(ifs);
 
-	destination.windowname = FileReader::read_value_of_string_in_file("config.txt", "windowName");
-	destination.client_dll_name = FileReader::read_value_of_string_in_file("config.txt", "client Dll Name");
-	destination.engine_dll_name = FileReader::read_value_of_string_in_file("config.txt", "engine Dll Name");
-	destination.delay = stol(FileReader::read_value_of_string_in_file("config.txt", "delay"), NULL, DEC);
-	destination.trigger_button = stol(FileReader::read_value_of_string_in_file("config.txt", "triggerButton"), NULL, HEX);
-
-	if (destination.windowname == "" || destination.client_dll_name == "" || destination.trigger_button == 0)
+		destination.client_dll_name = config_json["client_dll_name"];
+		destination.engine_dll_name = config_json["engine_dll_name"];
+		destination.windowname = config_json["window_name"];
+		destination.trigger_button = (DWORD)config_json["trigger_button"];
+		destination.delay = (int)config_json["delay"];
+	}
+	catch (std::exception const& e)
+	{
+		std::cout << e.what() << std::endl;
 		return false;
+	}
 
 	return true;
 }

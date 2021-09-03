@@ -1,0 +1,7 @@
+{
+  "client_dll_name": "client.dll",
+  "engine_dll_name": "engine.dll",
+  "window_name": "Counter-Strike: Global Offensive",
+  "trigger_button": 79,
+  "delay":  100
+}

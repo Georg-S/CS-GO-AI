@@ -10,7 +10,7 @@ NavmeshPoints::NavmeshPoints()
 
 bool NavmeshPoints::init()
 {
-	if (!ConfigReader::read_in_config_data(config))
+	if (!ConfigReader::read_in_config_data(config, "config.json"))
 	{
 		std::cout << "Loading config failed, check config file" << std::endl;
 		return false;

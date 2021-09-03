@@ -2,6 +2,9 @@
 #include <string>
 #include <wtypes.h>
 #include "FileReader.h"
+#include "json.hpp"
+
+using nlohmann::json;
 
 struct ConfigData
 {
@@ -15,5 +18,5 @@ struct ConfigData
 class ConfigReader 
 {
 public:
-	static bool read_in_config_data(ConfigData& destination);
+	static bool read_in_config_data(ConfigData& destination, const std::string& file_name);
 };
