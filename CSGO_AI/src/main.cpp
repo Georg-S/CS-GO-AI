@@ -1,13 +1,13 @@
 #pragma once
+#include <QApplication>
+#include <utility>
+#include "MainWindow.h"
 #include "CSGOAI.h"
 
-
-int main()
+int main(int argc, char* argv[])
 {
-	CSGOAi ai{};
-
-	if (ai.init())
-		ai.run();
-
-	return 0;
+	QApplication app(argc, argv);
+	MainWindow w;
+	w.show();
+	return app.exec();
 }

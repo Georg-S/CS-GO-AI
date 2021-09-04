@@ -20,14 +20,15 @@ public:
 	template <typename type>
 	type read_memory(DWORD address, bool* success = nullptr)
 	{
-		type result;
-		if (!ReadProcessMemory(process, (LPVOID)address, &result, sizeof(type), NULL) && debug_print) 
+		type result{};
+		if (!ReadProcessMemory(process, (LPVOID)address, &result, sizeof(type), NULL)) 
 		{
 			if (success != nullptr)
 				*success = false;
-			std::cout << "Error Reading Memory Error Code: " << GetLastError() << std::endl;
+			if(debug_print)
+				std::cout << "Error Reading Memory Error Code: " << GetLastError() << std::endl;
 		}
-		if (success != nullptr)
+		else if (success != nullptr)
 			*success = false;
 
 		return result;
