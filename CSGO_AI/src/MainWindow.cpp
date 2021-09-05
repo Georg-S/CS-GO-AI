@@ -247,6 +247,11 @@ void MainWindow::on_button_add_point_clicked()
 	csgo_runner->add_point();
 }
 
+void MainWindow::on_button_reattach_2_clicked()
+{
+	attach_to_process();
+}
+
 void MainWindow::print_newest_point()
 {
 	Vec3D<float> buf = csgo_runner->get_latest_point();

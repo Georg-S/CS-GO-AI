@@ -75,4 +75,5 @@ private slots:
     void on_tabWidget_currentChanged(int index);
     void on_button_save_points_clicked();
     void on_button_add_point_clicked();
+    void on_button_reattach_2_clicked();
 };
