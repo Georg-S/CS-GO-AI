@@ -85,7 +85,7 @@ void NavmeshPoints::set_add_point_button(int key_code)
 	this->save_button.set_toggle_button(key_code);
 }
 
-void NavmeshPoints::save_to_file()
+bool NavmeshPoints::save_to_file()
 {
 	try
 	{
@@ -108,7 +108,9 @@ void NavmeshPoints::save_to_file()
 	catch (std::exception const& e)
 	{
 		std::cout << e.what() << std::endl;
+		return false;
 	}
+	return true;
 }
 
 Vec3D<float> NavmeshPoints::get_latest_point()

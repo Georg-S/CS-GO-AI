@@ -14,9 +14,9 @@ void CSGORunner::run()
 		{
 			mutex.lock();
 			bool new_point_added = csgo_navmesh_points_handler->update();
+			mutex.unlock();
 			if (new_point_added)
 				emit new_point();
-			mutex.unlock();
 		}
 		else
 		{
@@ -37,9 +37,11 @@ void CSGORunner::set_add_point_key(int key_code)
 	csgo_navmesh_points_handler->set_add_point_button(key_code);
 }
 
-void CSGORunner::save_navmesh_points()
+bool CSGORunner::save_navmesh_points()
 {
-	this->csgo_navmesh_points_handler->save_to_file();
+	mutex.lock();
+	return this->csgo_navmesh_points_handler->save_to_file();
+	mutex.unlock();
 }
 
 void CSGORunner::add_point()
@@ -219,6 +221,7 @@ void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
 
 	std::string buf = str.toStdString();
 	int key_code = get_key_code_from_char(buf.at(0));
+	csgoRunner->set_add_point_key(key_code);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -231,7 +234,10 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 void MainWindow::on_button_save_points_clicked()
 {
-	this->csgoRunner->save_navmesh_points();
+	if (this->csgoRunner->save_navmesh_points())
+		output_success("File successfully saved");
+	else
+		output_error("Error saving file");
 }
 
 void MainWindow::on_button_add_point_clicked()

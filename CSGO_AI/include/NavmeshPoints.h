@@ -22,7 +22,7 @@ public:
 	bool update();
 	void add_point();
 	void set_add_point_button(int key_code);
-	void save_to_file();
+	bool save_to_file();
 	Vec3D<float> get_latest_point();
 
 private:

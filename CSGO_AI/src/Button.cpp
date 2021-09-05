@@ -41,6 +41,7 @@ bool Button::is_key_down(unsigned short key_state) const
 void Button::set_toggle_button(int button)
 {
 	this->button = button;
+	update();
 }
 
 bool Button::was_clicked() const

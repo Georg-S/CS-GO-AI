@@ -20,7 +20,7 @@ public:
     CSGORunner(std::shared_ptr<CSGOAi> csgo_ai_handler);
     void set_run_navmesh_points(bool value);
     void set_add_point_key(int key_code);
-    void save_navmesh_points();
+    bool save_navmesh_points();
     void add_point();
     Vec3D<float> get_latest_point();
 
