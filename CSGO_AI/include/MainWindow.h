@@ -19,16 +19,13 @@ public:
     CSGORunner(std::shared_ptr<CSGOAi> csgo_ai_handler);
 
 public slots:
-    /// This is the method which runs in the thread.
     void run();
 signals:
-    /// A child process exited normally.
-    void exited(int ospid, int code);
     void finished();
 
 private:
     QMutex mutex;
-    bool isRunning = true;
+    bool is_running = true;
     std::shared_ptr<CSGOAi> csgo_ai_handler = nullptr;
 };
 
@@ -61,6 +58,8 @@ private slots:
     void on_checkBox_triggerbot_stateChanged();
     void on_button_reload_files_clicked();
     void on_button_reattach_clicked();
+    void on_lineEdit_keycode_textChanged(const QString& str);
+    void on_tabWidget_currentChanged(int index);
 
 signals:
     void stopped();

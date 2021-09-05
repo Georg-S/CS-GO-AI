@@ -17,7 +17,7 @@ class NavmeshPoints
 public:
 	NavmeshPoints();
 	bool init();
-	void run();
+	void console_run();
 
 private:
 	template <typename T>

@@ -31,12 +31,18 @@ void MainWindow::output_error(const QString& string)
 {
 	ui->textEdit_output->setTextColor(Qt::red);
 	ui->textEdit_output->append(string);
+
+	ui->textEdit_point_output->setTextColor(Qt::red);
+	ui->textEdit_point_output->append(string);
 }
 
 void MainWindow::output_success(const QString& string)
 {
 	ui->textEdit_output->setTextColor(Qt::green);
 	ui->textEdit_output->append(string);
+
+	ui->textEdit_point_output->setTextColor(Qt::green);
+	ui->textEdit_point_output->append(string);
 }
 
 void MainWindow::init_csgo_ai()
@@ -142,10 +148,34 @@ void MainWindow::on_button_reattach_clicked()
 	attach_to_process();
 }
 
+void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
+{
+	if (str.size() == 0)
+		return;
+
+	auto get_key_code_from_char = [](char c)
+	{
+		HKL currentKBL = GetKeyboardLayout(0);
+		return VkKeyScanExA(c, currentKBL);
+	};
+
+	std::string buf = str.toStdString();
+	int key_code = get_key_code_from_char(buf.at(0));
+}
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+
+
+	output_success(QString(index));
+}
+
 void CSGORunner::run()
 {
-	while (isRunning)
+	while (is_running) 
+	{
 		csgo_ai_handler->update();
+	}
 
 	deleteLater();
 }

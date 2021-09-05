@@ -24,7 +24,7 @@ public:
 	CSGOAi();
 	bool init();
 	void update();
-	void run();
+	void console_run();
 	bool load_config(const std::string& file_name);
 	bool load_offsets(const std::string& file_name);
 	bool load_navmesh(const std::string& file_name);

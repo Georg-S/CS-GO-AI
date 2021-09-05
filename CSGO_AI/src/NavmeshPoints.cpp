@@ -32,7 +32,7 @@ bool NavmeshPoints::init()
 	return true;
 }
 
-void NavmeshPoints::run()
+void NavmeshPoints::console_run()
 {
 	while (!close_button.was_clicked())
 	{

@@ -6,7 +6,7 @@ int main()
 	NavmeshPoints program = NavmeshPoints();
 
 	if (program.init())
-		program.run();
+		program.console_run();
 
 	return 0;
 }

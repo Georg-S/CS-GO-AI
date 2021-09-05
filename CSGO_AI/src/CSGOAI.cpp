@@ -79,7 +79,7 @@ void CSGOAi::update()
 		this->movement_strategy.update(game_info_handler.get());
 }
 
-void CSGOAi::run()
+void CSGOAi::console_run()
 {
 	while (true)
 	{
