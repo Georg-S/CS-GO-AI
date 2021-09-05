@@ -16,13 +16,18 @@ class NavmeshPoints
 {
 public:
 	NavmeshPoints();
+	NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler);
 	bool init();
 	void console_run();
+	bool update();
+	void add_point();
+	void set_add_point_button(int key_code);
+	void save_to_file();
+	Vec3D<float> get_latest_point();
 
 private:
 	template <typename T>
 	static std::string to_string_with_max_precision(const T& a_value);
-	void save_to_file();
 
 	Button save_button;
 	Button close_button;
@@ -32,5 +37,5 @@ private:
 	DWORD client_dll_address;
 	DWORD engine_address;
 	std::vector<Vec3D<float>> points;
-	std::unique_ptr<GameInformationhandler> game_info_handler = nullptr;
+	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
 };

@@ -27,6 +27,7 @@ void Button::update()
 	else 
 	{
 		was_previous_update_down = false;
+		new_click = false;
 	}
 }
 

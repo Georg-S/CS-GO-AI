@@ -3,7 +3,64 @@
 
 CSGORunner::CSGORunner(std::shared_ptr<CSGOAi> csgo_ai_handler) : QObject(nullptr), csgo_ai_handler(csgo_ai_handler)
 {
+	this->csgo_navmesh_points_handler = std::make_shared<NavmeshPoints>(csgo_ai_handler->get_game_info_handler());
 }
+
+void CSGORunner::run()
+{
+	while (is_running)
+	{
+		if (run_navmesh_points)
+		{
+			mutex.lock();
+			bool new_point_added = csgo_navmesh_points_handler->update();
+			if (new_point_added)
+				emit new_point();
+			mutex.unlock();
+		}
+		else
+		{
+			csgo_ai_handler->update();
+		}
+	}
+
+	deleteLater();
+}
+
+void CSGORunner::set_run_navmesh_points(bool value)
+{
+	this->run_navmesh_points = value;
+}
+
+void CSGORunner::set_add_point_key(int key_code)
+{
+	csgo_navmesh_points_handler->set_add_point_button(key_code);
+}
+
+void CSGORunner::save_navmesh_points()
+{
+	this->csgo_navmesh_points_handler->save_to_file();
+}
+
+void CSGORunner::add_point()
+{
+	mutex.lock();
+	csgo_navmesh_points_handler->add_point();
+	mutex.unlock();
+	emit new_point(); // emit outside of mutex, since we call it from the same thread 
+}
+
+Vec3D<float> CSGORunner::get_latest_point()
+{
+	mutex.lock();
+	auto result = csgo_navmesh_points_handler->get_latest_point();
+	mutex.unlock();
+
+	return result;
+}
+
+
+
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -15,6 +72,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	csgoRunner = new CSGORunner(csgo_ai_handler);
 	csgoRunner->moveToThread(csgo_runner_thread);
 
+	connect(csgoRunner, &CSGORunner::new_point, this, &MainWindow::print_newest_point);
 	connect(csgo_runner_thread, &QThread::started, csgoRunner, &CSGORunner::run);
 	connect(csgoRunner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);
 	connect(csgoRunner, &CSGORunner::finished, csgoRunner, &CSGORunner::deleteLater);
@@ -165,17 +223,26 @@ void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
+	constexpr int ai_tab = 0;
+	constexpr int point_tab = 1;
 
-
-	output_success(QString(index));
+	csgoRunner->set_run_navmesh_points(index == point_tab);
 }
 
-void CSGORunner::run()
+void MainWindow::on_button_save_points_clicked()
 {
-	while (is_running) 
-	{
-		csgo_ai_handler->update();
-	}
+	this->csgoRunner->save_navmesh_points();
+}
 
-	deleteLater();
+void MainWindow::on_button_add_point_clicked()
+{
+	csgoRunner->add_point();
+}
+
+void MainWindow::print_newest_point()
+{
+	Vec3D<float> buf = csgoRunner->get_latest_point();
+
+	ui->textEdit_point_output->setTextColor(Qt::black);
+	ui->textEdit_point_output->append("Point added: X: " + QString::number(buf.x) + " Y: " + QString::number(buf.y) + " Z: " + QString::number(buf.z));
 }

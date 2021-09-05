@@ -5,6 +5,11 @@ CSGOAi::CSGOAi()
 	this->game_info_handler = std::make_unique<GameInformationhandler>();
 }
 
+CSGOAi::CSGOAi(std::shared_ptr<GameInformationhandler> game_info_handler)
+{
+	this->game_info_handler = game_info_handler;
+}
+
 bool CSGOAi::init()
 {
 	if (!load_offsets("offsets.json"))
@@ -31,7 +36,6 @@ bool CSGOAi::init()
 		return false;
 	}
 
-	attached_to_process = true;
 	toggle_button.set_toggle_button(config.trigger_button);
 
 	return true;
@@ -55,8 +59,7 @@ bool CSGOAi::load_navmesh(const std::string& file_name)
 
 bool CSGOAi::attach_to_csgo_process()
 {
-	attached_to_process = this->game_info_handler->init(config);
-	return attached_to_process;
+	return this->game_info_handler->init(config);
 }
 
 void CSGOAi::set_activated_behavior(const ActivatedFeatures& behavior)
@@ -64,9 +67,14 @@ void CSGOAi::set_activated_behavior(const ActivatedFeatures& behavior)
 	this->activated_behavior = behavior;
 }
 
+std::shared_ptr<GameInformationhandler> CSGOAi::get_game_info_handler()
+{
+	return this->game_info_handler;
+}
+
 void CSGOAi::update()
 {
-	if (!this->attached_to_process)
+	if (!game_info_handler->is_attached_to_process())
 		return;
 
 	this->game_info_handler->update_game_information();

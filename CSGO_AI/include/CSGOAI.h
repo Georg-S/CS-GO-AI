@@ -22,6 +22,7 @@ class CSGOAi
 {
 public:
 	CSGOAi();
+	CSGOAi(std::shared_ptr<GameInformationhandler> game_info_handler);
 	bool init();
 	void update();
 	void console_run();
@@ -30,11 +31,11 @@ public:
 	bool load_navmesh(const std::string& file_name);
 	bool attach_to_csgo_process();
 	void set_activated_behavior(const ActivatedFeatures& behavior);
+	std::shared_ptr<GameInformationhandler> get_game_info_handler();
 
 private:
-	bool attached_to_process = false;
 	ConfigData config;
-	std::unique_ptr<GameInformationhandler> game_info_handler = nullptr;
+	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
 	Triggerbot triggerbot;
 	Aimbot aimbot;
 	MovementStrategy movement_strategy;

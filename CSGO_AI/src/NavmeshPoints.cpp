@@ -8,6 +8,11 @@ NavmeshPoints::NavmeshPoints()
 	mem_manager = MemoryManager();
 }
 
+NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler)
+{
+	this->game_info_handler = game_info_handler;
+}
+
 bool NavmeshPoints::init()
 {
 	if (!ConfigReader::read_in_config_data(config, "config.json"))
@@ -51,23 +56,67 @@ void NavmeshPoints::console_run()
 	save_to_file();
 }
 
+bool NavmeshPoints::update()
+{
+	if (!game_info_handler->is_attached_to_process())
+		return false;
+
+	save_button.update();
+
+	if (!save_button.was_clicked())
+		return false;
+
+	add_point();
+
+	return true;
+}
+
+void NavmeshPoints::add_point()
+{
+	game_info_handler->update_game_information();
+	auto game_info = game_info_handler->get_game_information();
+	auto position = game_info.controlled_player.position;
+
+	points.push_back(position);
+}
+
+void NavmeshPoints::set_add_point_button(int key_code)
+{
+	this->save_button.set_toggle_button(key_code);
+}
+
 void NavmeshPoints::save_to_file()
 {
-	std::ofstream my_file;
-	my_file.open("nav_points.json");
-	json nav_json = json::parse(R"({"nodes" : []})");
-
-	for (unsigned int i = 0; i < this->points.size(); i++) 
+	try
 	{
-		nav_json["nodes"][i]["x"] = this->points[i].x;
-		nav_json["nodes"][i]["y"] = this->points[i].y;
-		nav_json["nodes"][i]["z"] = this->points[i].z;
-		nav_json["nodes"][i]["id"] = i;
-		nav_json["nodes"][i]["corner"] = (i < 2);
-	}
-	my_file << nav_json;
+		std::ofstream my_file;
+		my_file.open("nav_points.json");
+		json nav_json = json::parse(R"({"nodes" : []})");
 
-	my_file.close();
+		for (unsigned int i = 0; i < this->points.size(); i++)
+		{
+			nav_json["nodes"][i]["x"] = this->points[i].x;
+			nav_json["nodes"][i]["y"] = this->points[i].y;
+			nav_json["nodes"][i]["z"] = this->points[i].z;
+			nav_json["nodes"][i]["id"] = i;
+			nav_json["nodes"][i]["corner"] = (i < 2);
+		}
+		my_file << nav_json;
+
+		my_file.close();
+	}
+	catch (std::exception const& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+}
+
+Vec3D<float> NavmeshPoints::get_latest_point()
+{
+	if (points.size() == 0)
+		return Vec3D<float>();
+	else
+		return points[points.size() - 1];
 }
 
 template<typename T>

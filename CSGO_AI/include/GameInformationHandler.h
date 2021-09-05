@@ -49,6 +49,7 @@ public:
 	void update_game_information();
 
 	GameInformation get_game_information() const;
+	bool is_attached_to_process()const;
 	void set_view_vec(const Vec2D<float>& view_vec);
 	void set_player_movement(const Movement& movement);
 
@@ -60,6 +61,7 @@ private:
 	std::shared_ptr<PlayerInformation> read_player_in_crosshair(DWORD player_address);
 	std::shared_ptr<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
 
+	bool attached_to_process = false;
 	GameInformation game_information;
 	ConfigData config_data;
 	MemoryManager mem_manager;

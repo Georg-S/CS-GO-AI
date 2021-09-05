@@ -13,7 +13,9 @@ bool GameInformationhandler::init(const ConfigData& config)
     client_dll_address = mem_manager.get_module_address(config.client_dll_name.c_str());
     engine_address = mem_manager.get_module_address(config.engine_dll_name.c_str());
 
-    return (client_dll_address != NULL) && (engine_address != NULL);
+    this->attached_to_process = (client_dll_address != NULL) && (engine_address != NULL);
+
+    return this->attached_to_process;
 }
 
 void GameInformationhandler::update_game_information()
@@ -30,6 +32,11 @@ void GameInformationhandler::update_game_information()
 GameInformation GameInformationhandler::get_game_information() const
 {
     return game_information;
+}
+
+bool GameInformationhandler::is_attached_to_process() const
+{
+    return this->attached_to_process;
 }
 
 void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
