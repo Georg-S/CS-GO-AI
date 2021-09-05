@@ -57,7 +57,7 @@ private:
 
     Ui::MainWindow* ui;
     QThread* csgo_runner_thread = nullptr;
-    CSGORunner* csgoRunner = nullptr;
+    CSGORunner* csgo_runner = nullptr;
     std::shared_ptr<CSGOAi> csgo_ai_handler = nullptr;
 
 signals:

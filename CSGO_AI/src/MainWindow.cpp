@@ -40,8 +40,10 @@ void CSGORunner::set_add_point_key(int key_code)
 bool CSGORunner::save_navmesh_points()
 {
 	mutex.lock();
-	return this->csgo_navmesh_points_handler->save_to_file();
+	bool success = this->csgo_navmesh_points_handler->save_to_file();
 	mutex.unlock();
+
+	return success;
 }
 
 void CSGORunner::add_point()
@@ -71,13 +73,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	init_csgo_ai();
 
 	csgo_runner_thread = new QThread();
-	csgoRunner = new CSGORunner(csgo_ai_handler);
-	csgoRunner->moveToThread(csgo_runner_thread);
+	csgo_runner = new CSGORunner(csgo_ai_handler);
+	csgo_runner->moveToThread(csgo_runner_thread);
 
-	connect(csgoRunner, &CSGORunner::new_point, this, &MainWindow::print_newest_point);
-	connect(csgo_runner_thread, &QThread::started, csgoRunner, &CSGORunner::run);
-	connect(csgoRunner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);
-	connect(csgoRunner, &CSGORunner::finished, csgoRunner, &CSGORunner::deleteLater);
+	connect(csgo_runner, &CSGORunner::new_point, this, &MainWindow::print_newest_point);
+	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CSGORunner::run);
+	connect(csgo_runner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);
+	connect(csgo_runner, &CSGORunner::finished, csgo_runner, &CSGORunner::deleteLater);
 	connect(csgo_runner_thread, &QThread::finished, csgo_runner_thread, &QThread::deleteLater);
 	csgo_runner_thread->start();
 }
@@ -221,7 +223,7 @@ void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
 
 	std::string buf = str.toStdString();
 	int key_code = get_key_code_from_char(buf.at(0));
-	csgoRunner->set_add_point_key(key_code);
+	csgo_runner->set_add_point_key(key_code);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -229,12 +231,12 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	constexpr int ai_tab = 0;
 	constexpr int point_tab = 1;
 
-	csgoRunner->set_run_navmesh_points(index == point_tab);
+	csgo_runner->set_run_navmesh_points(index == point_tab);
 }
 
 void MainWindow::on_button_save_points_clicked()
 {
-	if (this->csgoRunner->save_navmesh_points())
+	if (this->csgo_runner->save_navmesh_points())
 		output_success("File successfully saved");
 	else
 		output_error("Error saving file");
@@ -242,12 +244,12 @@ void MainWindow::on_button_save_points_clicked()
 
 void MainWindow::on_button_add_point_clicked()
 {
-	csgoRunner->add_point();
+	csgo_runner->add_point();
 }
 
 void MainWindow::print_newest_point()
 {
-	Vec3D<float> buf = csgoRunner->get_latest_point();
+	Vec3D<float> buf = csgo_runner->get_latest_point();
 
 	ui->textEdit_point_output->setTextColor(Qt::black);
 	ui->textEdit_point_output->append("Point added: X: " + QString::number(buf.x) + " Y: " + QString::number(buf.y) + " Z: " + QString::number(buf.z));
