@@ -39,6 +39,7 @@ struct GameInformation
 	std::shared_ptr<PlayerInformation> player_in_crosshair = nullptr;
 	std::vector<PlayerInformation> other_players;
 	std::shared_ptr<PlayerInformation> closest_enemy_player = nullptr;
+	char current_map[64] = "";
 };
 
 class GameInformationhandler
@@ -60,6 +61,7 @@ private:
 	Vec3D<float> get_head_bone_position(DWORD entity);
 	std::shared_ptr<PlayerInformation> read_player_in_crosshair(DWORD player_address);
 	std::shared_ptr<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
+	void read_in_current_map(DWORD engine_client_state_address, char* buffer, DWORD buffer_size);
 
 	bool attached_to_process = false;
 	GameInformation game_information;

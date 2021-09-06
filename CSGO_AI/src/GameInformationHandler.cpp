@@ -21,12 +21,13 @@ bool GameInformationhandler::init(const ConfigData& config)
 void GameInformationhandler::update_game_information()
 {
     DWORD player_address = mem_manager.read_memory<DWORD>(client_dll_address + Offsets::local_player_offset);
-    DWORD engine_client_state = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
+    DWORD engine_client_state = mem_manager.read_memory<DWORD>(engine_address + Offsets::client_state);
 
     game_information.controlled_player = read_controlled_player_information(player_address, engine_client_state);
     game_information.player_in_crosshair = read_player_in_crosshair(player_address);
     game_information.other_players = read_other_players(player_address, engine_client_state);
     game_information.closest_enemy_player = get_closest_enemy(game_information);
+    read_in_current_map(engine_client_state, game_information.current_map, 64);
 }
 
 GameInformation GameInformationhandler::get_game_information() const
@@ -44,7 +45,7 @@ void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
     if (isnan(view_vec.x) || isnan(view_vec.y))
         return;
 
-    DWORD engine_client_state_address = mem_manager.read_memory<DWORD>(engine_address + Offsets::clientState);
+    DWORD engine_client_state_address = mem_manager.read_memory<DWORD>(engine_address + Offsets::client_state);
 
     mem_manager.write_memory<Vec2D<float>>(engine_client_state_address + Offsets::client_state_view_angle, view_vec);
 }
@@ -75,6 +76,11 @@ std::shared_ptr<PlayerInformation> GameInformationhandler::get_closest_enemy(con
     }
 
     return closest_enemy;
+}
+
+void GameInformationhandler::read_in_current_map(DWORD engine_client_state_address, char* buffer, DWORD buffer_size)
+{
+    mem_manager.read_string_from_memory(engine_client_state_address + Offsets::current_map, buffer, buffer_size);
 }
 
 ControlledPlayer GameInformationhandler::read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address)

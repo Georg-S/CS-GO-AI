@@ -17,6 +17,19 @@ public:
 	DWORD get_module_address(const char* module_name);
 	void print_4_byte_hex(DWORD address);
 
+	void read_string_from_memory(DWORD address, char* buffer, DWORD size, bool* success = nullptr) 
+	{
+		if (!ReadProcessMemory(process, (LPVOID)address, buffer, size, NULL))
+		{
+			if (success != nullptr)
+				*success = false;
+			if (debug_print)
+				std::cout << "Error Reading Memory Error Code: " << GetLastError() << std::endl;
+		}
+		else if (success != nullptr)
+			*success = false;
+	}
+
 	template <typename type>
 	type read_memory(DWORD address, bool* success = nullptr)
 	{

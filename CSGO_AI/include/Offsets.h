@@ -27,10 +27,11 @@ public:
 	static DWORD force_right;
 
 	//engine.dll
-	static DWORD clientState;
+	static DWORD client_state;
 	static DWORD client_state_view_angle;
 	static DWORD client_state_max_players;
 	static DWORD bone_matrix;
+	static DWORD current_map;
 
 private:
 	static constexpr int HEX = 16;
