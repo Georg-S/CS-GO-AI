@@ -12,7 +12,6 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 
 	auto current_time = std::chrono::system_clock::now();
 	auto current_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time).time_since_epoch().count();
-	constexpr int delay_in_ms = 500;
 
 	if (current_time_ms < delay_time)
 	{
@@ -20,37 +19,35 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		return;
 	}
 
-	if (game_info.player_in_crosshair) 
+	if (game_info.player_in_crosshair && (game_info.player_in_crosshair->team != game_info.controlled_player.team))
 	{
-		if (game_info.player_in_crosshair->team != game_info.controlled_player.team) 
-		{
-			game_info_handler->set_player_movement(Movement{});
-			delay_time = current_time_ms + delay_in_ms;
-			return;
-		}
+		constexpr int delay_in_ms = 500;
+		game_info_handler->set_player_movement(Movement{});
+		delay_time = current_time_ms + delay_in_ms;
+		return;
 	}
 
-	Vec3D<float> player_pos = game_info.controlled_player.position;
-	auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->position);
+	const Vec3D<float> player_pos = game_info.controlled_player.position;
 
-	if (next_node == nullptr) 
+	if (next_node == nullptr)
 		next_node = get_closest_node_to_position(player_pos);
 
 	auto distance = next_node->position.distance(player_pos);
-	if ( distance <= 15)
+	if (distance <= 15)
 	{
+		auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->position);
 		current_route = calculate_new_route(next_node, current_closest_enemy_node);
 		if (current_route.size() > 1)
 			next_node = current_route[1];
 	}
 
-	if (next_node) 
+	if (next_node)
 	{
 		Movement move = calculate_move_info(game_info, next_node);
 		game_info_handler->set_player_movement(move);
 	}
 
-	if(debug_print_route)
+	if (debug_print_route)
 		print_current_route();
 }
 
@@ -133,7 +130,7 @@ Movement MovementStrategy::get_movement_from_walking_angle(float walking_angle) 
 	{
 		new_movement.backward = true;
 	}
-	if ((walking_angle > 202.5) && (walking_angle <= 247.5)) 
+	if ((walking_angle > 202.5) && (walking_angle <= 247.5))
 	{
 		new_movement.backward = true;
 		new_movement.right = true;
@@ -142,7 +139,7 @@ Movement MovementStrategy::get_movement_from_walking_angle(float walking_angle) 
 	{
 		new_movement.right = true;
 	}
-	if ((walking_angle > 292.5) && (walking_angle <= 337.5)) 
+	if ((walking_angle > 292.5) && (walking_angle <= 337.5))
 	{
 		new_movement.right = true;
 		new_movement.forward = true;
@@ -307,14 +304,9 @@ std::vector<std::shared_ptr<DijkstraListentry>> MovementStrategy::dijkstra_algor
 			const float new_weight = current_weight + edge.weight;
 
 			if (!is_inside_list(open_list, edge.toNode))
-			{
 				open_list.push_back(std::make_shared<DijkstraListentry>(edge.toNode, current_node, current_list_entry, new_weight));
-			}
-			else
-			{
-				if (new_weight < get_weight_of_node_in_list(open_list, edge.toNode))
+			else if(new_weight < get_weight_of_node_in_list(open_list, edge.toNode))
 					update_list_entry(open_list, std::make_shared<DijkstraListentry>(edge.toNode, current_node, current_list_entry, new_weight));
-			}
 		}
 		std::shared_ptr<DijkstraListentry> element = remove_list_element(open_list, current_node);
 		if (element)
