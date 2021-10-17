@@ -1,15 +1,8 @@
 #include "NavmeshPoints.h"
 
-NavmeshPoints::NavmeshPoints()
+NavmeshPoints::NavmeshPoints(std::shared_ptr<Logger> logger, std::shared_ptr<GameInformationhandler> game_info_handler)
 {
-	constexpr int l_key = 0x4C;
-	this->save_button = Button();
-	this->close_button = Button("Close button", l_key);
-	mem_manager = MemoryManager();
-}
-
-NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler)
-{
+	this->logger = logger;
 	this->game_info_handler = game_info_handler;
 }
 
@@ -17,20 +10,20 @@ bool NavmeshPoints::init()
 {
 	if (!ConfigReader::read_in_config_data(config, "config.json"))
 	{
-		std::cout << "Loading config failed, check config file" << std::endl;
+		logger->log_error("Loading config failed, check config file");
 		return false;
 	}
 
 	if (!Offsets::load_offsets_from_file("offsets.json"))
 	{
-		std::cout << "Loading offsets failed, check offsets file" << std::endl;
+		logger->log_error("Loading offsets failed, check offsets file");
 		return false;
 	}
 
 	this->game_info_handler = std::make_unique<GameInformationhandler>();
 	if (!this->game_info_handler->init(config))
 	{
-		std::cout << "Error getting dll address " << std::endl;
+		logger->log_error("Error getting dll address ");
 		return false;
 	}
 
@@ -107,7 +100,7 @@ bool NavmeshPoints::save_to_file()
 	}
 	catch (std::exception const& e)
 	{
-		std::cout << e.what() << std::endl;
+		logger->log_error(std::string(e.what()));
 		return false;
 	}
 	return true;

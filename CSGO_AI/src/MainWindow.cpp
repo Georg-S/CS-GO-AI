@@ -3,7 +3,8 @@
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	csgo_ai_handler = std::make_shared<CSGOAi>();
+	logger = std::make_shared<QTBoxLogger>(this->ui->textEdit_output, this->ui->textEdit_point_output);
+	csgo_ai_handler = std::make_shared<CSGOAi>(logger);
 	init_csgo_ai();
 
 	csgo_runner_thread = new QThread();
@@ -21,24 +22,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
 	delete ui;
-}
-
-void MainWindow::output_error(const QString& string)
-{
-	ui->textEdit_output->setTextColor(Qt::red);
-	ui->textEdit_output->append(string);
-
-	ui->textEdit_point_output->setTextColor(Qt::red);
-	ui->textEdit_point_output->append(string);
-}
-
-void MainWindow::output_success(const QString& string)
-{
-	ui->textEdit_output->setTextColor(Qt::green);
-	ui->textEdit_output->append(string);
-
-	ui->textEdit_point_output->setTextColor(Qt::green);
-	ui->textEdit_point_output->append(string);
 }
 
 void MainWindow::init_csgo_ai()
@@ -65,19 +48,19 @@ void MainWindow::update_behavior_executed()
 void MainWindow::attach_to_process()
 {
 	if (!csgo_ai_handler->attach_to_csgo_process())
-		output_error("Error getting dll address / Error attaching to CS-GO process");
+		logger->log_error("Error getting dll address / Error attaching to CS-GO process");
 	else
-		output_success("Attached to the CSGO process");
+		logger->log_success("Attached to the CSGO process");
 }
 
 void MainWindow::load_files()
 {
 	if (!csgo_ai_handler->load_config("config.json"))
-		output_error("Config couldn't be read, make sure you have a valid config");
+		logger->log_error("Config couldn't be read, make sure you have a valid config");
 	if (!csgo_ai_handler->load_offsets("offsets.json"))
-		output_error("Offsets couldn't be read, make sure you have a valid offsets file");
+		logger->log_error("Offsets couldn't be read, make sure you have a valid offsets file");
 	if (!csgo_ai_handler->load_navmesh("nav_mesh.json"))
-		output_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
+		logger->log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
 }
 
 void MainWindow::on_checkBox_ai_stateChanged()
@@ -171,9 +154,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 void MainWindow::on_button_save_points_clicked()
 {
 	if (this->csgo_runner->save_navmesh_points())
-		output_success("File successfully saved");
+		logger->log_success("File successfully saved");
 	else
-		output_error("Error saving file");
+		logger->log_error("Error saving file");
 }
 
 void MainWindow::on_button_add_point_clicked()

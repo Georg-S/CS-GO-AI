@@ -9,14 +9,14 @@
 #include "ConfigReader.h"
 #include "json.hpp"
 #include "GameInformationHandler.h"
+#include "Logger.h"
 
 using json = nlohmann::json;
 
 class NavmeshPoints 
 {
 public:
-	NavmeshPoints();
-	NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler);
+	NavmeshPoints(std::shared_ptr<Logger> logger, std::shared_ptr<GameInformationhandler> game_info_handler);
 	bool init();
 	void console_run();
 	bool update();
@@ -38,4 +38,5 @@ private:
 	DWORD engine_address;
 	std::vector<Vec3D<float>> points;
 	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
+	std::shared_ptr<Logger> logger = nullptr;
 };

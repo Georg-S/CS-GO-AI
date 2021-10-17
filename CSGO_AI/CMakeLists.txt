@@ -28,6 +28,8 @@ set (HEADERS
 	"include/NavmeshPoints.h"
 	"include/MainWindow.h"
 	"include/CSGORunner.h"
+	"include/Logger.h"
+	"include/QTBoxLogger.h"
 	)
 
 set(SOURCES 
@@ -44,6 +46,7 @@ set(SOURCES
 	"src/NavmeshPoints.cpp"
 	"src/MainWindow.cpp"
 	"src/CSGORunner.cpp"
+	"src/QTBoxLogger.cpp"
 	)
 
 set(QT_UI_FILES

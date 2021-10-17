@@ -1,5 +1,10 @@
 #include "MovementStrategy.h"
 
+MovementStrategy::MovementStrategy(std::shared_ptr<Logger> logger)
+{
+	this->logger = logger;
+}
+
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	GameInformation game_info = game_info_handler->get_game_information();
@@ -48,7 +53,7 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	}
 
 	if (debug_print_route)
-		print_current_route();
+		console_print_current_route();
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -65,7 +70,7 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 	}
 	catch (std::exception const& e)
 	{
-		std::cout << e.what() << std::endl;
+		logger->log_error(std::string(e.what()));
 		return false;
 	}
 	return true;
@@ -217,7 +222,7 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::sh
 	return  get_route(closed_list, to);
 }
 
-void MovementStrategy::print_current_route() const
+void MovementStrategy::console_print_current_route() const
 {
 	for (unsigned int i = 0; i < current_route.size(); i++)
 	{

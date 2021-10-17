@@ -12,6 +12,7 @@
 #include "ui_MainWindow.h"
 #include "NavmeshPoints.h"
 #include "CSGORunner.h"
+#include "QTBoxLogger.h"
 
 class MainWindow : public QMainWindow
 {
@@ -22,8 +23,6 @@ public:
     ~MainWindow();
 
 private:
-    void output_error(const QString& string);
-    void output_success(const QString& string);
     void init_csgo_ai();
     bool all_three_checkboxes_checked();
     void update_behavior_executed();
@@ -34,6 +33,7 @@ private:
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
     std::shared_ptr<CSGOAi> csgo_ai_handler = nullptr;
+    std::shared_ptr<QTBoxLogger> logger = nullptr;
 
 signals:
     void stopped();
