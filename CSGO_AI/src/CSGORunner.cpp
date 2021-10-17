@@ -2,7 +2,7 @@
 
 CSGORunner::CSGORunner(std::shared_ptr<CSGOAi> csgo_ai_handler) : QObject(nullptr), csgo_ai_handler(csgo_ai_handler)
 {
-	this->csgo_navmesh_points_handler = std::make_shared<NavmeshPoints>(csgo_ai_handler->get_logger(), csgo_ai_handler->get_game_info_handler());
+	this->csgo_navmesh_points_handler = std::make_shared<NavmeshPoints>(csgo_ai_handler->get_game_info_handler());
 }
 
 void CSGORunner::run()

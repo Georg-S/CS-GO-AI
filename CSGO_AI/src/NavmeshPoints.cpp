@@ -1,8 +1,7 @@
 #include "NavmeshPoints.h"
 
-NavmeshPoints::NavmeshPoints(std::shared_ptr<Logger> logger, std::shared_ptr<GameInformationhandler> game_info_handler)
+NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler)
 {
-	this->logger = logger;
 	this->game_info_handler = game_info_handler;
 }
 
@@ -10,20 +9,20 @@ bool NavmeshPoints::init()
 {
 	if (!ConfigReader::read_in_config_data(config, "config.json"))
 	{
-		logger->log_error("Loading config failed, check config file");
+		Logging::log_error("Loading config failed, check config file");
 		return false;
 	}
 
 	if (!Offsets::load_offsets_from_file("offsets.json"))
 	{
-		logger->log_error("Loading offsets failed, check offsets file");
+		Logging::log_error("Loading offsets failed, check offsets file");
 		return false;
 	}
 
 	this->game_info_handler = std::make_unique<GameInformationhandler>();
 	if (!this->game_info_handler->init(config))
 	{
-		logger->log_error("Error getting dll address ");
+		Logging::log_error("Error getting dll address ");
 		return false;
 	}
 
@@ -100,7 +99,7 @@ bool NavmeshPoints::save_to_file()
 	}
 	catch (std::exception const& e)
 	{
-		logger->log_error(std::string(e.what()));
+		Logging::log_error(std::string(e.what()));
 		return false;
 	}
 	return true;

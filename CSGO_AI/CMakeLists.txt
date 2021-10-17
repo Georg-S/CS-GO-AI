@@ -30,6 +30,7 @@ set (HEADERS
 	"include/CSGORunner.h"
 	"include/Logger.h"
 	"include/QTBoxLogger.h"
+	"include/Logging.h"
 	)
 
 set(SOURCES 
@@ -47,6 +48,7 @@ set(SOURCES
 	"src/MainWindow.cpp"
 	"src/CSGORunner.cpp"
 	"src/QTBoxLogger.cpp"
+	"src/Logging.cpp"
 	)
 
 set(QT_UI_FILES

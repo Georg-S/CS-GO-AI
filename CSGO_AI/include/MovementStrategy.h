@@ -9,7 +9,7 @@
 #include "Vec3D.h"
 #include "json.hpp"
 #include "GameInformationHandler.h"
-#include "Logger.h"
+#include "Logging.h"
 
 using nlohmann::json;
 
@@ -56,7 +56,7 @@ struct DijkstraListentry
 class MovementStrategy 
 {
 public:
-	MovementStrategy(std::shared_ptr<Logger> logger);
+	MovementStrategy();
 	void update(GameInformationhandler* game_info_handler);
 	bool load_in_navmesh(const std::string& filename);
 	void set_debug_print_route(bool value);
@@ -80,7 +80,6 @@ private:
 	std::shared_ptr<Node> next_node = nullptr;
 	std::vector<std::shared_ptr<Node>> current_route;
 	std::vector<DWORD> movement_keys;
-	std::shared_ptr<Logger> logger = nullptr;
 	long long delay_time = 0;
 
 	bool debug_print_route = false;

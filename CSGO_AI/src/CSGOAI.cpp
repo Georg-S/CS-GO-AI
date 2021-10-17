@@ -1,35 +1,33 @@
 #include "CSGOAI.h"
 
-CSGOAi::CSGOAi(std::shared_ptr<Logger> logger)
+CSGOAi::CSGOAi()
 {
-	this->logger = logger;
 	this->game_info_handler = std::make_unique<GameInformationhandler>();
-	this->movement_strategy = std::make_unique<MovementStrategy>(this->logger);
 }
 
 bool CSGOAi::init()
 {
 	if (!load_offsets("offsets.json"))
 	{
-		logger->log_error("Offsets couldn't be read, make sure you have a valid offsets file");
+		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
 		return false;
 	}
 
 	if (!load_config("config.json"))
 	{
-		logger->log_error("Config couldn't be read, make sure you have a valid config");
+		Logging::log_error("Config couldn't be read, make sure you have a valid config");
 		return false;
 	}
 
 	if (!load_navmesh("nav_mesh.json"))
 	{
-		logger->log_error("Error loading/parsing Navmesh, make sure you have a valid nav-mesh file");
+		Logging::log_error("Error loading/parsing Navmesh, make sure you have a valid nav-mesh file");
 		return false;
 	}
 
 	if (!attach_to_csgo_process())
 	{
-		logger->log_error("Error getting dll address");
+		Logging::log_error("Error getting dll address");
 		return false;
 	}
 
@@ -51,7 +49,7 @@ bool CSGOAi::load_offsets(const std::string& file_name)
 
 bool CSGOAi::load_navmesh(const std::string& file_name)
 {
-	return movement_strategy->load_in_navmesh(file_name);
+	return movement_strategy.load_in_navmesh(file_name);
 }
 
 bool CSGOAi::attach_to_csgo_process()
@@ -69,11 +67,6 @@ std::shared_ptr<GameInformationhandler> CSGOAi::get_game_info_handler()
 	return this->game_info_handler;
 }
 
-std::shared_ptr<Logger> CSGOAi::get_logger()
-{
-	return this->logger;
-}
-
 void CSGOAi::update()
 {
 	if (!game_info_handler->is_attached_to_process())
@@ -86,7 +79,7 @@ void CSGOAi::update()
 	if (activated_behavior.aimbot)
 		this->aimbot.update(game_info_handler.get());
 	if (activated_behavior.movement)
-		this->movement_strategy->update(game_info_handler.get());
+		this->movement_strategy.update(game_info_handler.get());
 }
 
 void CSGOAi::console_run()
@@ -105,7 +98,7 @@ void CSGOAi::console_run()
 			this->game_info_handler->update_game_information();
 			this->triggerbot.update(game_info_handler.get());
 			this->aimbot.update(game_info_handler.get());
-			this->movement_strategy->update(game_info_handler.get());
+			this->movement_strategy.update(game_info_handler.get());
 		}
 	}
 }

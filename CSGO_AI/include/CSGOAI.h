@@ -10,7 +10,7 @@
 #include "Aimbot.h"
 #include "Button.h"
 #include "MovementStrategy.h"
-#include "Logger.h"
+#include "Logging.h"
 
 struct ActivatedFeatures 
 {
@@ -22,7 +22,7 @@ struct ActivatedFeatures
 class CSGOAi 
 {
 public:
-	CSGOAi(std::shared_ptr<Logger> logger);
+	CSGOAi();
 	bool init();
 	void update();
 	void console_run();
@@ -32,13 +32,11 @@ public:
 	bool attach_to_csgo_process();
 	void set_activated_behavior(const ActivatedFeatures& behavior);
 	std::shared_ptr<GameInformationhandler> get_game_info_handler();
-	std::shared_ptr<Logger> get_logger();
 
 private:
 	ConfigData config;
 	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
-	std::shared_ptr<Logger> logger = nullptr;;
-	std::unique_ptr<MovementStrategy> movement_strategy = nullptr;
+	MovementStrategy movement_strategy;
 	Triggerbot triggerbot;
 	Aimbot aimbot;
 	Button toggle_button;

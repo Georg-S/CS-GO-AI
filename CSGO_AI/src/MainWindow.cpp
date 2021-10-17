@@ -3,8 +3,9 @@
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	logger = std::make_shared<QTBoxLogger>(this->ui->textEdit_output, this->ui->textEdit_point_output);
-	csgo_ai_handler = std::make_shared<CSGOAi>(logger);
+
+	Logging::set_logger(std::make_unique<QTBoxLogger>(this->ui->textEdit_output, this->ui->textEdit_point_output));
+	csgo_ai_handler = std::make_shared<CSGOAi>();
 	init_csgo_ai();
 
 	csgo_runner_thread = new QThread();
@@ -48,19 +49,19 @@ void MainWindow::update_behavior_executed()
 void MainWindow::attach_to_process()
 {
 	if (!csgo_ai_handler->attach_to_csgo_process())
-		logger->log_error("Error getting dll address / Error attaching to CS-GO process");
+		Logging::log_error("Error getting dll address / Error attaching to CS-GO process");
 	else
-		logger->log_success("Attached to the CSGO process");
+		Logging::log_success("Attached to the CSGO process");
 }
 
 void MainWindow::load_files()
 {
 	if (!csgo_ai_handler->load_config("config.json"))
-		logger->log_error("Config couldn't be read, make sure you have a valid config");
+		Logging::log_error("Config couldn't be read, make sure you have a valid config");
 	if (!csgo_ai_handler->load_offsets("offsets.json"))
-		logger->log_error("Offsets couldn't be read, make sure you have a valid offsets file");
+		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
 	if (!csgo_ai_handler->load_navmesh("nav_mesh.json"))
-		logger->log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
+		Logging::log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
 }
 
 void MainWindow::on_checkBox_ai_stateChanged()
@@ -154,9 +155,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 void MainWindow::on_button_save_points_clicked()
 {
 	if (this->csgo_runner->save_navmesh_points())
-		logger->log_success("File successfully saved");
+		Logging::log_success("File successfully saved");
 	else
-		logger->log_error("Error saving file");
+		Logging::log_error("Error saving file");
 }
 
 void MainWindow::on_button_add_point_clicked()

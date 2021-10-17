@@ -12,6 +12,7 @@
 #include "ui_MainWindow.h"
 #include "NavmeshPoints.h"
 #include "CSGORunner.h"
+#include "Logging.h"
 #include "QTBoxLogger.h"
 
 class MainWindow : public QMainWindow
@@ -33,7 +34,6 @@ private:
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
     std::shared_ptr<CSGOAi> csgo_ai_handler = nullptr;
-    std::shared_ptr<QTBoxLogger> logger = nullptr;
 
 signals:
     void stopped();

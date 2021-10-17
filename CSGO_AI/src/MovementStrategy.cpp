@@ -1,8 +1,7 @@
 #include "MovementStrategy.h"
 
-MovementStrategy::MovementStrategy(std::shared_ptr<Logger> logger)
+MovementStrategy::MovementStrategy()
 {
-	this->logger = logger;
 }
 
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
@@ -70,7 +69,7 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 	}
 	catch (std::exception const& e)
 	{
-		logger->log_error(std::string(e.what()));
+		Logging::log_error(std::string(e.what()));
 		return false;
 	}
 	return true;
