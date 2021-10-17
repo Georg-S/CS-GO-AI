@@ -27,6 +27,7 @@ set (HEADERS
 	"include/MovementStrategy.h"
 	"include/NavmeshPoints.h"
 	"include/MainWindow.h"
+	"include/CSGORunner.h"
 	)
 
 set(SOURCES 
@@ -42,6 +43,7 @@ set(SOURCES
 	"src/MovementStrategy.cpp"
 	"src/NavmeshPoints.cpp"
 	"src/MainWindow.cpp"
+	"src/CSGORunner.cpp"
 	)
 
 set(QT_UI_FILES
@@ -59,11 +61,13 @@ set_property(TARGET CSGO_AI PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOUR
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CSGO_AI)
 target_link_libraries(CSGO_AI Qt5::Widgets)
 
+#[[
 #Navmeshpointcreator Project
 add_executable(NavmeshPointsaver "src/main_navmeshpointcreator.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})
 target_include_directories(NavmeshPointsaver PUBLIC "include")
 set_property(TARGET NavmeshPointsaver PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 target_link_libraries(NavmeshPointsaver Qt5::Widgets)
+]]
 
 
 add_custom_command(TARGET CSGO_AI 
@@ -102,6 +106,7 @@ add_custom_command(TARGET CSGO_AI
 					${CMAKE_SOURCE_DIR}"/nav_mesh.json"
 					${CMAKE_CURRENT_BINARY_DIR}"/Release/nav_mesh.json")
 
+#[[
 add_custom_command(TARGET NavmeshPointsaver 
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy 
@@ -125,3 +130,4 @@ add_custom_command(TARGET NavmeshPointsaver
 					COMMAND ${CMAKE_COMMAND} -E copy 
 					${CMAKE_SOURCE_DIR}"/offsets.json"
 					${CMAKE_CURRENT_BINARY_DIR}"/Release/offsets.json")
+]]
