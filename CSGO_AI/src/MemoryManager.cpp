@@ -22,7 +22,7 @@ bool MemoryManager::attach_to_process(const char* window_name)
 	if (!process)
 		return false;
 
-	std::cout << "Process found process ID: " << process_ID << std::endl;
+	Logging::log_success("Process found process ID: " + std::to_string(process_ID));
 
 	return true;
 }
@@ -32,21 +32,21 @@ DWORD MemoryManager::get_module_address(const char* module_name)
 	HMODULE modules[1024];
 	DWORD cbNeeded;
 
-	if (EnumProcessModules(process, modules, sizeof(modules), &cbNeeded))
-	{
-		const int module_count = cbNeeded / sizeof(HMODULE);
-		for (int i = 0; i < module_count; i++)
-		{
-			TCHAR name[MAX_PATH];
-			GetModuleBaseName(process, modules[i], name, sizeof(name));
+	if (!EnumProcessModules(process, modules, sizeof(modules), &cbNeeded))
+		return 0;
 
-			if (!_tcscmp(name, module_name))
-			{
-				std::cout << module_name << " found address: ";
-				print_4_byte_hex((DWORD)modules[i]);
-				std::cout << std::endl;
-				return (DWORD)modules[i];
-			}
+	const int module_count = cbNeeded / sizeof(HMODULE);
+	for (int i = 0; i < module_count; i++)
+	{
+		TCHAR name[MAX_PATH];
+		GetModuleBaseName(process, modules[i], name, sizeof(name));
+
+		if (!_tcscmp(name, module_name))
+		{
+			std::cout << module_name << " found address: ";
+			print_4_byte_hex((DWORD)modules[i]);
+			std::cout << std::endl;
+			return (DWORD)modules[i];
 		}
 	}
 

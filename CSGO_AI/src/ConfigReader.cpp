@@ -15,7 +15,7 @@ bool ConfigReader::read_in_config_data(ConfigData& destination, const std::strin
 	}
 	catch (std::exception const& e)
 	{
-		std::cout << e.what() << std::endl;
+		Logging::log_error(std::string(e.what()));
 		return false;
 	}
 

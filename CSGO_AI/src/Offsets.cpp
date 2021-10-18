@@ -52,7 +52,7 @@ bool Offsets::load_offsets_from_file(const std::string& filename)
 	}
 	catch (std::exception const& e)
 	{
-		std::cout << e.what() << std::endl;
+		Logging::log_error(std::string(e.what()));
 		return false;
 	}
 	return true;

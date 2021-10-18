@@ -3,6 +3,7 @@
 #include <wtypes.h>
 #include "FileReader.h"
 #include "json.hpp"
+#include "Logging.h"
 
 using json = nlohmann::json;
 

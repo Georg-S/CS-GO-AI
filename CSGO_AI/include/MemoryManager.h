@@ -7,6 +7,7 @@
 #include <TlHelp32.h>
 #include <string>
 #include <iomanip>
+#include "Logging.h"
 
 class MemoryManager
 {
@@ -24,7 +25,7 @@ public:
 			if (success != nullptr)
 				*success = false;
 			if (debug_print)
-				std::cout << "Error Reading Memory Error Code: " << GetLastError() << std::endl;
+				Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 		}
 		else if (success != nullptr)
 			*success = false;
@@ -39,7 +40,7 @@ public:
 			if (success != nullptr)
 				*success = false;
 			if(debug_print)
-				std::cout << "Error Reading Memory Error Code: " << GetLastError() << std::endl;
+				Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 		}
 		else if (success != nullptr)
 			*success = false;
@@ -52,7 +53,7 @@ public:
 	{
 		if (!WriteProcessMemory(this->process, (LPVOID)address, &data, sizeof(data), NULL) && debug_print) 
 		{
-			std::cout << "Error writing to memory Error Code: " << GetLastError() << std::endl;
+			Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 			return false;
 		}
 		return true;

@@ -223,13 +223,16 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::sh
 
 void MovementStrategy::console_print_current_route() const
 {
+	std::string route = "";
 	for (unsigned int i = 0; i < current_route.size(); i++)
 	{
-		if (i == current_route.size() - 1)
-			std::cout << current_route[i]->id << std::endl;
-		else
-			std::cout << current_route[i]->id << " -> ";
+		route += std::to_string(current_route[i]->id);
+
+		if (i < current_route.size() - 1)
+			route += " -> ";
 	}
+
+	Logging::log("Current route: " + route);
 }
 
 std::vector<std::shared_ptr<DijkstraListentry>> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
