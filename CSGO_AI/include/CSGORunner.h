@@ -14,13 +14,15 @@ class CSGORunner : public QObject
     Q_OBJECT
 
 public:
-    CSGORunner(std::shared_ptr<CSGOAi> csgo_ai_handler);
+    CSGORunner();
+    void update();
     void set_run_navmesh_points(bool value);
     void set_add_point_key(int key_code);
     bool save_navmesh_points();
     void add_point();
     void load_files();
     void attach_to_process();
+    void set_activated_behavior(const ActivatedFeatures& behavior);
 
 signals:
     void finished();
@@ -31,6 +33,6 @@ private:
     QMutex mutex;
     bool is_running = true;
     bool run_navmesh_points = false;
-    std::shared_ptr<CSGOAi> csgo_ai_handler = nullptr;
-    std::shared_ptr<NavmeshPoints> csgo_navmesh_points_handler = nullptr;
+    std::unique_ptr<CSGOAi> csgo_ai_handler = nullptr;
+    std::unique_ptr<NavmeshPoints> csgo_navmesh_points_handler = nullptr;
 };

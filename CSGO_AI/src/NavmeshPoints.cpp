@@ -65,6 +65,9 @@ bool NavmeshPoints::update()
 
 void NavmeshPoints::add_point()
 {
+	if (!game_info_handler->is_attached_to_process())
+		return;
+
 	game_info_handler->update_game_information();
 	auto game_info = game_info_handler->get_game_information();
 	auto position = game_info.controlled_player.position;

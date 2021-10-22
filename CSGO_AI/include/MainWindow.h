@@ -24,18 +24,14 @@ public:
     ~MainWindow();
 
 private:
-    void init_csgo_ai();
     bool all_three_checkboxes_checked();
     void update_behavior_executed();
-    void attach_to_process();
-    void load_files();
     void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 
     Ui::MainWindow* ui;
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
-    std::shared_ptr<CSGOAi> csgo_ai_handler = nullptr;
 
 signals:
     void stopped();

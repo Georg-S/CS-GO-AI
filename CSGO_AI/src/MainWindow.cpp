@@ -5,11 +5,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	ui->setupUi(this);
 
 	Logging::set_logger(std::make_unique<QTBoxLogger>(this->ui->textEdit_output, this->ui->textEdit_point_output));
-	csgo_ai_handler = std::make_shared<CSGOAi>();
-	init_csgo_ai();
 
 	csgo_runner_thread = new QThread();
-	csgo_runner = new CSGORunner(csgo_ai_handler);
+	csgo_runner = new CSGORunner();
 	csgo_runner->moveToThread(csgo_runner_thread);
 
 	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CSGORunner::run);
@@ -24,12 +22,6 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::init_csgo_ai()
-{
-	load_files();
-	attach_to_process();
-}
-
 bool MainWindow::all_three_checkboxes_checked()
 {
 	return ui->checkBox_aimbot->isChecked() && ui->checkBox_triggerbot->isChecked() && ui->checkBox_movement->isChecked();
@@ -42,25 +34,7 @@ void MainWindow::update_behavior_executed()
 	features.aimbot = ui->checkBox_aimbot->isChecked();
 	features.movement = ui->checkBox_movement->isChecked();
 
-	csgo_ai_handler->set_activated_behavior(features);
-}
-
-void MainWindow::attach_to_process()
-{
-	if (!csgo_ai_handler->attach_to_csgo_process())
-		Logging::log_error("Error getting dll address / Error attaching to CS-GO process");
-	else
-		Logging::log_success("Attached to the CSGO process");
-}
-
-void MainWindow::load_files()
-{
-	if (!csgo_ai_handler->load_config("config.json"))
-		Logging::log_error("Config couldn't be read, make sure you have a valid config");
-	if (!csgo_ai_handler->load_offsets("offsets.json"))
-		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
-	if (!csgo_ai_handler->load_navmesh("nav_mesh.json"))
-		Logging::log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
+	csgo_runner->set_activated_behavior(features);
 }
 
 void MainWindow::set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes)
@@ -121,12 +95,12 @@ void MainWindow::on_checkBox_triggerbot_stateChanged()
 
 void MainWindow::on_button_reload_files_clicked()
 {
-	load_files();
+	csgo_runner->load_files();
 }
 
 void MainWindow::on_button_reattach_clicked()
 {
-	attach_to_process();
+	csgo_runner->attach_to_process();
 }
 
 void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
@@ -168,5 +142,5 @@ void MainWindow::on_button_add_point_clicked()
 
 void MainWindow::on_button_reattach_2_clicked()
 {
-	attach_to_process();
+	csgo_runner->attach_to_process();
 }
