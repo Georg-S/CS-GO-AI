@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <wtypes.h>
-#include "FileReader.h"
+#include <fstream>
 #include "json.hpp"
 #include "Logging.h"
 

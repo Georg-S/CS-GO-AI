@@ -13,7 +13,6 @@ find_package(Qt5Widgets REQUIRED)
 
 set (HEADERS
 	"include/MemoryManager.h"
-	"include/FileReader.h"
 	"include/Button.h"
 	"include/Offsets.h"
 	"include/Vec3D.h"
@@ -35,7 +34,6 @@ set (HEADERS
 
 set(SOURCES 
 	"src/MemoryManager.cpp"
-	"src/FileReader.cpp"
 	"src/Button.cpp"
 	"src/Offsets.cpp"
 	"src/GameInformationHandler.cpp"
