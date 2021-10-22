@@ -29,6 +29,8 @@ private:
     void update_behavior_executed();
     void attach_to_process();
     void load_files();
+    void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
+    void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 
     Ui::MainWindow* ui;
     QThread* csgo_runner_thread = nullptr;
@@ -37,8 +39,6 @@ private:
 
 signals:
     void stopped();
-public slots:
-    void print_newest_point();
 private slots:
     void on_checkBox_ai_stateChanged();
     void on_checkBox_aimbot_stateChanged();

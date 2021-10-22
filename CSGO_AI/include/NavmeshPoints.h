@@ -23,7 +23,6 @@ public:
 	void add_point();
 	void set_add_point_button(int key_code);
 	bool save_to_file();
-	Vec3D<float> get_latest_point();
 
 private:
 	template <typename T>

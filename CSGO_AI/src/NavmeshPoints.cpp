@@ -70,6 +70,7 @@ void NavmeshPoints::add_point()
 	auto position = game_info.controlled_player.position;
 
 	points.push_back(position);
+	Logging::log("Point added: " + position.to_string());
 }
 
 void NavmeshPoints::set_add_point_button(int key_code)
@@ -103,14 +104,6 @@ bool NavmeshPoints::save_to_file()
 		return false;
 	}
 	return true;
-}
-
-Vec3D<float> NavmeshPoints::get_latest_point()
-{
-	if (points.size() == 0)
-		return Vec3D<float>();
-	else
-		return points[points.size() - 1];
 }
 
 template<typename T>

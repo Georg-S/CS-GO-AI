@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	csgo_runner = new CSGORunner(csgo_ai_handler);
 	csgo_runner->moveToThread(csgo_runner_thread);
 
-	connect(csgo_runner, &CSGORunner::new_point, this, &MainWindow::print_newest_point);
 	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CSGORunner::run);
 	connect(csgo_runner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);
 	connect(csgo_runner, &CSGORunner::finished, csgo_runner, &CSGORunner::deleteLater);
@@ -64,33 +63,35 @@ void MainWindow::load_files()
 		Logging::log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
 }
 
+void MainWindow::set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes)
+{
+	for (QCheckBox* elem : checkboxes)
+		elem->setChecked(value);
+}
+
+void MainWindow::set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes)
+{
+	for (QCheckBox* box : checkboxes)
+		box->setEnabled(value);
+}
+
 void MainWindow::on_checkBox_ai_stateChanged()
 {
 	if (all_three_checkboxes_checked() && ui->checkBox_ai->isChecked())
 	{
-		ui->checkBox_aimbot->setEnabled(false);
-		ui->checkBox_movement->setEnabled(false);
-		ui->checkBox_triggerbot->setEnabled(false);
+		set_enabled(false, { ui->checkBox_aimbot, ui->checkBox_movement, ui->checkBox_triggerbot });
 		return;
 	}
 
 	if (ui->checkBox_ai->isChecked())
 	{
-		ui->checkBox_aimbot->setChecked(true);
-		ui->checkBox_aimbot->setEnabled(false);
-		ui->checkBox_movement->setChecked(true);
-		ui->checkBox_movement->setEnabled(false);
-		ui->checkBox_triggerbot->setChecked(true);
-		ui->checkBox_triggerbot->setEnabled(false);
+		set_checked(true, { ui->checkBox_aimbot, ui->checkBox_movement, ui->checkBox_triggerbot });
+		set_enabled(false, { ui->checkBox_aimbot, ui->checkBox_movement, ui->checkBox_triggerbot });
 	}
 	else
 	{
-		ui->checkBox_aimbot->setChecked(false);
-		ui->checkBox_aimbot->setEnabled(true);
-		ui->checkBox_movement->setChecked(false);
-		ui->checkBox_movement->setEnabled(true);
-		ui->checkBox_triggerbot->setChecked(false);
-		ui->checkBox_triggerbot->setEnabled(true);
+		set_checked(false, { ui->checkBox_aimbot, ui->checkBox_movement, ui->checkBox_triggerbot });
+		set_enabled(true, { ui->checkBox_aimbot, ui->checkBox_movement, ui->checkBox_triggerbot });
 	}
 }
 
@@ -168,12 +169,4 @@ void MainWindow::on_button_add_point_clicked()
 void MainWindow::on_button_reattach_2_clicked()
 {
 	attach_to_process();
-}
-
-void MainWindow::print_newest_point()
-{
-	Vec3D<float> buf = csgo_runner->get_latest_point();
-
-	ui->textEdit_point_output->setTextColor(Qt::black);
-	ui->textEdit_point_output->append("Point added: X: " + QString::number(buf.x) + " Y: " + QString::number(buf.y) + " Z: " + QString::number(buf.z));
 }

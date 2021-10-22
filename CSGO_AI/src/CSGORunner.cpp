@@ -9,18 +9,12 @@ void CSGORunner::run()
 {
 	while (is_running)
 	{
+		mutex.lock();
 		if (run_navmesh_points)
-		{
-			mutex.lock();
-			bool new_point_added = csgo_navmesh_points_handler->update();
-			mutex.unlock();
-			if (new_point_added)
-				emit new_point();
-		}
+			csgo_navmesh_points_handler->update();
 		else
-		{
 			csgo_ai_handler->update();
-		}
+		mutex.unlock();
 	}
 
 	deleteLater();
@@ -50,14 +44,12 @@ void CSGORunner::add_point()
 	mutex.lock();
 	csgo_navmesh_points_handler->add_point();
 	mutex.unlock();
-	emit new_point(); // emit outside of mutex, since we call it from the same thread 
 }
 
-Vec3D<float> CSGORunner::get_latest_point()
+void CSGORunner::load_files()
 {
-	mutex.lock();
-	auto result = csgo_navmesh_points_handler->get_latest_point();
-	mutex.unlock();
+}
 
-	return result;
+void CSGORunner::attach_to_process()
+{
 }

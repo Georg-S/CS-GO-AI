@@ -19,11 +19,11 @@ public:
     void set_add_point_key(int key_code);
     bool save_navmesh_points();
     void add_point();
-    Vec3D<float> get_latest_point();
+    void load_files();
+    void attach_to_process();
 
 signals:
     void finished();
-    void new_point();
 public slots:
     void run();
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <string>
 
 template <typename T>
 class Vec3D
@@ -35,6 +36,11 @@ public:
 	T distance(const Vec3D<T>& other) const
 	{
 		return (*this - other).calc_abs();
+	}
+
+	std::string to_string() const
+	{
+		return "X: " + std::to_string(x) + " Y: " + std::to_string(y) + " Z: " + std::to_string(z);
 	}
 
 	T x;
