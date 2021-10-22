@@ -19,8 +19,8 @@ bool NavmeshPoints::init()
 		return false;
 	}
 
-	this->game_info_handler = std::make_unique<GameInformationhandler>();
-	if (!this->game_info_handler->init(config))
+	game_info_handler = std::make_shared<GameInformationhandler>();
+	if (!game_info_handler->init(config))
 	{
 		Logging::log_error("Error getting dll address ");
 		return false;
@@ -42,7 +42,7 @@ void NavmeshPoints::console_run()
 		if (save_button.was_clicked()) 
 		{
 			points.push_back(position);
-			position.print();
+			Logging::log(position.to_string());
 		}
 	}
 	save_to_file();
@@ -78,7 +78,7 @@ void NavmeshPoints::add_point()
 
 void NavmeshPoints::set_add_point_button(int key_code)
 {
-	this->save_button.set_toggle_button(key_code);
+	save_button.set_toggle_button(key_code);
 }
 
 bool NavmeshPoints::save_to_file()

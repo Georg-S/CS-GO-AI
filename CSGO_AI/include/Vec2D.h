@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 template <typename T>
 class Vec2D
 {
@@ -9,8 +11,8 @@ public:
 	T x;
 	T y;
 
-	void print()
+	void to_string() 
 	{
-		std::cout << "X: " << x << " Y: " << y << std::endl;
+		return "X: " + std::to_string(x) + " Y: " + std::to_string(y);
 	}
 };

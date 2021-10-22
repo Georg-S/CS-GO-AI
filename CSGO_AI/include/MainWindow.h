@@ -24,8 +24,9 @@ public:
     ~MainWindow();
 
 private:
-    bool all_three_checkboxes_checked();
+    bool all_behavior_checkboxes_checked();
     void update_behavior_executed();
+    bool all_checked(std::initializer_list<QCheckBox*> checkboxes);
     void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 

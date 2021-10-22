@@ -36,8 +36,8 @@ struct PlayerInformation
 struct GameInformation 
 {
 	ControlledPlayer controlled_player;
-	std::shared_ptr<PlayerInformation> player_in_crosshair = nullptr;
 	std::vector<PlayerInformation> other_players;
+	std::shared_ptr<PlayerInformation> player_in_crosshair = nullptr;
 	std::shared_ptr<PlayerInformation> closest_enemy_player = nullptr;
 	char current_map[64] = "";
 };

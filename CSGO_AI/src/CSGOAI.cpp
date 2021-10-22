@@ -2,7 +2,7 @@
 
 CSGOAi::CSGOAi()
 {
-	this->game_info_handler = std::make_unique<GameInformationhandler>();
+	game_info_handler = std::make_unique<GameInformationhandler>();
 }
 
 bool CSGOAi::init()
@@ -54,17 +54,17 @@ bool CSGOAi::load_navmesh(const std::string& file_name)
 
 bool CSGOAi::attach_to_csgo_process()
 {
-	return this->game_info_handler->init(config);
+	return game_info_handler->init(config);
 }
 
 void CSGOAi::set_activated_behavior(const ActivatedFeatures& behavior)
 {
-	this->activated_behavior = behavior;
+	activated_behavior = behavior;
 }
 
 std::shared_ptr<GameInformationhandler> CSGOAi::get_game_info_handler()
 {
-	return this->game_info_handler;
+	return game_info_handler;
 }
 
 void CSGOAi::update()
@@ -72,14 +72,14 @@ void CSGOAi::update()
 	if (!game_info_handler->is_attached_to_process())
 		return;
 
-	this->game_info_handler->update_game_information();
+	game_info_handler->update_game_information();
 
 	if (activated_behavior.triggerBot)
-		this->triggerbot.update(game_info_handler.get());
+		triggerbot.update(game_info_handler.get());
 	if (activated_behavior.aimbot)
-		this->aimbot.update(game_info_handler.get());
+		aimbot.update(game_info_handler.get());
 	if (activated_behavior.movement)
-		this->movement_strategy.update(game_info_handler.get());
+		movement_strategy.update(game_info_handler.get());
 }
 
 void CSGOAi::console_run()
@@ -95,10 +95,10 @@ void CSGOAi::console_run()
 
 		if (toggle_button.is_toggled())
 		{
-			this->game_info_handler->update_game_information();
-			this->triggerbot.update(game_info_handler.get());
-			this->aimbot.update(game_info_handler.get());
-			this->movement_strategy.update(game_info_handler.get());
+			game_info_handler->update_game_information();
+			triggerbot.update(game_info_handler.get());
+			aimbot.update(game_info_handler.get());
+			movement_strategy.update(game_info_handler.get());
 		}
 	}
 }

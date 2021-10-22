@@ -1,6 +1,6 @@
 #pragma once
-#include "GameInformationHandler.h"
 #include <chrono>
+#include "GameInformationHandler.h"
 
 class Triggerbot 
 {

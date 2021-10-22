@@ -15,11 +15,6 @@ public:
 		return sqrt(x * x + y * y + z * z);
 	}
 
-	void print() const
-	{
-		std::cout << "X: " << x << " Y: " << y << " Z: " << z << std::endl;
-	}
-
 	void normalize()
 	{
 		T length = calc_abs();

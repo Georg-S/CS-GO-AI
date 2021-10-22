@@ -22,11 +22,6 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-bool MainWindow::all_three_checkboxes_checked()
-{
-	return ui->checkBox_aimbot->isChecked() && ui->checkBox_triggerbot->isChecked() && ui->checkBox_movement->isChecked();
-}
-
 void MainWindow::update_behavior_executed()
 {
 	ActivatedFeatures features;
@@ -35,6 +30,20 @@ void MainWindow::update_behavior_executed()
 	features.movement = ui->checkBox_movement->isChecked();
 
 	csgo_runner->set_activated_behavior(features);
+}
+
+bool MainWindow::all_behavior_checkboxes_checked()
+{
+	return all_checked({ ui->checkBox_aimbot, ui->checkBox_triggerbot, ui->checkBox_movement });
+}
+
+bool MainWindow::all_checked(std::initializer_list<QCheckBox*> checkboxes)
+{
+	bool all_checked = false;
+	for (QCheckBox* box : checkboxes)
+		all_checked = all_checked && box->isChecked();
+
+	return all_checked;
 }
 
 void MainWindow::set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes)
@@ -51,7 +60,7 @@ void MainWindow::set_enabled(bool value, std::initializer_list<QCheckBox*> check
 
 void MainWindow::on_checkBox_ai_stateChanged()
 {
-	if (all_three_checkboxes_checked() && ui->checkBox_ai->isChecked())
+	if (all_behavior_checkboxes_checked() && ui->checkBox_ai->isChecked())
 	{
 		set_enabled(false, { ui->checkBox_aimbot, ui->checkBox_movement, ui->checkBox_triggerbot });
 		return;
@@ -71,7 +80,7 @@ void MainWindow::on_checkBox_ai_stateChanged()
 
 void MainWindow::on_checkBox_aimbot_stateChanged()
 {
-	if (all_three_checkboxes_checked())
+	if (all_behavior_checkboxes_checked())
 		ui->checkBox_ai->setChecked(true);
 
 	update_behavior_executed();
@@ -79,7 +88,7 @@ void MainWindow::on_checkBox_aimbot_stateChanged()
 
 void MainWindow::on_checkBox_movement_stateChanged()
 {
-	if (all_three_checkboxes_checked())
+	if (all_behavior_checkboxes_checked())
 		ui->checkBox_ai->setChecked(true);
 
 	update_behavior_executed();
@@ -87,7 +96,7 @@ void MainWindow::on_checkBox_movement_stateChanged()
 
 void MainWindow::on_checkBox_triggerbot_stateChanged()
 {
-	if (all_three_checkboxes_checked())
+	if (all_behavior_checkboxes_checked())
 		ui->checkBox_ai->setChecked(true);
 
 	update_behavior_executed();
