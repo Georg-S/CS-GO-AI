@@ -116,34 +116,34 @@ Movement MovementStrategy::get_movement_from_walking_angle(float walking_angle) 
 	{
 		new_movement.forward = true;
 	}
-	if ((walking_angle > 22.5) && (walking_angle <= 67.5))
+	else if ((walking_angle > 22.5) && (walking_angle <= 67.5))
 	{
 		new_movement.forward = true;
 		new_movement.left = true;
 	}
-	if ((walking_angle > 67.5) && (walking_angle <= 112.5))
+	else if ((walking_angle > 67.5) && (walking_angle <= 112.5))
 	{
 		new_movement.left = true;
 	}
-	if ((walking_angle > 112.5) && (walking_angle <= 157.5))
+	else if ((walking_angle > 112.5) && (walking_angle <= 157.5))
 	{
 		new_movement.left = true;
 		new_movement.backward = true;
 	}
-	if ((walking_angle > 157.5) && (walking_angle <= 202.5))
+	else if ((walking_angle > 157.5) && (walking_angle <= 202.5))
 	{
 		new_movement.backward = true;
 	}
-	if ((walking_angle > 202.5) && (walking_angle <= 247.5))
+	else if ((walking_angle > 202.5) && (walking_angle <= 247.5))
 	{
 		new_movement.backward = true;
 		new_movement.right = true;
 	}
-	if ((walking_angle > 247.5) && (walking_angle <= 292.5))
+	else if ((walking_angle > 247.5) && (walking_angle <= 292.5))
 	{
 		new_movement.right = true;
 	}
-	if ((walking_angle > 292.5) && (walking_angle <= 337.5))
+	else if ((walking_angle > 292.5) && (walking_angle <= 337.5))
 	{
 		new_movement.right = true;
 		new_movement.forward = true;
