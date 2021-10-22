@@ -39,7 +39,10 @@ bool MainWindow::all_behavior_checkboxes_checked()
 
 bool MainWindow::all_checked(std::initializer_list<QCheckBox*> checkboxes)
 {
-	bool all_checked = false;
+	if (checkboxes.size() == 0)
+		return false;
+
+	bool all_checked = true;
 	for (QCheckBox* box : checkboxes)
 		all_checked = all_checked && box->isChecked();
 
