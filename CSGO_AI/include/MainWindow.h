@@ -7,7 +7,11 @@
 #include <math.h>
 #include <qmutex.h>
 #include <qthread.h>
+#include <qfiledialog.h>
+#include <qpainter.h>
 #include <memory>
+#include <qevent.h>
+#include "NavmeshEditor.h"
 #include "CSGOAI.h"
 #include "ui_MainWindow.h"
 #include "NavmeshPoints.h"
@@ -15,13 +19,22 @@
 #include "Logging.h"
 #include "QTBoxLogger.h"
 
+enum class SelectedTab
+{
+    AI = 0, POINTS = 1, EDITOR = 2
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget* parent = nullptr);
+    bool is_navmesh_editor_tab_selected() const;
     ~MainWindow();
+
+protected:
+    void mousePressEvent(QMouseEvent* event) override;
 
 private:
     bool all_behavior_checkboxes_checked();
@@ -33,7 +46,7 @@ private:
     Ui::MainWindow* ui;
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
-
+    std::unique_ptr<NavmeshEditor> navmesh_editor = nullptr;
 signals:
     void stopped();
 private slots:
@@ -48,4 +61,5 @@ private slots:
     void on_button_save_points_clicked();
     void on_button_add_point_clicked();
     void on_button_reattach_2_clicked();
+    void on_button_load_navmesh_clicked();
 };

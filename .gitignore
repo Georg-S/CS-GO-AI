@@ -8,6 +8,7 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
+pic.jpg
 _deps
 /[Ll]ibrary/
 /[Bb]uild/
