@@ -9,6 +9,7 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 pic.jpg
+pic2.jpg
 _deps
 /[Ll]ibrary/
 /[Bb]uild/

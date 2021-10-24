@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 	Logging::set_logger(std::make_unique<QTBoxLogger>(ui->textEdit_output, ui->textEdit_point_output));
 	navmesh_editor = std::make_unique<NavmeshEditor>(this);
-	this->ui->editor_tab_layout->addWidget(navmesh_editor.get());
+	ui->editor_tab_layout->addWidget(navmesh_editor.get());
 
 
 	csgo_runner_thread = new QThread();

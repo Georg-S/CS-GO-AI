@@ -60,7 +60,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 # CS-GO AI Project
-add_executable(CSGO_AI WIN32 "src/main.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})
+#add_executable(CSGO_AI WIN32 "src/main.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})
+add_executable(CSGO_AI "src/main.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})
 target_include_directories(CSGO_AI PUBLIC "include")
 set_property(TARGET CSGO_AI PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CSGO_AI)
