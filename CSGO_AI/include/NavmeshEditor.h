@@ -18,7 +18,7 @@ public:
 	void draw_editor_map();
 	void load_file(const QString& file_name);
 protected:
-	void wheelEvent(QEvent* event);
+	void wheelEvent(QWheelEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 
 private:

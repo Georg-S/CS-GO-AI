@@ -30,6 +30,7 @@ set (HEADERS
 	"include/Logger.h"
 	"include/QTBoxLogger.h"
 	"include/Logging.h"
+	"include/NavmeshEditorWidget.h"
 	"include/NavmeshEditor.h"
 	)
 
@@ -49,10 +50,12 @@ set(SOURCES
 	"src/QTBoxLogger.cpp"
 	"src/Logging.cpp"
 	"src/NavmeshEditor.cpp"
+	"src/NavmeshEditorWidget.cpp"
 	)
 
 set(QT_UI_FILES
 	"include/MainWindow.ui"
+	"include/NavmeshEditorWidget.ui"
 )
 
 set(CMAKE_AUTOMOC ON)

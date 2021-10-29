@@ -58,13 +58,13 @@ void NavmeshEditor::load_file(const QString& file_name)
 	draw_editor_map();
 }
 
-void NavmeshEditor::wheelEvent(QEvent* event)
+void NavmeshEditor::wheelEvent(QWheelEvent* event)
 {
-	int a = 2;
-	a += 2;
+//	QScrollArea::wheelEvent(event);
 }
 
 void NavmeshEditor::mousePressEvent(QMouseEvent* event)
 {
 	left_clicked(event);
 }
+
