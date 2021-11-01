@@ -5,9 +5,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	ui->setupUi(this);
 
 	Logging::set_logger(std::make_unique<QTBoxLogger>(ui->textEdit_output, ui->textEdit_point_output));
-	navmesh_editor = std::make_unique<NavmeshEditor>(this);
-	ui->editor_tab_layout->addWidget(navmesh_editor.get());
 
+	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
 
 	csgo_runner_thread = new QThread();
 	csgo_runner = new CSGORunner();
@@ -29,8 +28,6 @@ MainWindow::~MainWindow()
 {
 	delete ui;
 }
-
-
 
 void MainWindow::update_behavior_executed()
 {
@@ -162,18 +159,4 @@ void MainWindow::on_button_add_point_clicked()
 void MainWindow::on_button_reattach_2_clicked()
 {
 	csgo_runner->attach_to_process();
-}
-
-void MainWindow::on_button_load_navmesh_clicked()
-{
-	QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::currentPath());
-	if (file_name.isEmpty())
-		return;
-
-	navmesh_editor->load_file(file_name);
-}
-
-void MainWindow::mousePressEvent(QMouseEvent* event)
-{
-
 }

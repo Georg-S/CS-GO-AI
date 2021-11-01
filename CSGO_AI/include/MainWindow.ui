@@ -194,26 +194,7 @@
        <attribute name="title">
         <string>Navmesh-Editor</string>
        </attribute>
-       <layout class="QVBoxLayout" name="editor_tab_layout">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QPushButton" name="button_load_navmesh">
-            <property name="text">
-             <string>Load navmesh file</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="text">
-             <string>PushButton</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <layout class="QVBoxLayout" name="editor_tab_layout"/>
       </widget>
      </widget>
     </item>

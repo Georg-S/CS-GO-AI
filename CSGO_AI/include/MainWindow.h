@@ -1,23 +1,17 @@
 #pragma once
 #include <iostream>
 #include <QtWidgets/QMainWindow>
-#include <qlabel.h>
-#include <qdebug.h>
 #include <string>
 #include <math.h>
-#include <qmutex.h>
 #include <qthread.h>
-#include <qfiledialog.h>
-#include <qpainter.h>
 #include <memory>
-#include <qevent.h>
-#include "NavmeshEditor.h"
 #include "CSGOAI.h"
 #include "ui_MainWindow.h"
 #include "NavmeshPoints.h"
 #include "CSGORunner.h"
 #include "Logging.h"
 #include "QTBoxLogger.h"
+#include "NavmeshEditorWidget.h"
 
 enum class SelectedTab
 {
@@ -33,9 +27,6 @@ public:
     bool is_navmesh_editor_tab_selected() const;
     ~MainWindow();
 
-protected:
-    void mousePressEvent(QMouseEvent* event) override;
-
 private:
     bool all_behavior_checkboxes_checked();
     void update_behavior_executed();
@@ -43,10 +34,9 @@ private:
     void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 
-    Ui::MainWindow* ui;
+    Ui::MainWindow* ui = nullptr;
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
-    std::unique_ptr<NavmeshEditor> navmesh_editor = nullptr;
 signals:
     void stopped();
 private slots:
@@ -61,5 +51,4 @@ private slots:
     void on_button_save_points_clicked();
     void on_button_add_point_clicked();
     void on_button_reattach_2_clicked();
-    void on_button_load_navmesh_clicked();
 };

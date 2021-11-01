@@ -14,18 +14,14 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 		return;
 
 	QPoint p = displayed_map->mapFromGlobal(QCursor::pos());
+	QPixmap map = QPixmap::fromImage(image);
 
-	if (event->button() == Qt::LeftButton)
-	{
-		QPixmap map = QPixmap::fromImage(image);
+	QPainter painter(&map);
+	painter.setBrush(Qt::red);
+	painter.drawEllipse(p, 20, 20);
 
-		QPainter painter(&map);
-		painter.setBrush(Qt::red);
-		painter.drawEllipse(p, 20, 20);
-
-		displayed_map->setPixmap(map);
-		displayed_map->adjustSize();
-	}
+	displayed_map->setPixmap(map);
+	displayed_map->adjustSize();
 }
 
 NavmeshEditor::~NavmeshEditor()
@@ -60,11 +56,13 @@ void NavmeshEditor::load_file(const QString& file_name)
 
 void NavmeshEditor::wheelEvent(QWheelEvent* event)
 {
-//	QScrollArea::wheelEvent(event);
 }
 
 void NavmeshEditor::mousePressEvent(QMouseEvent* event)
 {
-	left_clicked(event);
+	if (event->button() == Qt::LeftButton)
+		left_clicked(event);
+	else if (event->button() == Qt::RightButton)
+		;
 }
 
