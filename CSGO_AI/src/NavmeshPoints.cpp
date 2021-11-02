@@ -72,6 +72,12 @@ void NavmeshPoints::add_point()
 	auto game_info = game_info_handler->get_game_information();
 	auto position = game_info.controlled_player.position;
 
+	if (map_name == "") 
+	{
+		map_name = std::string(game_info.current_map);
+		std::replace(map_name.begin(), map_name.end(), '/', '_');
+	}
+
 	points.push_back(position);
 	Logging::log("Point added: " + position.to_string());
 }
@@ -86,8 +92,15 @@ bool NavmeshPoints::save_to_file()
 	try
 	{
 		std::ofstream my_file;
-		my_file.open("nav_points.json");
-		json nav_json = json::parse(R"({"nodes" : []})");
+		std::string file_name = "Navmesh/json/";
+		if (map_name == "")
+			file_name = file_name + "no_name" + ".json";
+		else
+			file_name = file_name + map_name + ".json";
+
+		my_file.open(file_name);
+		json nav_json;
+		nav_json["map_name"] = map_name;
 
 		for (unsigned int i = 0; i < this->points.size(); i++)
 		{

@@ -8,7 +8,7 @@
 #include <qlineedit.h>
 #include "json.hpp"
 
-using nlohmann::json;
+using json = nlohmann::json;
 
 class NavmeshEditor : public QScrollArea
 {

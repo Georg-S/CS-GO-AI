@@ -35,6 +35,7 @@ private:
 	MemoryManager mem_manager;
 	DWORD client_dll_address;
 	DWORD engine_address;
+	std::string map_name = "";
 	std::vector<Vec3D<float>> points;
 	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
 };
