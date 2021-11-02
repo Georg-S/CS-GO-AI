@@ -14,16 +14,26 @@ NavmeshEditorWidget::~NavmeshEditorWidget()
 
 void NavmeshEditorWidget::on_button_load_navmesh_clicked()
 {
-	QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::currentPath() + "/Navmeshs");
+	QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::currentPath() + "/Navmesh/json");
 	if (file_name.isEmpty())
 		return;
 
 	navmesh_editor->load_navmesh(file_name);
 }
 
+void NavmeshEditorWidget::on_button_place_corner_points_clicked()
+{
+	navmesh_editor->place_corner_points();
+}
+
+void NavmeshEditorWidget::on_button_save_navmesh_clicked()
+{
+	navmesh_editor->save_navmesh();
+}
+
 void NavmeshEditorWidget::on_button_load_map_clicked() 
 {
-	QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::currentPath() + "/Map_images");
+	QString file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::currentPath() + "/Navmesh/map_images");
 	if (file_name.isEmpty())
 		return;
 

@@ -20,4 +20,6 @@ private:
 private slots:
 	void on_button_load_map_clicked();
 	void on_button_load_navmesh_clicked();
+	void on_button_place_corner_points_clicked();
+	void on_button_save_navmesh_clicked();
 };
