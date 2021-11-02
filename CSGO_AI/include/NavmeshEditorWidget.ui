@@ -43,6 +43,24 @@
      </property>
     </widget>
    </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="button_place_corner_points">
+       <property name="text">
+        <string>Place corner points</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_save_navmesh">
+       <property name="text">
+        <string>Save Navmesh</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <resources/>
