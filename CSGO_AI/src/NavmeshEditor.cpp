@@ -12,20 +12,28 @@ NavmeshEditor::NavmeshEditor(QWidget* parent, QLineEdit* output_line) : QScrollA
 
 void NavmeshEditor::left_clicked(QMouseEvent* event)
 {
-	/*
 	if (image.isNull())
 		return;
 
-	QPoint p = displayed_map->mapFromGlobal(QCursor::pos());
-	QPixmap map = QPixmap::fromImage(image);
+	auto mapped_pos = displayed_map->mapFromGlobal(QCursor::pos());
+	auto scaled_cursor_pos = mapped_pos / zoom_factor;
 
-	QPainter painter(&map);
-	painter.setBrush(Qt::red);
-	painter.drawEllipse(p, 20, 20);
-
-	displayed_map->setPixmap(map);
-	displayed_map->adjustSize();
-	*/
+	if (editor_state == State::PLACE_CORNER_1) 
+	{
+		corner_node_1->canvas_pos = Vec2D<int>(scaled_cursor_pos.x(), scaled_cursor_pos.y());
+		corner_node_1->render = true;
+		editor_state = State::PLACE_CORNER_2;
+		output("Place second node: " + QString::fromStdString(corner_node_2->pos.to_string()));
+	}
+	else if (editor_state == State::PLACE_CORNER_2) 
+	{
+		corner_node_2->canvas_pos = Vec2D<int>(scaled_cursor_pos.x(), scaled_cursor_pos.y());
+		corner_node_2->render = true;
+		editor_state = State::ADD_EDGES;
+		output_success("Corner nodes set: edges can be added");
+		adjust_all_nodes();
+	}
+	render_editor();
 }
 
 NavmeshEditor::~NavmeshEditor()
@@ -34,28 +42,51 @@ NavmeshEditor::~NavmeshEditor()
 		delete displayed_map;
 }
 
-void NavmeshEditor::draw_editor_map(const QPoint& mouse_pos)
+void NavmeshEditor::render_editor()
 {
+	if (image.isNull())
+		return;
+
 	QPixmap map = QPixmap::fromImage(image);
+	render_edges(map);
+	render_nodes(map);
+	displayed_map->setPixmap(map);
+	displayed_map->resize(zoom_factor * map.size());
+}
+
+void NavmeshEditor::render_edges(QPixmap& map) 
+{
+	QPainter painter(&map);
+
+	painter.setBrush(Qt::black);
+	for (const auto& edge : edges)
+	{
+	}
+}
+
+void NavmeshEditor::render_nodes(QPixmap& map)
+{
 	QPainter painter(&map);
 
 	painter.setBrush(Qt::red);
-	painter.drawEllipse(mouse_pos, 10, 10);
-	displayed_map->setPixmap(map);
-	displayed_map->resize(zoom_factor * map.size());
+	for (const auto& node : nodes) 
+	{
+		if(node->render)
+			painter.drawEllipse(QPoint(node->canvas_pos.x, node->canvas_pos.y), NODE_SIZE, NODE_SIZE);
+	}
 }
 
 void NavmeshEditor::load_image(const QString& file_name)
 {
 	QImage img = QImage(file_name);
-	if (img.isNull()) 
+	if (img.isNull())
 	{
 		output_error("Could not load map image");
 		return;
 	}
 
 	image = img;
-	draw_editor_map({ 0,0 });
+	render_editor();
 }
 
 void NavmeshEditor::load_navmesh(const QString& file_name)
@@ -80,7 +111,16 @@ void NavmeshEditor::load_navmesh(const QString& file_name)
 
 void NavmeshEditor::place_corner_points()
 {
-	editor_state = State::PLACE_CORNERS;
+	set_corner_nodes();
+
+	if (!corner_node_1 || !corner_node_2) 
+	{
+		output_error("Couldn't find two corner points, please load a valid navmesh");
+		return;
+	}
+
+	editor_state = State::PLACE_CORNER_1;
+	output("Place first node: " + QString::fromStdString(corner_node_1->pos.to_string()));
 }
 
 void NavmeshEditor::save_navmesh()
@@ -100,7 +140,7 @@ void NavmeshEditor::wheelEvent(QWheelEvent* event)
 	else
 		zoom(0.9); // Maybe adjust
 
-	draw_editor_map({ 0,0 });
+	render_editor();
 }
 
 void NavmeshEditor::mousePressEvent(QMouseEvent* event)
@@ -109,15 +149,6 @@ void NavmeshEditor::mousePressEvent(QMouseEvent* event)
 		left_clicked(event);
 	else if (event->button() == Qt::RightButton)
 		;
-}
-
-void NavmeshEditor::mouseMoveEvent(QMouseEvent* event)
-{
-	auto cursor_pos = QCursor::pos();
-	auto mapped_pos = displayed_map->mapFromGlobal(cursor_pos);
-	auto scaled_pos = mapped_pos / zoom_factor;
-
-	draw_editor_map(scaled_pos);
 }
 
 void NavmeshEditor::zoom(double factor)
@@ -129,7 +160,7 @@ void NavmeshEditor::zoom(double factor)
 	zoom_factor = std::min(zoom_factor, max_factor);
 	zoom_factor = std::max(zoom_factor, min_factor);
 
-	draw_editor_map({0,0});
+	render_editor();
 }
 
 void NavmeshEditor::output(const QString& message)
@@ -171,7 +202,7 @@ void NavmeshEditor::load_nodes(const json& navmesh_json)
 		if (corner)
 			corner_count++;
 
-		nodes.push_back(Editor::Node{ id, corner, pos });
+		nodes.push_back(std::make_unique<Editor::Node>(id, corner, pos));
 	}
 
 	if (corner_count >= 2)
@@ -191,6 +222,67 @@ void NavmeshEditor::load_edges(const json& navmesh_json)
 		int to_id = json_edge["to"];
 		float weight = json_edge["distance"];
 
-		edges.push_back(Editor::Edge{ from_id, to_id, weight});
+		edges.push_back(std::make_unique<Editor::Edge>(from_id, to_id, weight));
+	}
+}
+
+void NavmeshEditor::output_success(const QString& message)
+{
+	output(message, Qt::green);
+}
+
+void NavmeshEditor::set_corner_nodes()
+{
+	corner_node_1 = nullptr;
+	corner_node_2 = nullptr;
+
+	for (const auto& node : nodes)
+	{
+		if (!node->corner)
+			continue;
+
+		if (!corner_node_1)
+		{
+			corner_node_1 = node.get();
+		}
+		else if (!corner_node_2)
+		{
+			corner_node_2 = node.get();
+			return;
+		}
+	}
+}
+
+void NavmeshEditor::adjust_all_nodes() 
+{
+	auto cs_go_diff_vec = corner_node_2->pos - corner_node_1->pos;
+	auto canvas_diff_vec = corner_node_2->canvas_pos - corner_node_1->canvas_pos;
+
+	int x_go_coord_diff = cs_go_diff_vec.x;
+	int y_go_coord_diff = cs_go_diff_vec.y;
+
+	if (x_go_coord_diff == 0 || y_go_coord_diff == 0)
+		return;
+
+	int x_canvas_coord_diff = canvas_diff_vec.x;
+	int y_canvas_coord_diff = canvas_diff_vec.y;
+
+	float x_ratio = (float)x_canvas_coord_diff / x_go_coord_diff;
+	float y_ratio = (float)y_canvas_coord_diff / y_go_coord_diff;
+
+
+	for (auto&& node : nodes) 
+	{
+		if (node->id == corner_node_1->id || node->id == corner_node_2->id)
+			continue;
+
+		auto go_diff_vec = node->pos - corner_node_1->pos;
+		Vec2D<int> canvas_pos = corner_node_1->canvas_pos;
+		
+		canvas_pos.x += go_diff_vec.x * x_ratio;
+		canvas_pos.y += go_diff_vec.y * y_ratio;
+
+		node->canvas_pos = canvas_pos;
+		node->render = true;
 	}
 }
