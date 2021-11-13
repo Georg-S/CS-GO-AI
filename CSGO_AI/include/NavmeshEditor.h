@@ -29,10 +29,10 @@ namespace Editor
 
 	struct Edge
 	{
-		Edge(int from, int to, float weight) : from(from), to(to), weight(weight), render(false) {};
+		Edge(Node* from, Node* to, float weight) : from(from), to(to), weight(weight), render(false) {};
 
-		int from;
-		int to;
+		Node* from;
+		Node* to;
 		float weight;
 		bool render = false;
 	};
@@ -57,13 +57,14 @@ public:
 	void load_image(const QString& file_name);
 	void load_navmesh(const QString& file_name);
 	void place_corner_points();
-	void save_navmesh();
+	bool save_navmesh();
 protected:
 	void wheelEvent(QWheelEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 
 private:
 	void zoom(double factor);
+	void output(const std::string& message);
 	void output(const QString& message, Qt::GlobalColor color);
 	void output(const QString& message);
 	void output_error(const QString& message);
@@ -74,6 +75,9 @@ private:
 	void render_edges(QPixmap& pixmap);
 	void render_nodes(QPixmap& pixmap);
 	void adjust_all_nodes();
+	Editor::Node* get_clicked_node(const std::vector<std::unique_ptr<Editor::Node>>& nodes, const Vec2D<int>& click_pos);
+	bool add_edge(Editor::Node* from, Editor::Node* to);
+	Editor::Node* get_node_pointer_by_id(const std::vector<std::unique_ptr<Editor::Node>>& nodes, int id) const;
 
 	QLabel* displayed_map = nullptr;
 	QImage image;
@@ -84,7 +88,10 @@ private:
 	bool valid_json_loaded = false;
 	std::vector<std::unique_ptr<Editor::Node>> nodes;
 	std::vector<std::unique_ptr<Editor::Edge>> edges;
+	std::string map_name = "";
 	Editor::Node* corner_node_1 = nullptr;
 	Editor::Node* corner_node_2 = nullptr;
+	Editor::Node* selected_node_1 = nullptr;
+	Editor::Node* selected_node_2 = nullptr;
 	static constexpr int NODE_SIZE = 10;
 };
