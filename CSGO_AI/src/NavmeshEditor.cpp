@@ -299,7 +299,7 @@ void NavmeshEditor::load_edges(const json& navmesh_json)
 	{
 		int from_id = json_edge["from"];
 		int to_id = json_edge["to"];
-		float weight = json_edge["distance"];
+		float weight = json_edge["weight"];
 
 		auto from_node = get_node_pointer_by_id(nodes, from_id);
 		auto to_node = get_node_pointer_by_id(nodes, to_id);
@@ -366,6 +366,7 @@ void NavmeshEditor::adjust_all_nodes()
 		node->canvas_pos = canvas_pos;
 		node->render = true;
 	}
+	corner_nodes_placed = true;
 }
 
 Editor::Node* NavmeshEditor::get_clicked_node(const std::vector<std::unique_ptr<Editor::Node>>& nodes, const Vec2D<int>& click_pos)
