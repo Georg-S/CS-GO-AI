@@ -65,24 +65,24 @@ Vec3D<T> operator-(const Vec3D<T>& left, const Vec3D<T>& right)
 	return result;
 }
 
-template <typename T>
-Vec3D<T> operator/(const Vec3D<T>& left, T num)
+template <typename T, typename R>
+Vec3D<T> operator/(const Vec3D<T>& left, R num)
 {
 	Vec3D<T> result;
-	result.x /= num;
-	result.y /= num;
-	result.z /= num;
+	result.x = left.x / num;
+	result.y = left.y / num;
+	result.z = left.z / num;
 
 	return result;
 }
 
-template <typename T>
+template <typename T, typename R>
 Vec3D<T> operator*(const Vec3D<T>& left, T num)
 {
 	Vec3D<T> result;
-	result.x *= num;
-	result.y *= num;
-	result.z *= num;
+	result.x = left.x * num;
+	result.y = left.y * num;
+	result.z = left.z * num;
 
 	return result;
 }

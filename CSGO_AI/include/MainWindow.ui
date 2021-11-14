@@ -20,11 +20,11 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -189,6 +189,12 @@
          </layout>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="Tab_navmesh_editor">
+       <attribute name="title">
+        <string>Navmesh-Editor</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="editor_tab_layout"/>
       </widget>
      </widget>
     </item>

@@ -1,11 +1,8 @@
 #pragma once
 #include <iostream>
 #include <QtWidgets/QMainWindow>
-#include <qlabel.h>
-#include <qdebug.h>
 #include <string>
 #include <math.h>
-#include <qmutex.h>
 #include <qthread.h>
 #include <memory>
 #include "CSGOAI.h"
@@ -14,6 +11,12 @@
 #include "CSGORunner.h"
 #include "Logging.h"
 #include "QTBoxLogger.h"
+#include "NavmeshEditorWidget.h"
+
+enum class SelectedTab
+{
+    AI = 0, POINTS = 1, EDITOR = 2
+};
 
 class MainWindow : public QMainWindow
 {
@@ -21,6 +24,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget* parent = nullptr);
+    bool is_navmesh_editor_tab_selected() const;
     ~MainWindow();
 
 private:
@@ -30,10 +34,9 @@ private:
     void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 
-    Ui::MainWindow* ui;
+    Ui::MainWindow* ui = nullptr;
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
-
 signals:
     void stopped();
 private slots:

@@ -4,7 +4,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
 	ui->setupUi(this);
 
-	Logging::set_logger(std::make_unique<QTBoxLogger>(this->ui->textEdit_output, this->ui->textEdit_point_output));
+	Logging::set_logger(std::make_unique<QTBoxLogger>(ui->textEdit_output, ui->textEdit_point_output));
+
+	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
 
 	csgo_runner_thread = new QThread();
 	csgo_runner = new CSGORunner();
@@ -15,6 +17,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	connect(csgo_runner, &CSGORunner::finished, csgo_runner, &CSGORunner::deleteLater);
 	connect(csgo_runner_thread, &QThread::finished, csgo_runner_thread, &QThread::deleteLater);
 	csgo_runner_thread->start();
+}
+
+bool MainWindow::is_navmesh_editor_tab_selected() const
+{
+	return (SelectedTab)ui->tabWidget->currentIndex() == SelectedTab::EDITOR;
 }
 
 MainWindow::~MainWindow()
@@ -133,10 +140,7 @@ void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
-	constexpr int ai_tab = 0;
-	constexpr int point_tab = 1;
-
-	csgo_runner->set_run_navmesh_points(index == point_tab);
+	csgo_runner->set_run_navmesh_points((SelectedTab)index == SelectedTab::POINTS);
 }
 
 void MainWindow::on_button_save_points_clicked()

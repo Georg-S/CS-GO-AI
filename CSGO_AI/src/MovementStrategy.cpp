@@ -172,7 +172,7 @@ void MovementStrategy::load_edges(const json& json)
 	{
 		int from_id = json_edge["from"];
 		int to_id = json_edge["to"];
-		float weight = json_edge["distance"];
+		float weight = json_edge["weight"];
 
 		auto from = get_node_by_id(from_id);
 		auto to = get_node_by_id(to_id);
