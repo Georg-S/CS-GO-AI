@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 #include "Offsets.h"
-#include "Vec3D.h"
-#include "Vec2D.h"
+#include "Utility/Vec3D.h"
+#include "Utility/Vec2D.h"
 #include "MemoryManager.h"
 #include "ConfigReader.h"
 

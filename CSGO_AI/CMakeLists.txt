@@ -11,56 +11,89 @@ endif()
 
 find_package(Qt5Widgets REQUIRED)
 
-set (HEADERS
-	"include/MemoryManager.h"
-	"include/Button.h"
-	"include/Offsets.h"
-	"include/Vec3D.h"
-	"include/Vec2D.h"
-	"include/json.hpp"
-	"include/GameInformationHandler.h"
-	"include/ConfigReader.h"
-	"include/CSGOAI.h"
-	"include/Triggerbot.h"
-	"include/Aimbot.h"
-	"include/MovementStrategy.h"
-	"include/NavmeshPoints.h"
-	"include/MainWindow.h"
-	"include/CSGORunner.h"
-	"include/Logger.h"
-	"include/QTBoxLogger.h"
-	"include/Logging.h"
-	"include/NavmeshEditorWidget.h"
-	"include/NavmeshEditor.h"
-	)
+set (UTILITY_HEADER
+	"include/Utility/json.hpp"
+	"include/Utility/Logger.h"
+	"include/Utility/Logging.h"
+	"include/Utility/Vec2D.h"
+	"include/Utility/Vec3D.h"
+)
 
-set(SOURCES 
-	"src/MemoryManager.cpp"
-	"src/Button.cpp"
-	"src/Offsets.cpp"
-	"src/GameInformationHandler.cpp"
-	"src/ConfigReader.cpp"
-	"src/CSGOAI.cpp"
-	"src/Triggerbot.cpp"
-	"src/Aimbot.cpp"
-	"src/MovementStrategy.cpp"
-	"src/NavmeshPoints.cpp"
-	"src/MainWindow.cpp"
-	"src/CSGORunner.cpp"
-	"src/QTBoxLogger.cpp"
-	"src/Logging.cpp"
-	"src/NavmeshEditor.cpp"
-	"src/NavmeshEditorWidget.cpp"
-	)
+set (UI_HEADER
+	"include/UI/CSGORunner.h"
+	"include/UI/MainWindow.h"
+	"include/UI/NavmeshEditor.h"
+	"include/UI/NavmeshEditorWidget.h"
+	"include/UI/QTBoxLogger.h"
+)
 
 set(QT_UI_FILES
-	"include/MainWindow.ui"
-	"include/NavmeshEditorWidget.ui"
+	"include/UI/MainWindow.ui"
+	"include/UI/NavmeshEditorWidget.ui"
 )
+
+set (CSGO_HEADER
+	"include/CSGO/Aimbot.h"
+	"include/CSGO/Button.h"
+	"include/CSGO/ConfigReader.h"
+	"include/CSGO/CSGOAI.h"
+	"include/CSGO/GameInformationHandler.h"
+	"include/CSGO/MemoryManager.h"
+	"include/CSGO/MovementStrategy.h"
+	"include/CSGO/NavmeshPoints.h"
+	"include/CSGO/Offsets.h"
+	"include/CSGO/Triggerbot.h"
+)
+
+set (HEADERS
+	${UTILITY_HEADER}
+	${UI_HEADER}
+	${CSGO_HEADER}
+	)
+
+set(CSGO_SOURCE
+	"src/CSGO/Aimbot.cpp"
+	"src/CSGO/Button.cpp"
+	"src/CSGO/ConfigReader.cpp"
+	"src/CSGO/CSGOAI.cpp"
+	"src/CSGO/GameInformationHandler.cpp"
+	"src/CSGO/MemoryManager.cpp"
+	"src/CSGO/MovementStrategy.cpp"
+	"src/CSGO/NavmeshPoints.cpp"
+	"src/CSGO/Offsets.cpp"
+	"src/CSGO/Triggerbot.cpp"
+)
+
+set(UI_SOURCE
+	"src/UI/CSGORunner.cpp"
+	"src/UI/MainWindow.cpp"
+	"src/UI/NavmeshEditor.cpp"
+	"src/UI/NavmeshEditorWidget.cpp"
+	"src/UI/QTBoxLogger.cpp"
+)
+
+set(UTILITY_SOURCE
+	"src/Utility/Logging.cpp"
+)
+
+set(SOURCES 
+	${CSGO_SOURCE}
+	${UI_SOURCE}
+	${UTILITY_SOURCE}
+	)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
+
+source_group("\\Header Files\\Utility" FILES ${UTILITY_HEADER})
+source_group("\\Header Files\\UI" FILES ${UI_HEADER} ${QT_UI_FILES})
+source_group("\\Header Files\\CSGO" FILES ${CSGO_HEADER})
+
+source_group("\\Source Files\\Utility" FILES ${UTILITY_SOURCE})
+source_group("\\Source Files\\UI" FILES ${UI_SOURCE})
+source_group("\\Source Files\\CSGO" FILES ${CSGO_SOURCE})
+
 
 # CS-GO AI Project
 #add_executable(CSGO_AI WIN32 "src/main.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})

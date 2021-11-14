@@ -1,4 +1,4 @@
-#include "CSGORunner.h"
+#include "UI/CSGORunner.h"
 
 CSGORunner::CSGORunner(): QObject(nullptr)
 {

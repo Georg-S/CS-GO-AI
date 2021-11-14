@@ -10,7 +10,7 @@
 #include "Aimbot.h"
 #include "Button.h"
 #include "MovementStrategy.h"
-#include "Logging.h"
+#include "Utility/Logging.h"
 
 struct ActivatedFeatures 
 {

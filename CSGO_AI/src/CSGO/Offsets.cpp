@@ -1,4 +1,4 @@
-#include "Offsets.h"
+#include "CSGO/Offsets.h"
 
 DWORD Offsets::local_player_offset;
 DWORD Offsets::crosshair_offset;

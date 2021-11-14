@@ -2,7 +2,7 @@
 #include <string>
 #include <qtextedit.h>
 #include <qmutex.h>
-#include "Logger.h"
+#include "Utility/Logger.h"
 
 class QTBoxLogger : public Logger 
 {

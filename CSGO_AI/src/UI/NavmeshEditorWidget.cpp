@@ -1,4 +1,4 @@
-#include "NavmeshEditorWidget.h"
+#include "UI/NavmeshEditorWidget.h"
 
 NavmeshEditorWidget::NavmeshEditorWidget(QWidget* parent) : QWidget(parent), ui(new Ui::NavmeshEditorWidget)
 {

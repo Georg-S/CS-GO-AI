@@ -4,13 +4,13 @@
 #include <qpainter.h>
 #include <qwidget.h>
 #include <qscrollarea.h>
-#include <Logging.h>
+#include "Utility/Logging.h"
 #include <qlineedit.h>
 #include <fstream>
 #include <vector>
-#include "Vec3D.h"
-#include "Vec2D.h"
-#include "json.hpp"
+#include "Utility/Vec3D.h"
+#include "Utility/Vec2D.h"
+#include "Utility/json.hpp"
 
 using json = nlohmann::json;
 

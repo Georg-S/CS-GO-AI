@@ -1,4 +1,4 @@
-#include "QTBoxLogger.h"
+#include "UI/QTBoxLogger.h"
 
 QTBoxLogger::QTBoxLogger(QTextEdit* textEdit1, QTextEdit* textEdit2) : textEdit1(textEdit1), textEdit2(textEdit2)
 {

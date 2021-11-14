@@ -5,11 +5,11 @@
 #include "Button.h"
 #include "Offsets.h"
 #include "MemoryManager.h"
-#include "Vec3D.h"
+#include "Utility/Vec3D.h"
 #include "ConfigReader.h"
-#include "json.hpp"
+#include "Utility/json.hpp"
 #include "GameInformationHandler.h"
-#include "Logging.h"
+#include "Utility/Logging.h"
 
 using json = nlohmann::json;
 

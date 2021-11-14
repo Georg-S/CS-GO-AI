@@ -1,4 +1,4 @@
-#include "GameInformationHandler.h"
+#include "CSGO/GameInformationHandler.h"
 
 GameInformationhandler::GameInformationhandler()
 {

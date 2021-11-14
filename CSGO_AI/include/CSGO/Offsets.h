@@ -1,8 +1,8 @@
 #pragma once
 #include <wtypes.h>
 #include <fstream>
-#include "json.hpp"
-#include "Logging.h"
+#include "Utility/json.hpp"
+#include "Utility/Logging.h"
 
 using json = nlohmann::json;
 
