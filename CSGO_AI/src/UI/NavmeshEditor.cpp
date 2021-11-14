@@ -1,4 +1,4 @@
-#include "NavmeshEditor.h"
+#include "UI/NavmeshEditor.h"
 
 
 NavmeshEditor::NavmeshEditor(QWidget* parent, QLineEdit* output_line) : QScrollArea(parent), output_line(output_line)

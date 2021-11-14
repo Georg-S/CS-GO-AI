@@ -51,23 +51,35 @@ set (HEADERS
 	${CSGO_HEADER}
 	)
 
+set(CSGO_SOURCE
+	"src/CSGO/Aimbot.cpp"
+	"src/CSGO/Button.cpp"
+	"src/CSGO/ConfigReader.cpp"
+	"src/CSGO/CSGOAI.cpp"
+	"src/CSGO/GameInformationHandler.cpp"
+	"src/CSGO/MemoryManager.cpp"
+	"src/CSGO/MovementStrategy.cpp"
+	"src/CSGO/NavmeshPoints.cpp"
+	"src/CSGO/Offsets.cpp"
+	"src/CSGO/Triggerbot.cpp"
+)
+
+set(UI_SOURCE
+	"src/UI/CSGORunner.cpp"
+	"src/UI/MainWindow.cpp"
+	"src/UI/NavmeshEditor.cpp"
+	"src/UI/NavmeshEditorWidget.cpp"
+	"src/UI/QTBoxLogger.cpp"
+)
+
+set(UTILITY_SOURCE
+	"src/Utility/Logging.cpp"
+)
+
 set(SOURCES 
-	"src/MemoryManager.cpp"
-	"src/Button.cpp"
-	"src/Offsets.cpp"
-	"src/GameInformationHandler.cpp"
-	"src/ConfigReader.cpp"
-	"src/CSGOAI.cpp"
-	"src/Triggerbot.cpp"
-	"src/Aimbot.cpp"
-	"src/MovementStrategy.cpp"
-	"src/NavmeshPoints.cpp"
-	"src/MainWindow.cpp"
-	"src/CSGORunner.cpp"
-	"src/QTBoxLogger.cpp"
-	"src/Logging.cpp"
-	"src/NavmeshEditor.cpp"
-	"src/NavmeshEditorWidget.cpp"
+	${CSGO_SOURCE}
+	${UI_SOURCE}
+	${UTILITY_SOURCE}
 	)
 
 set(CMAKE_AUTOMOC ON)

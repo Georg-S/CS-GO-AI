@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "CSGO/Button.h"
 
 Button::Button(const std::string& button_name, int button)
 {
