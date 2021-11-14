@@ -1,8 +1,8 @@
 #pragma once
 #include <QApplication>
 #include <utility>
-#include "MainWindow.h"
-#include "CSGOAI.h"
+#include "UI/MainWindow.h"
+#include "CSGO/CSGOAI.h"
 
 int main(int argc, char* argv[])
 {

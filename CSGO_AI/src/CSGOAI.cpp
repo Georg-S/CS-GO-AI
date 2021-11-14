@@ -1,4 +1,4 @@
-#include "CSGOAI.h"
+#include "CSGO/CSGOAI.h"
 
 CSGOAi::CSGOAi()
 {

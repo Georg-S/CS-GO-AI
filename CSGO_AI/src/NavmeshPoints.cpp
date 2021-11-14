@@ -1,4 +1,4 @@
-#include "NavmeshPoints.h"
+#include "CSGO/NavmeshPoints.h"
 
 NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler)
 {

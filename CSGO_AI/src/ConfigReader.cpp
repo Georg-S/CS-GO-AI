@@ -1,4 +1,4 @@
-#include "ConfigReader.h"
+#include "CSGO/ConfigReader.h"
 
 bool ConfigReader::read_in_config_data(ConfigData& destination, const std::string& file_name)
 {

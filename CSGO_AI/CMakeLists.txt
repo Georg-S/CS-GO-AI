@@ -11,27 +11,44 @@ endif()
 
 find_package(Qt5Widgets REQUIRED)
 
+set (UTILITY_HEADER
+	"include/Utility/json.hpp"
+	"include/Utility/Logger.h"
+	"include/Utility/Logging.h"
+	"include/Utility/Vec2D.h"
+	"include/Utility/Vec3D.h"
+)
+
+set (UI_HEADER
+	"include/UI/CSGORunner.h"
+	"include/UI/MainWindow.h"
+	"include/UI/NavmeshEditor.h"
+	"include/UI/NavmeshEditorWidget.h"
+	"include/UI/QTBoxLogger.h"
+)
+
+set(QT_UI_FILES
+	"include/UI/MainWindow.ui"
+	"include/UI/NavmeshEditorWidget.ui"
+)
+
+set (CSGO_HEADER
+	"include/CSGO/Aimbot.h"
+	"include/CSGO/Button.h"
+	"include/CSGO/ConfigReader.h"
+	"include/CSGO/CSGOAI.h"
+	"include/CSGO/GameInformationHandler.h"
+	"include/CSGO/MemoryManager.h"
+	"include/CSGO/MovementStrategy.h"
+	"include/CSGO/NavmeshPoints.h"
+	"include/CSGO/Offsets.h"
+	"include/CSGO/Triggerbot.h"
+)
+
 set (HEADERS
-	"include/MemoryManager.h"
-	"include/Button.h"
-	"include/Offsets.h"
-	"include/Vec3D.h"
-	"include/Vec2D.h"
-	"include/json.hpp"
-	"include/GameInformationHandler.h"
-	"include/ConfigReader.h"
-	"include/CSGOAI.h"
-	"include/Triggerbot.h"
-	"include/Aimbot.h"
-	"include/MovementStrategy.h"
-	"include/NavmeshPoints.h"
-	"include/MainWindow.h"
-	"include/CSGORunner.h"
-	"include/Logger.h"
-	"include/QTBoxLogger.h"
-	"include/Logging.h"
-	"include/NavmeshEditorWidget.h"
-	"include/NavmeshEditor.h"
+	${UTILITY_HEADER}
+	${UI_HEADER}
+	${CSGO_HEADER}
 	)
 
 set(SOURCES 
@@ -52,11 +69,6 @@ set(SOURCES
 	"src/NavmeshEditor.cpp"
 	"src/NavmeshEditorWidget.cpp"
 	)
-
-set(QT_UI_FILES
-	"include/MainWindow.ui"
-	"include/NavmeshEditorWidget.ui"
-)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)

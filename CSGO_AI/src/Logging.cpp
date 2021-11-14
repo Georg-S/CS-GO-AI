@@ -1,4 +1,4 @@
-#include "Logging.h"
+#include "Utility/Logging.h"
 
 std::unique_ptr<Logger> Logging::logger = nullptr;
 bool Logging::valid_logger_set = false;

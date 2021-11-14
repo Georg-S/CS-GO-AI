@@ -6,8 +6,8 @@
 #include <qthread.h>
 #include <iostream>
 #include <memory>
-#include "CSGOAI.h"
-#include "NavmeshPoints.h"
+#include "CSGO/CSGOAI.h"
+#include "CSGO/NavmeshPoints.h"
 
 class CSGORunner : public QObject
 {

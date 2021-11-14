@@ -5,11 +5,11 @@
 #include <math.h>
 #include <qthread.h>
 #include <memory>
-#include "CSGOAI.h"
+#include "CSGO/CSGOAI.h"
 #include "ui_MainWindow.h"
-#include "NavmeshPoints.h"
+#include "CSGO/NavmeshPoints.h"
 #include "CSGORunner.h"
-#include "Logging.h"
+#include "Utility/Logging.h"
 #include "QTBoxLogger.h"
 #include "NavmeshEditorWidget.h"
 

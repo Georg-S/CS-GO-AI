@@ -1,4 +1,4 @@
-#include "MemoryManager.h"
+#include "CSGO/MemoryManager.h"
 
 MemoryManager::MemoryManager()
 {

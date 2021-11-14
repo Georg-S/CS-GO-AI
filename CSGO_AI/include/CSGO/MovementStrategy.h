@@ -6,10 +6,10 @@
 #include <chrono>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "Vec3D.h"
-#include "json.hpp"
+#include "Utility/Vec3D.h"
+#include "Utility/json.hpp"
 #include "GameInformationHandler.h"
-#include "Logging.h"
+#include "Utility/Logging.h"
 
 using nlohmann::json;
 

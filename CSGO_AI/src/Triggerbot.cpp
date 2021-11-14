@@ -1,4 +1,4 @@
-#include "Triggerbot.h"
+#include "CSGO/Triggerbot.h"
 
 void Triggerbot::update(GameInformationhandler* handler)
 {

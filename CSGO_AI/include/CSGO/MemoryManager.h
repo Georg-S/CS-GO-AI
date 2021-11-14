@@ -7,7 +7,7 @@
 #include <TlHelp32.h>
 #include <string>
 #include <iomanip>
-#include "Logging.h"
+#include "Utility/Logging.h"
 
 class MemoryManager
 {
