@@ -86,6 +86,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+source_group("\\Header Files\\Utility" FILES ${UTILITY_HEADER})
+source_group("\\Header Files\\UI" FILES ${UI_HEADER} ${QT_UI_FILES})
+source_group("\\Header Files\\CSGO" FILES ${CSGO_HEADER})
+
+source_group("\\Source Files\\Utility" FILES ${UTILITY_SOURCE})
+source_group("\\Source Files\\UI" FILES ${UI_SOURCE})
+source_group("\\Source Files\\CSGO" FILES ${CSGO_SOURCE})
+
+
 # CS-GO AI Project
 #add_executable(CSGO_AI WIN32 "src/main.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})
 add_executable(CSGO_AI "src/main.cpp" ${SOURCES} ${HEADERS} ${QT_UI_FILES})
