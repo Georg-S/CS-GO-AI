@@ -81,24 +81,3 @@ void CSGOAi::update()
 	if (activated_behavior.movement)
 		movement_strategy.update(game_info_handler.get());
 }
-
-void CSGOAi::console_run()
-{
-	while (true)
-	{
-		toggle_button.update();
-
-		if (toggle_button.was_clicked() && toggle_button.is_toggled())
-			std::cout << "Toggled ON" << std::endl;
-		if (toggle_button.was_clicked() && !toggle_button.is_toggled())
-			std::cout << "Toggled OFF" << std::endl;
-
-		if (toggle_button.is_toggled())
-		{
-			game_info_handler->update_game_information();
-			triggerbot.update(game_info_handler.get());
-			aimbot.update(game_info_handler.get());
-			movement_strategy.update(game_info_handler.get());
-		}
-	}
-}

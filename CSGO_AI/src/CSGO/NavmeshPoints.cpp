@@ -29,25 +29,6 @@ bool NavmeshPoints::init()
 	return true;
 }
 
-void NavmeshPoints::console_run()
-{
-	while (!close_button.was_clicked())
-	{
-		close_button.update();
-		save_button.update();
-		game_info_handler->update_game_information();
-		auto game_info = game_info_handler->get_game_information();
-		auto position = game_info.controlled_player.position;
-
-		if (save_button.was_clicked()) 
-		{
-			points.push_back(position);
-			Logging::log(position.to_string());
-		}
-	}
-	save_to_file();
-}
-
 bool NavmeshPoints::update()
 {
 	if (!game_info_handler->is_attached_to_process())
