@@ -4,7 +4,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
 	ui->setupUi(this);
 
-	Logging::set_logger(std::make_unique<QTBoxLogger>(ui->textEdit_output, ui->textEdit_point_output));
+	Logging::set_logger(std::make_unique<QTBoxLogger>(std::initializer_list<QTextEdit*>({
+		ui->textEdit_output, ui->textEdit_point_output })));
 
 	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
 

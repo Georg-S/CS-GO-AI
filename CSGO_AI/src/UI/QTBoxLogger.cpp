@@ -1,25 +1,26 @@
 #include "UI/QTBoxLogger.h"
 
-QTBoxLogger::QTBoxLogger(QTextEdit* textEdit1, QTextEdit* textEdit2) : textEdit1(textEdit1), textEdit2(textEdit2)
+QTBoxLogger::QTBoxLogger(std::initializer_list<QTextEdit*> text_edits)
 {
+	boxes = text_edits;
 }
 
 void QTBoxLogger::log(const std::string& str)
 {
-	log(textEdit1, Qt::black, str);
-	log(textEdit2, Qt::black, str);
+	for(auto box : boxes)
+		log(box, Qt::black, str);
 }
 
 void QTBoxLogger::log_error(const std::string& str)
 {
-	log(textEdit1, Qt::red, str);
-	log(textEdit2, Qt::red, str);
+	for (auto box : boxes)
+		log(box, Qt::red, str);
 }
 
 void QTBoxLogger::log_success(const std::string& str)
 {
-	log(textEdit1, Qt::green, str);
-	log(textEdit2, Qt::green, str);
+	for (auto box : boxes)
+		log(box, Qt::green, str);
 }
 
 void QTBoxLogger::log(QTextEdit* textEdit, Qt::GlobalColor color, const std::string& string)
