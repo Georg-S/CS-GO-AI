@@ -140,7 +140,13 @@ void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
-	csgo_runner->set_run_navmesh_points((SelectedTab)index == SelectedTab::POINTS);
+	ModeRunning mode = ModeRunning::NONE;
+	if ((SelectedTab)index == SelectedTab::AI)
+		mode = ModeRunning::AI;
+	else if ((SelectedTab)index == SelectedTab::POINTS)
+		mode = ModeRunning::POINT_CREATOR;
+
+	csgo_runner->set_mode(mode);
 }
 
 void MainWindow::on_button_save_points_clicked()

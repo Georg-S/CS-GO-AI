@@ -9,6 +9,11 @@
 #include "CSGO/CSGOAI.h"
 #include "CSGO/NavmeshPoints.h"
 
+enum class ModeRunning
+{
+    NONE = 0, AI, POINT_CREATOR
+};
+
 class CSGORunner : public QObject
 {
     Q_OBJECT
@@ -16,7 +21,7 @@ class CSGORunner : public QObject
 public:
     CSGORunner();
     void update();
-    void set_run_navmesh_points(bool value);
+    void set_mode(ModeRunning mode);
     void set_add_point_key(int key_code);
     bool save_navmesh_points();
     void add_point();
@@ -31,8 +36,8 @@ public slots:
 
 private:
     QMutex mutex;
+    ModeRunning mode = ModeRunning::NONE;
     bool is_running = true;
-    bool run_navmesh_points = false;
     std::unique_ptr<CSGOAi> csgo_ai_handler = nullptr;
     std::unique_ptr<NavmeshPoints> csgo_navmesh_points_handler = nullptr;
 };
