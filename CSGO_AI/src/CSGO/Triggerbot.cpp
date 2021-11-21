@@ -23,8 +23,11 @@ void Triggerbot::update(GameInformationhandler* handler)
 	if (current_time_ms >= delay_time)
 	{
 		delay_time = current_time_ms + delay_in_ms;
-		simulate_left_click();
+		handler->set_player_shooting(true);
+		Sleep(1);
+//		simulate_left_click();
 	}
+	handler->set_player_shooting(false);
 }
 
 void Triggerbot::simulate_left_click()

@@ -1,12 +1,13 @@
 #include "CSGO/MovementStrategy.h"
 
-MovementStrategy::MovementStrategy()
-{
-}
-
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	GameInformation game_info = game_info_handler->get_game_information();
+
+	handle_navmesh_load(std::string(game_info.current_map));
+
+	if (!valid_navmesh_loaded)
+		return;
 
 	if (!game_info.closest_enemy_player || !game_info.controlled_player.health)
 	{
@@ -55,6 +56,27 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		console_print_current_route();
 }
 
+void MovementStrategy::handle_navmesh_load(const std::string& map_name)
+{
+	if (map_name == "")
+	{
+		loaded_map = "";
+		valid_navmesh_loaded = false;
+		return;
+	}
+	if (map_name != loaded_map)
+	{
+		loaded_map = map_name;
+
+		std::string processed_map_name = loaded_map;
+		std::replace(processed_map_name.begin(), processed_map_name.end(), '/', '_');
+
+		std::string file_path = "Navmesh/json/" + processed_map_name + ".json";
+		if (load_in_navmesh(file_path))
+			valid_navmesh_loaded = true;
+	}
+}
+
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
 {
 	try
@@ -78,6 +100,17 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 void MovementStrategy::set_debug_print_route(bool value)
 {
 	this->debug_print_route = value;
+}
+
+void MovementStrategy::reset_loaded_navmesh()
+{
+	valid_navmesh_loaded = false;
+	loaded_map = "";
+}
+
+bool MovementStrategy::is_valid_navmesh_loaded() const
+{
+	return valid_navmesh_loaded;
 }
 
 Movement MovementStrategy::calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node)
@@ -342,6 +375,14 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector
 	};
 
 	std::shared_ptr<DijkstraListentry> entry = get_list_entry_by_node(closed_list, to_node);
+	if (!entry) 
+	{
+		//TODO handle this error state better
+		Logging::log_error("No route found, node can't be reached from current Node \n Invalidating current navmesh file");
+		valid_navmesh_loaded = false;
+
+		return result;
+	}
 
 	if (!entry && entry->node)
 		return result;

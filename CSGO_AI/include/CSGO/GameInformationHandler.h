@@ -21,6 +21,7 @@ struct ControlledPlayer
 	Vec3D<float> position;
 	Vec3D<float> head_position;
 	Movement movement;
+	DWORD shooting;
 	int team;
 	int health;
 };
@@ -53,6 +54,7 @@ public:
 	bool is_attached_to_process()const;
 	void set_view_vec(const Vec2D<float>& view_vec);
 	void set_player_movement(const Movement& movement);
+	void set_player_shooting(bool val);
 
 private:
 	ControlledPlayer read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address);
@@ -62,6 +64,7 @@ private:
 	std::shared_ptr<PlayerInformation> read_player_in_crosshair(DWORD player_address);
 	std::shared_ptr<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
 	void read_in_current_map(DWORD engine_client_state_address, char* buffer, DWORD buffer_size);
+	bool read_in_if_controlled_player_is_shooting();
 
 	bool attached_to_process = false;
 	GameInformation game_information;

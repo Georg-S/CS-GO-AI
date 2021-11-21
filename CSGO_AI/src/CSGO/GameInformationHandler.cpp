@@ -58,6 +58,16 @@ void GameInformationhandler::set_player_movement(const Movement& movement)
     mem_manager.write_memory<bool>(client_dll_address + Offsets::force_right, movement.right);
 }
 
+void GameInformationhandler::set_player_shooting(bool val)
+{
+    const DWORD shooting_value = 5;
+    const DWORD not_shooting_value = 4;
+
+    DWORD mem_val = val ? shooting_value : not_shooting_value;
+
+    mem_manager.write_memory<DWORD>(client_dll_address + Offsets::force_attack, mem_val);
+}
+
 std::shared_ptr<PlayerInformation> GameInformationhandler::get_closest_enemy(const GameInformation& game_info)
 {
     std::shared_ptr<PlayerInformation> closest_enemy = nullptr;
@@ -83,6 +93,14 @@ void GameInformationhandler::read_in_current_map(DWORD engine_client_state_addre
     mem_manager.read_string_from_memory(engine_client_state_address + Offsets::current_map, buffer, buffer_size);
 }
 
+bool GameInformationhandler::read_in_if_controlled_player_is_shooting()
+{
+    constexpr DWORD shooting_value = 5;
+    DWORD val = mem_manager.read_memory<DWORD>(client_dll_address + Offsets::force_attack);
+
+    return val == shooting_value;
+}
+
 ControlledPlayer GameInformationhandler::read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address)
 {
     ControlledPlayer dest{};
@@ -90,6 +108,7 @@ ControlledPlayer GameInformationhandler::read_controlled_player_information(DWOR
     dest.health = mem_manager.read_memory<int>(player_address + Offsets::player_health_offset);
     dest.team = mem_manager.read_memory<int>(player_address + Offsets::team_offset);
     dest.position = mem_manager.read_memory<Vec3D<float>>(player_address + Offsets::position);
+    dest.shooting = read_in_if_controlled_player_is_shooting();
     dest.head_position = get_head_bone_position(player_address);
     dest.movement = read_controlled_player_movement(player_address);
 

@@ -2,40 +2,8 @@
 
 CSGOAi::CSGOAi()
 {
-	game_info_handler = std::make_unique<GameInformationhandler>();
+	game_info_handler = std::make_shared<GameInformationhandler>();
 }
-
-bool CSGOAi::init()
-{
-	if (!load_offsets("offsets.json"))
-	{
-		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
-		return false;
-	}
-
-	if (!load_config("config.json"))
-	{
-		Logging::log_error("Config couldn't be read, make sure you have a valid config");
-		return false;
-	}
-
-	if (!load_navmesh("nav_mesh.json"))
-	{
-		Logging::log_error("Error loading/parsing Navmesh, make sure you have a valid nav-mesh file");
-		return false;
-	}
-
-	if (!attach_to_csgo_process())
-	{
-		Logging::log_error("Error getting dll address");
-		return false;
-	}
-
-	toggle_button.set_toggle_button(config.trigger_button);
-
-	return true;
-}
-
 
 bool CSGOAi::load_config(const std::string& file_name)
 {
@@ -49,7 +17,19 @@ bool CSGOAi::load_offsets(const std::string& file_name)
 
 bool CSGOAi::load_navmesh(const std::string& file_name)
 {
-	return movement_strategy.load_in_navmesh(file_name);
+	if (!game_info_handler->is_attached_to_process()) 
+	{
+		Logging::log_error("Not attached to process -> can't load navmesh");
+		return false;
+	}
+
+	game_info_handler->update_game_information();
+	auto game_info = game_info_handler->get_game_information();
+
+	movement_strategy.reset_loaded_navmesh();
+	movement_strategy.handle_navmesh_load(std::string(game_info.current_map));
+
+	return movement_strategy.is_valid_navmesh_loaded();
 }
 
 bool CSGOAi::attach_to_csgo_process()

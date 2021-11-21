@@ -20,9 +20,9 @@ void CSGORunner::update()
 {
 	QMutexLocker lock(&mutex);
 	if(mode == ModeRunning::AI)
-		csgo_navmesh_points_handler->update();
-	else if (mode == ModeRunning::POINT_CREATOR)
 		csgo_ai_handler->update();
+	else if (mode == ModeRunning::POINT_CREATOR)
+		csgo_navmesh_points_handler->update();
 }
 
 void CSGORunner::set_mode(ModeRunning mode)
