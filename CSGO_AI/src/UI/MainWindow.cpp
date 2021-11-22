@@ -4,8 +4,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
 	ui->setupUi(this);
 
-	Logging::set_logger(std::make_unique<QTBoxLogger>(std::initializer_list<QTextEdit*>({
-		ui->textEdit_output, ui->textEdit_point_output })));
+	box_logger = std::make_unique<QTBoxLogger>(
+		std::initializer_list<QTextEdit*>({ ui->textEdit_output, ui->textEdit_point_output }));
+	Logging::set_logger(box_logger.get());
+
+	log_updater = new QTimer(this);
+	connect(log_updater, &QTimer::timeout, this, &MainWindow::update_logger);
+	log_updater->start();
 
 	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
 
@@ -20,13 +25,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	csgo_runner_thread->start();
 }
 
-bool MainWindow::is_navmesh_editor_tab_selected() const
-{
-	return (SelectedTab)ui->tabWidget->currentIndex() == SelectedTab::EDITOR;
-}
-
 MainWindow::~MainWindow()
 {
+	delete log_updater;
 	delete ui;
 }
 
@@ -38,6 +39,11 @@ void MainWindow::update_behavior_executed()
 	features.movement = ui->checkBox_movement->isChecked();
 
 	csgo_runner->set_activated_behavior(features);
+}
+
+void MainWindow::update_logger()
+{
+	box_logger->update();
 }
 
 bool MainWindow::all_behavior_checkboxes_checked()

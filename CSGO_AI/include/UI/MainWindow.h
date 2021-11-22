@@ -5,6 +5,7 @@
 #include <math.h>
 #include <qthread.h>
 #include <memory>
+#include <qtimer.h>
 #include "CSGO/CSGOAI.h"
 #include "ui_MainWindow.h"
 #include "CSGO/NavmeshPoints.h"
@@ -24,12 +25,12 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget* parent = nullptr);
-    bool is_navmesh_editor_tab_selected() const;
     ~MainWindow();
 
 private:
     bool all_behavior_checkboxes_checked();
     void update_behavior_executed();
+    void update_logger();
     bool all_checked(std::initializer_list<QCheckBox*> checkboxes);
     void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
@@ -37,6 +38,8 @@ private:
     Ui::MainWindow* ui = nullptr;
     QThread* csgo_runner_thread = nullptr;
     CSGORunner* csgo_runner = nullptr;
+    QTimer* log_updater = nullptr;
+    std::unique_ptr<QTBoxLogger> box_logger = nullptr;
 signals:
     void stopped();
 private slots:
