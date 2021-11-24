@@ -22,6 +22,7 @@ struct ControlledPlayer
 	Vec3D<float> head_position;
 	Movement movement;
 	DWORD shooting;
+	DWORD shots_fired;
 	int team;
 	int health;
 };

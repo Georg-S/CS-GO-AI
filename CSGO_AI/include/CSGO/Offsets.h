@@ -15,6 +15,7 @@ public:
 	//client.dll
 	static DWORD local_player_offset;
 	static DWORD crosshair_offset;
+	static DWORD shots_fired_offset;
 	static DWORD entity_list_start_offset;
 	static DWORD player_health_offset;
 	static DWORD team_offset;

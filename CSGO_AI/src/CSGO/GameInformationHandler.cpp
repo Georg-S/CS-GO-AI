@@ -108,6 +108,7 @@ ControlledPlayer GameInformationhandler::read_controlled_player_information(DWOR
     dest.health = mem_manager.read_memory<int>(player_address + Offsets::player_health_offset);
     dest.team = mem_manager.read_memory<int>(player_address + Offsets::team_offset);
     dest.position = mem_manager.read_memory<Vec3D<float>>(player_address + Offsets::position);
+    dest.shots_fired = mem_manager.read_memory<DWORD>(player_address + Offsets::shots_fired_offset);
     dest.shooting = read_in_if_controlled_player_is_shooting();
     dest.head_position = get_head_bone_position(player_address);
     dest.movement = read_controlled_player_movement(player_address);
