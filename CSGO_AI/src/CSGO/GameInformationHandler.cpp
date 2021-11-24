@@ -60,8 +60,8 @@ void GameInformationhandler::set_player_movement(const Movement& movement)
 
 void GameInformationhandler::set_player_shooting(bool val)
 {
-    const DWORD shooting_value = 5;
-    const DWORD not_shooting_value = 4;
+    constexpr DWORD shooting_value = 5;
+    constexpr DWORD not_shooting_value = 4;
 
     DWORD mem_val = val ? shooting_value : not_shooting_value;
 
