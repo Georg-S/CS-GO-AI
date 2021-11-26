@@ -17,6 +17,7 @@ set (UTILITY_HEADER
 	"include/Utility/Logging.h"
 	"include/Utility/Vec2D.h"
 	"include/Utility/Vec3D.h"
+	"include/Utility/Utility.h"
 )
 
 set (UI_HEADER
@@ -74,6 +75,7 @@ set(UI_SOURCE
 
 set(UTILITY_SOURCE
 	"src/Utility/Logging.cpp"
+	"src/Utility/Utility.cpp"
 )
 
 set(SOURCES 

@@ -15,8 +15,7 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		return;
 	}
 
-	auto current_time = std::chrono::system_clock::now();
-	auto current_time_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time).time_since_epoch().count();
+	const auto current_time_ms = get_current_time_in_ms();
 
 	if (current_time_ms < delay_time)
 	{
@@ -375,16 +374,8 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::get_route(const std::vector
 	};
 
 	std::shared_ptr<DijkstraListentry> entry = get_list_entry_by_node(closed_list, to_node);
-	if (!entry) 
-	{
-		//TODO handle this error state better
-		Logging::log_error("No route found, node can't be reached from current Node \n Invalidating current navmesh file");
-		valid_navmesh_loaded = false;
 
-		return result;
-	}
-
-	if (!entry && entry->node)
+	if (!entry || !entry->node)
 		return result;
 
 	result.insert(result.begin(), entry->node);
