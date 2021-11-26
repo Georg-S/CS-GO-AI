@@ -130,12 +130,12 @@ add_custom_command(TARGET CSGO_AI
 
 add_custom_command(TARGET CSGO_AI 
 					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy 
-					${CMAKE_SOURCE_DIR}"/nav_mesh.json"
-					${CMAKE_CURRENT_BINARY_DIR}"/Debug/nav_mesh.json")
+					COMMAND ${CMAKE_COMMAND} -E copy_directory
+					${CMAKE_SOURCE_DIR}"/Navmesh"
+					${CMAKE_CURRENT_BINARY_DIR}"/Release/Navmesh")	
 
 add_custom_command(TARGET CSGO_AI 
 					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy 
-					${CMAKE_SOURCE_DIR}"/nav_mesh.json"
-					${CMAKE_CURRENT_BINARY_DIR}"/Release/nav_mesh.json")
+					COMMAND ${CMAKE_COMMAND} -E copy_directory
+					${CMAKE_SOURCE_DIR}"/Navmesh"
+					${CMAKE_CURRENT_BINARY_DIR}"/Debug/Navmesh")
