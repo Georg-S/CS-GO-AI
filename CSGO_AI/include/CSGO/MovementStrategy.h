@@ -33,7 +33,6 @@ private:
 	void load_nodes(const json& json);
 	void load_edges(const json& json);
 	std::shared_ptr<Node> get_closest_node_to_position(const Vec3D<float>& position);
-	std::vector<std::shared_ptr<Node>> get_route(const std::vector<std::shared_ptr<DijkstraListentry>>& closed_list, const std::shared_ptr<Node> to_node);
 
 	json navmesh_json;
 	std::vector<std::shared_ptr<Node>> nodes;
