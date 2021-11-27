@@ -25,7 +25,9 @@ public:
     void set_add_point_key(int key_code);
     bool save_navmesh_points();
     void add_point();
-    void load_files();
+    void load_config();
+    void load_offsets();
+    void load_navmesh();
     void attach_to_process();
     void set_activated_behavior(const ActivatedFeatures& behavior);
 

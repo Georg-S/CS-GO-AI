@@ -121,7 +121,9 @@ void MainWindow::on_checkBox_triggerbot_stateChanged()
 
 void MainWindow::on_button_reload_files_clicked()
 {
-	csgo_runner->load_files();
+	csgo_runner->load_config();
+	csgo_runner->load_offsets();
+	csgo_runner->load_navmesh();
 }
 
 void MainWindow::on_button_reattach_clicked()

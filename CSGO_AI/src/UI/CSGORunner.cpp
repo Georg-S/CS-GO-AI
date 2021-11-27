@@ -4,7 +4,8 @@ CSGORunner::CSGORunner(): QObject(nullptr)
 {
 	csgo_ai_handler = std::make_unique<CSGOAi>();
 	this->csgo_navmesh_points_handler = std::make_unique<NavmeshPoints>(csgo_ai_handler->get_game_info_handler());
-	load_files();
+	load_config();
+	load_offsets();
 	attach_to_process();
 }
 
@@ -51,15 +52,22 @@ void CSGORunner::add_point()
 	csgo_navmesh_points_handler->add_point();
 }
 
-void CSGORunner::load_files()
+void CSGORunner::load_config()
 {
 	QMutexLocker lock(&mutex);
-	if (!csgo_ai_handler->load_config("config.json"))
-		Logging::log_error("Config couldn't be read, make sure you have a valid config");
-	if (!csgo_ai_handler->load_offsets("offsets.json"))
-		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
-	if (!csgo_ai_handler->load_navmesh("nav_mesh.json"))
-		Logging::log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
+	csgo_ai_handler->load_config("config.json");
+}
+
+void CSGORunner::load_offsets()
+{
+	QMutexLocker lock(&mutex);
+	csgo_ai_handler->load_offsets("offsets.json");
+}
+
+void CSGORunner::load_navmesh()
+{
+	QMutexLocker lock(&mutex);
+	csgo_ai_handler->load_navmesh();
 }
 
 void CSGORunner::attach_to_process()

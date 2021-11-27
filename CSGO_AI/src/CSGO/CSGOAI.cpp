@@ -7,15 +7,25 @@ CSGOAi::CSGOAi()
 
 bool CSGOAi::load_config(const std::string& file_name)
 {
-	return ConfigReader::read_in_config_data(config, file_name);
+	if (!ConfigReader::read_in_config_data(config, file_name)) 
+	{
+		Logging::log_error("Config couldn't be read, make sure you have a valid config");
+		return false;
+	}
+	return true;
 }
 
 bool CSGOAi::load_offsets(const std::string& file_name)
 {
-	return Offsets::load_offsets_from_file(file_name);
+	if (!Offsets::load_offsets_from_file(file_name)) 
+	{
+		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
+		return false;
+	}
+	return true;
 }
 
-bool CSGOAi::load_navmesh(const std::string& file_name)
+bool CSGOAi::load_navmesh()
 {
 	if (!game_info_handler->is_attached_to_process()) 
 	{
@@ -24,12 +34,21 @@ bool CSGOAi::load_navmesh(const std::string& file_name)
 	}
 
 	game_info_handler->update_game_information();
-	auto game_info = game_info_handler->get_game_information();
+	const auto game_info = game_info_handler->get_game_information();
 
 	movement_strategy.reset_loaded_navmesh();
-	movement_strategy.handle_navmesh_load(std::string(game_info.current_map));
+	if (game_info.current_map == "")
+	{
+		Logging::log("Player is not on a map currently -> delaying navmesh loading");
+		return false;
+	}
 
-	return movement_strategy.is_valid_navmesh_loaded();
+	movement_strategy.handle_navmesh_load(std::string(game_info.current_map));
+	bool loading_successful = movement_strategy.is_valid_navmesh_loaded();
+	if(!loading_successful)
+		Logging::log_error("Error loading / parsing Navmesh, make sure you have a valid nav - mesh file");
+
+	return loading_successful;
 }
 
 bool CSGOAi::attach_to_csgo_process()
