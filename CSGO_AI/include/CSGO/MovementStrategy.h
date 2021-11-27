@@ -10,48 +10,9 @@
 #include "Utility/json.hpp"
 #include "GameInformationHandler.h"
 #include "Utility/Logging.h"
+#include "Utility/Dijkstra.h"
 
 using nlohmann::json;
-
-struct Node
-{
-	struct Edge
-	{
-		float weight;
-		std::shared_ptr<Node> toNode;
-	};
-
-	Node(int id, Vec3D<float> position) 
-	{
-		this->id = id;
-		this->position = position;
-	}
-
-	int id;
-	Vec3D<float> position;
-	std::vector<Edge> edges;
-};
-
-struct DijkstraListentry
-{
-	DijkstraListentry(std::shared_ptr<Node> node, std::shared_ptr<Node> previous_node, std::shared_ptr<DijkstraListentry> previous_node_list_entry, float weight)
-	{
-		this->node = node;
-		this->previous_node = previous_node;
-		this->previous_node_list_entry = previous_node_list_entry;
-		this->weight = weight;
-	}
-
-	std::shared_ptr<Node> node;
-	std::shared_ptr<Node> previous_node;
-	std::shared_ptr<DijkstraListentry> previous_node_list_entry;
-	float weight = 0.f;
-
-	bool operator<(const DijkstraListentry& a) const
-	{
-		return weight < a.weight;
-	}
-};
 
 class MovementStrategy 
 {
@@ -65,8 +26,6 @@ public:
 
 private:
 	std::shared_ptr<Node> get_node_by_id(int id) const;
-	std::vector<std::shared_ptr<Node>> calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to);
-	void log_current_route(const std::vector<std::shared_ptr<Node>>& route) const;
 	Movement calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node);
 	float calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const;
 	float calc_walk_angle(float view_angle, float position_angle) const;
@@ -74,7 +33,6 @@ private:
 	void load_nodes(const json& json);
 	void load_edges(const json& json);
 	std::shared_ptr<Node> get_closest_node_to_position(const Vec3D<float>& position);
-	std::vector<std::shared_ptr<DijkstraListentry>> dijkstra_algorithm(std::shared_ptr<Node> from);
 	std::vector<std::shared_ptr<Node>> get_route(const std::vector<std::shared_ptr<DijkstraListentry>>& closed_list, const std::shared_ptr<Node> to_node);
 
 	json navmesh_json;
