@@ -66,7 +66,7 @@ public:
 private:
 	std::shared_ptr<Node> get_node_by_id(int id) const;
 	std::vector<std::shared_ptr<Node>> calculate_new_route(std::shared_ptr<Node> from, std::shared_ptr<Node> to);
-	void console_print_current_route() const;
+	void log_current_route(const std::vector<std::shared_ptr<Node>>& route) const;
 	Movement calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node);
 	float calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const;
 	float calc_walk_angle(float view_angle, float position_angle) const;
@@ -85,8 +85,8 @@ private:
 	std::string loaded_map;
 	bool valid_navmesh_loaded;
 	long long delay_time = 0;
-
 	bool debug_print_route = false;
+
 	const DWORD w_key_code = 0x57;
 	const DWORD s_key_code = 0x53;
 	const DWORD probably_a_key_code = 0x41;

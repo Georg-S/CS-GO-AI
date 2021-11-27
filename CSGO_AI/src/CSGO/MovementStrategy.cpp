@@ -2,7 +2,7 @@
 
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
-	GameInformation game_info = game_info_handler->get_game_information();
+	const GameInformation game_info = game_info_handler->get_game_information();
 
 	handle_navmesh_load(std::string(game_info.current_map));
 
@@ -43,6 +43,9 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		current_route = calculate_new_route(next_node, current_closest_enemy_node);
 		if (current_route.size() > 1)
 			next_node = current_route[1];
+
+		if (debug_print_route)
+			log_current_route(current_route);
 	}
 
 	if (next_node)
@@ -50,30 +53,28 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 		Movement move = calculate_move_info(game_info, next_node);
 		game_info_handler->set_player_movement(move);
 	}
-
-	if (debug_print_route)
-		console_print_current_route();
 }
 
 void MovementStrategy::handle_navmesh_load(const std::string& map_name)
 {
+	if (map_name == loaded_map)
+		return;
+
 	if (map_name == "")
 	{
 		loaded_map = "";
 		valid_navmesh_loaded = false;
 		return;
 	}
-	if (map_name != loaded_map)
-	{
-		loaded_map = map_name;
 
-		std::string processed_map_name = loaded_map;
-		std::replace(processed_map_name.begin(), processed_map_name.end(), '/', '_');
+	loaded_map = map_name;
 
-		std::string file_path = "Navmesh/json/" + processed_map_name + ".json";
-		if (load_in_navmesh(file_path))
-			valid_navmesh_loaded = true;
-	}
+	std::string processed_map_name = loaded_map;
+	std::replace(processed_map_name.begin(), processed_map_name.end(), '/', '_');
+
+	std::string file_path = "Navmesh/json/" + processed_map_name + ".json";
+	if (load_in_navmesh(file_path))
+		valid_navmesh_loaded = true;
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -253,23 +254,23 @@ std::vector<std::shared_ptr<Node>> MovementStrategy::calculate_new_route(std::sh
 	return  get_route(closed_list, to);
 }
 
-void MovementStrategy::console_print_current_route() const
+void MovementStrategy::log_current_route(const std::vector<std::shared_ptr<Node>>& route) const
 {
-	std::string route = "";
+	std::string route_str = "";
 	for (unsigned int i = 0; i < current_route.size(); i++)
 	{
-		route += std::to_string(current_route[i]->id);
+		route_str += std::to_string(current_route[i]->id);
 
 		if (i < current_route.size() - 1)
-			route += " -> ";
+			route_str += " -> ";
 	}
 
-	Logging::log("Current route: " + route);
+	Logging::log("Current route: " + route_str);
 }
 
 std::vector<std::shared_ptr<DijkstraListentry>> MovementStrategy::dijkstra_algorithm(std::shared_ptr<Node> from)
 {
-	auto compare_weight = [](std::shared_ptr<DijkstraListentry> a, std::shared_ptr<DijkstraListentry> b)
+	auto compare_weight = [](std::shared_ptr<DijkstraListentry> a, std::shared_ptr<DijkstraListentry> b) -> bool
 	{
 		return a->weight < b->weight;
 	};
