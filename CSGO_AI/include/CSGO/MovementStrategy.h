@@ -38,16 +38,8 @@ private:
 	std::vector<std::shared_ptr<Node>> nodes;
 	std::shared_ptr<Node> next_node = nullptr;
 	std::vector<std::shared_ptr<Node>> current_route;
-	std::vector<DWORD> movement_keys;
 	std::string loaded_map;
 	bool valid_navmesh_loaded;
 	long long delay_time = 0;
 	bool debug_print_route = false;
-
-	const DWORD w_key_code = 0x57;
-	const DWORD s_key_code = 0x53;
-	const DWORD probably_a_key_code = 0x41;
-	const DWORD d_key_code = 0x44;
-	const DWORD KEYEVENT_KEYUP = 0x02;
-	const DWORD KEYEVENT_KEYDOWN = 0x0;
 };
