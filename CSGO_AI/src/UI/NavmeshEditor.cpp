@@ -48,10 +48,18 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 
 		if (selected_node_1 && selected_node_2) 
 		{
-			// Right now only create bidirectional edges
-			add_edge(selected_node_1, selected_node_2);
-			add_edge(selected_node_2, selected_node_1);
-			output("Edge created between ID: " + std::to_string(selected_node_1->id) + " and: " + std::to_string(selected_node_2->id));
+			if (selected_node_1->id == selected_node_2->id) 
+			{
+				output_error("Can't create an edge from and to the same node");
+			}
+			else 
+			{
+				// Right now only create bidirectional edges
+				add_edge(selected_node_1, selected_node_2);
+				add_edge(selected_node_2, selected_node_1);
+				output("Edge created between ID: " + std::to_string(selected_node_1->id) + " and: " + std::to_string(selected_node_2->id));
+			}
+
 			selected_node_1 = nullptr;
 			selected_node_2 = nullptr;
 		}
@@ -191,6 +199,7 @@ bool NavmeshEditor::save_navmesh()
 	}
 	catch (std::exception const& e)
 	{
+		output_error("Can't save navmesh file: " + QString(e.what()));
 		return false;
 	}
 	return true;
