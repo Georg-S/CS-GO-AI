@@ -108,36 +108,19 @@ target_link_libraries(CSGO_AI Qt5::Widgets)
 
 add_custom_command(TARGET CSGO_AI 
                    POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy 
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different 
 				   ${CMAKE_SOURCE_DIR}"/config.json"
-				   ${CMAKE_CURRENT_BINARY_DIR}"/Debug/config.json")
+				   "$<TARGET_FILE_DIR:CSGO_AI>/config.json")
+#				   ${CMAKE_CURRENT_BINARY_DIR}"/Debug/config.json")
 
 add_custom_command(TARGET CSGO_AI 
 					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy 
-					${CMAKE_SOURCE_DIR}"/config.json"
-					${CMAKE_CURRENT_BINARY_DIR}"/Release/config.json")
-
-add_custom_command(TARGET CSGO_AI 
-					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy 
+					COMMAND ${CMAKE_COMMAND} -E copy_if_different 
 					${CMAKE_SOURCE_DIR}"/offsets.json"
-					${CMAKE_CURRENT_BINARY_DIR}"/Debug/offsets.json")
-
-add_custom_command(TARGET CSGO_AI 
-					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy 
-					${CMAKE_SOURCE_DIR}"/offsets.json"
-					${CMAKE_CURRENT_BINARY_DIR}"/Release/offsets.json")
+					"$<TARGET_FILE_DIR:CSGO_AI>/offsets.json")
 
 add_custom_command(TARGET CSGO_AI 
 					POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
 					${CMAKE_SOURCE_DIR}"/Navmesh"
-					${CMAKE_CURRENT_BINARY_DIR}"/Release/Navmesh")	
-
-add_custom_command(TARGET CSGO_AI 
-					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy_directory
-					${CMAKE_SOURCE_DIR}"/Navmesh"
-					${CMAKE_CURRENT_BINARY_DIR}"/Debug/Navmesh")
+					"$<TARGET_FILE_DIR:CSGO_AI>/Navmesh")
