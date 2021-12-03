@@ -39,7 +39,7 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 		{
 			selected_node_1 = get_clicked_node(nodes, cursor_pos_on_canvas);
 			if (selected_node_1)
-				output("Selected Node: " + std::to_string(selected_node_1->id));
+				output("Selected Node: " + std::to_string(selected_node_1->id) +" Ingame coordinates: "+ selected_node_1->pos.to_string());
 		}
 		else if(!selected_node_2) 
 		{

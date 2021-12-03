@@ -12,11 +12,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	connect(log_updater, &QTimer::timeout, this, &MainWindow::update_logger);
 	log_updater->start();
 
-	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
-
 	csgo_runner_thread = new QThread();
 	csgo_runner = new CSGORunner();
 	csgo_runner->moveToThread(csgo_runner_thread);
+
+	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
 
 	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CSGORunner::run);
 	connect(csgo_runner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);
