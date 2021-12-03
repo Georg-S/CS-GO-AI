@@ -22,6 +22,7 @@ public:
 	void add_point();
 	void set_add_point_button(int key_code);
 	bool save_to_file();
+	std::pair<bool, Vec3D<float>> get_current_position() const;
 
 private:
 	template <typename T>

@@ -39,7 +39,7 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 		{
 			selected_node_1 = get_clicked_node(nodes, cursor_pos_on_canvas);
 			if (selected_node_1)
-				output("Selected Node: " + std::to_string(selected_node_1->id) +" Ingame coordinates: "+ selected_node_1->pos.to_string());
+				output("Selected Node: " + std::to_string(selected_node_1->id) +", Ingame coordinates: "+ selected_node_1->pos.to_string());
 		}
 		else if(!selected_node_2) 
 		{
@@ -196,6 +196,7 @@ bool NavmeshEditor::save_navmesh()
 
 		my_file << nav_json;
 		my_file.close();
+		output_success("File successfully saved");
 	}
 	catch (std::exception const& e)
 	{
@@ -203,6 +204,21 @@ bool NavmeshEditor::save_navmesh()
 		return false;
 	}
 	return true;
+}
+
+void NavmeshEditor::add_node(const Vec3D<float>& csgo_pos)
+{
+	if (!valid_json_loaded) 
+	{
+		output_error("No valid json loaded, can't add node");
+		return;
+	}
+
+	nodes.push_back(std::make_unique<Editor::Node>(next_node_id, false, csgo_pos));
+	output("Node created: " + std::to_string(next_node_id) + ", Ingame coordinates: " + csgo_pos.to_string());
+	adjust_all_nodes();
+	render_editor();
+	next_node_id++;
 }
 
 void NavmeshEditor::wheelEvent(QWheelEvent* event)
@@ -278,6 +294,7 @@ void NavmeshEditor::load_nodes(const json& navmesh_json)
 	nodes.clear();
 	valid_json_loaded = false;
 	int corner_count = 0;
+	int highest_id = 0;
 	for (const auto& json_node : navmesh_json["nodes"])
 	{
 		Vec3D<float> pos;
@@ -286,12 +303,14 @@ void NavmeshEditor::load_nodes(const json& navmesh_json)
 		pos.y = json_node["y"];
 		pos.z = json_node["z"];
 		bool corner = json_node["corner"];
+		highest_id = std::max(highest_id, id);
 
 		if (corner)
 			corner_count++;
 
 		nodes.push_back(std::make_unique<Editor::Node>(id, corner, pos));
 	}
+	next_node_id = highest_id + 1;
 
 	if (corner_count >= 2)
 		valid_json_loaded = true;

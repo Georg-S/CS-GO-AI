@@ -103,6 +103,18 @@ bool NavmeshPoints::save_to_file()
 	return true;
 }
 
+std::pair<bool, Vec3D<float>> NavmeshPoints::get_current_position() const
+{
+	if (!game_info_handler->is_attached_to_process())
+		return std::pair<bool, Vec3D<float>>(false, Vec3D<float>());
+
+	game_info_handler->update_game_information();
+	auto game_info = game_info_handler->get_game_information();
+	auto position = game_info.controlled_player.position;
+
+	return std::pair<bool, Vec3D<float>>(true, position);
+}
+
 template<typename T>
 inline std::string NavmeshPoints::to_string_with_max_precision(const T& a_value)
 {

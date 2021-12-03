@@ -58,6 +58,7 @@ public:
 	void load_navmesh(const QString& file_name);
 	void place_corner_points();
 	bool save_navmesh();
+	void add_node(const Vec3D<float>& csgo_pos);
 protected:
 	void wheelEvent(QWheelEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
@@ -86,6 +87,7 @@ private:
 	QLineEdit* output_line = nullptr;
 	bool corner_nodes_placed = false;
 	bool valid_json_loaded = false;
+	int next_node_id = 0;
 	std::vector<std::unique_ptr<Editor::Node>> nodes;
 	std::vector<std::unique_ptr<Editor::Edge>> edges;
 	std::string map_name = "";

@@ -30,6 +30,7 @@ public:
     void load_navmesh();
     void attach_to_process();
     void set_activated_behavior(const ActivatedFeatures& behavior);
+    std::pair<bool, Vec3D<float>> get_current_position();
 
 signals:
     void finished();

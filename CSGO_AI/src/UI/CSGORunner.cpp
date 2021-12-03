@@ -84,3 +84,9 @@ void CSGORunner::set_activated_behavior(const ActivatedFeatures& behavior)
 	QMutexLocker lock(&mutex);
 	csgo_ai_handler->set_activated_behavior(behavior);
 }
+
+std::pair<bool, Vec3D<float>> CSGORunner::get_current_position()
+{
+	QMutexLocker lock(&mutex);
+	return csgo_navmesh_points_handler->get_current_position();
+}

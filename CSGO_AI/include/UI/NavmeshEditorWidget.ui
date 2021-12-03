@@ -61,6 +61,13 @@
      </item>
     </layout>
    </item>
+   <item>
+    <widget class="QPushButton" name="button_create_node_from_game_pos">
+     <property name="text">
+      <string>Create node from current position ingame</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

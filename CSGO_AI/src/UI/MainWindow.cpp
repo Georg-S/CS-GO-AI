@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	csgo_runner = new CSGORunner();
 	csgo_runner->moveToThread(csgo_runner_thread);
 
-	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(this));
+	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(csgo_runner, this));
 
 	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CSGORunner::run);
 	connect(csgo_runner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);

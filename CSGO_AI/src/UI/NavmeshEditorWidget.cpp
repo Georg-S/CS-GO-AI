@@ -1,10 +1,11 @@
 #include "UI/NavmeshEditorWidget.h"
 
-NavmeshEditorWidget::NavmeshEditorWidget(QWidget* parent) : QWidget(parent), ui(new Ui::NavmeshEditorWidget)
+NavmeshEditorWidget::NavmeshEditorWidget(CSGORunner* csgo_runner, QWidget* parent) : QWidget(parent), ui(new Ui::NavmeshEditorWidget)
 {
 	ui->setupUi(this);
 	navmesh_editor = std::make_unique<NavmeshEditor>(this, ui->lineEdit_navmesh_output);
 	ui->base_layout->addWidget(navmesh_editor.get());
+	this->csgo_runner = csgo_runner;
 }
 
 NavmeshEditorWidget::~NavmeshEditorWidget()
@@ -29,6 +30,13 @@ void NavmeshEditorWidget::on_button_place_corner_points_clicked()
 void NavmeshEditorWidget::on_button_save_navmesh_clicked()
 {
 	navmesh_editor->save_navmesh();
+}
+
+void NavmeshEditorWidget::on_button_create_node_from_game_pos_clicked()
+{
+	auto res = csgo_runner->get_current_position();
+	if (res.first)
+		navmesh_editor->add_node(res.second);
 }
 
 void NavmeshEditorWidget::on_button_load_map_clicked() 
