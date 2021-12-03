@@ -95,5 +95,5 @@ private:
 	Editor::Node* corner_node_2 = nullptr;
 	Editor::Node* selected_node_1 = nullptr;
 	Editor::Node* selected_node_2 = nullptr;
-	static constexpr int NODE_SIZE = 10;
+	static constexpr int NODE_SIZE = 12;
 };

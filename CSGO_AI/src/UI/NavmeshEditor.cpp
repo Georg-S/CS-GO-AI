@@ -109,7 +109,7 @@ void NavmeshEditor::render_nodes(QPixmap& map)
 	for (const auto& node : nodes) 
 	{
 		if(node->render)
-			painter.drawEllipse(QPoint(node->canvas_pos.x, node->canvas_pos.y), NODE_SIZE, NODE_SIZE);
+			painter.drawEllipse(QPoint(node->canvas_pos.x, node->canvas_pos.y), (int)(NODE_SIZE/ zoom_factor), (int)(NODE_SIZE/ zoom_factor));
 	}
 }
 
@@ -405,7 +405,7 @@ Editor::Node* NavmeshEditor::get_clicked_node(const std::vector<std::unique_ptr<
 	for (const auto& node : nodes) 
 	{
 		int distance = node->canvas_pos.distance(click_pos);
-		if ((distance < NODE_SIZE) && (distance < closest_distance))
+		if ((distance < (int)(NODE_SIZE / zoom_factor)) && (distance < closest_distance))
 		{
 			closest_distance = distance;
 			result = node.get();
