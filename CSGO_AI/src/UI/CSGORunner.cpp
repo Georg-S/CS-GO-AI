@@ -3,7 +3,7 @@
 CSGORunner::CSGORunner(): QObject(nullptr)
 {
 	csgo_ai_handler = std::make_unique<CSGOAi>();
-	this->csgo_navmesh_points_handler = std::make_unique<NavmeshPoints>(csgo_ai_handler->get_game_info_handler());
+	csgo_navmesh_points_handler = std::make_unique<NavmeshPoints>(csgo_ai_handler->get_game_info_handler());
 	load_config();
 	load_offsets();
 	attach_to_process();

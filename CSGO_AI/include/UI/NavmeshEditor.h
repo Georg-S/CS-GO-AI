@@ -4,10 +4,10 @@
 #include <qpainter.h>
 #include <qwidget.h>
 #include <qscrollarea.h>
-#include "Utility/Logging.h"
 #include <qlineedit.h>
 #include <fstream>
 #include <vector>
+#include "Utility/Logging.h"
 #include "Utility/Vec3D.h"
 #include "Utility/Vec2D.h"
 #include "Utility/json.hpp"

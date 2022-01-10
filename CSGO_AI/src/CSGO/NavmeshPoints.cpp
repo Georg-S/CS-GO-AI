@@ -114,14 +114,3 @@ std::pair<bool, Vec3D<float>> NavmeshPoints::get_current_position() const
 
 	return std::pair<bool, Vec3D<float>>(true, position);
 }
-
-template<typename T>
-inline std::string NavmeshPoints::to_string_with_max_precision(const T& a_value)
-{
-	int maxPrecision = std::numeric_limits<T>::max_digits10;
-
-	std::stringstream out;
-	out.precision(maxPrecision);
-	out << a_value;
-	return out.str();
-}

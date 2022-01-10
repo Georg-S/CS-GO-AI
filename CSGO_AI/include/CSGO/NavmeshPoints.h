@@ -25,9 +25,6 @@ public:
 	std::pair<bool, Vec3D<float>> get_current_position() const;
 
 private:
-	template <typename T>
-	static std::string to_string_with_max_precision(const T& a_value);
-
 	Button save_button;
 	Button close_button;
 	Offsets* offsets;

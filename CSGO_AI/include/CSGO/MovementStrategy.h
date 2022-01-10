@@ -1,11 +1,11 @@
 #pragma once
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <Windows.h>
 #include "Utility/Utility.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include "Utility/Vec3D.h"
 #include "Utility/json.hpp"
 #include "GameInformationHandler.h"
