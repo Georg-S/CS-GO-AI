@@ -1,7 +1,7 @@
 {
   "client_dll_name": "client.dll",
   "engine_dll_name": "engine.dll",
-  "window_name": "Counter-Strike: Global Offensive",
+  "window_name": "Counter-Strike: Global Offensive - Direct3D 9",
   "trigger_button": 79,
-  "delay":  100
+  "delay": 100
 }

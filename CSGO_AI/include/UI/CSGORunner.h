@@ -39,7 +39,7 @@ public slots:
 
 private:
     QMutex mutex;
-    ModeRunning mode = ModeRunning::NONE;
+    ModeRunning mode = ModeRunning::AI;
     bool is_running = true;
     std::unique_ptr<CSGOAi> csgo_ai_handler = nullptr;
     std::unique_ptr<NavmeshPoints> csgo_navmesh_points_handler = nullptr;
