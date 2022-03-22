@@ -1,5 +1,11 @@
 #include "UI/NavmeshEditor.h"
 
+template <typename T>
+static void setElementsVisible(const std::vector<T>& elems, bool visible) 
+{
+	for (const auto& elem : elems)
+		elem->render = visible;
+}
 
 NavmeshEditor::NavmeshEditor(QWidget* parent, QLineEdit* output_line) : QScrollArea(parent), output_line(output_line)
 {
@@ -32,6 +38,7 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 		editor_state = State::ADD_EDGES;
 		output_success("Corner nodes set: edges can be added");
 		adjust_all_nodes();
+		setElementsVisible(edges, true);
 	}
 	else if (editor_state == State::ADD_EDGES) 
 	{
@@ -95,6 +102,9 @@ void NavmeshEditor::render_edges(QPixmap& map)
 	painter.setPen(QPen(Qt::black, 4));
 	for (const auto& edge : edges)
 	{
+		if (!edge->render)
+			continue;
+
 		QPoint from = QPoint(edge->from->canvas_pos.x, edge->from->canvas_pos.y);
 		QPoint to = QPoint(edge->to->canvas_pos.x, edge->to->canvas_pos.y);
 		painter.drawLine(from, to);
@@ -156,8 +166,10 @@ void NavmeshEditor::place_corner_points()
 		output_error("Couldn't find two corner points, please load a valid navmesh");
 		return;
 	}
-
+	
 	editor_state = State::PLACE_CORNER_1;
+	setNodesAndEdgesInvisible();
+	render_editor();
 	output("Place first node: " + QString::fromStdString(corner_node_1->pos.to_string()));
 }
 
@@ -440,4 +452,10 @@ Editor::Node* NavmeshEditor::get_node_pointer_by_id(const std::vector<std::uniqu
 	}
 
 	return nullptr;
+}
+
+void NavmeshEditor::setNodesAndEdgesInvisible() const
+{
+	setElementsVisible(nodes, false);
+	setElementsVisible(edges, false);
 }

@@ -52,18 +52,19 @@ public:
 	explicit NavmeshEditor(QWidget* parent, QLineEdit* output);
 	~NavmeshEditor();
 
-	void left_clicked(QMouseEvent* event);
-	void render_editor();
-	void load_image(const QString& file_name);
 	void load_navmesh(const QString& file_name);
+	void load_image(const QString& file_name);
 	void place_corner_points();
 	bool save_navmesh();
 	void add_node(const Vec3D<float>& csgo_pos);
+
 protected:
 	void wheelEvent(QWheelEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 
 private:
+	void left_clicked(QMouseEvent* event);
+	void render_editor();
 	void zoom(double factor);
 	void output(const std::string& message);
 	void output(const QString& message, Qt::GlobalColor color);
@@ -79,6 +80,7 @@ private:
 	Editor::Node* get_clicked_node(const std::vector<std::unique_ptr<Editor::Node>>& nodes, const Vec2D<int>& click_pos);
 	bool add_edge(Editor::Node* from, Editor::Node* to);
 	Editor::Node* get_node_pointer_by_id(const std::vector<std::unique_ptr<Editor::Node>>& nodes, int id) const;
+	void setNodesAndEdgesInvisible() const;
 
 	QLabel* displayed_map = nullptr;
 	QImage image;
