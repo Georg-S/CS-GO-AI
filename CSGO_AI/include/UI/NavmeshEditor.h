@@ -5,6 +5,7 @@
 #include <qwidget.h>
 #include <qscrollarea.h>
 #include <qlineedit.h>
+#include <qmessagebox.h>
 #include <fstream>
 #include <vector>
 #include "Utility/Logging.h"
@@ -29,7 +30,7 @@ namespace Editor
 
 	struct Edge
 	{
-		Edge(Node* from, Node* to, float weight) : from(from), to(to), weight(weight), render(false) {};
+		Edge(Node* from, Node* to, float weight, bool render = false) : from(from), to(to), weight(weight), render(render) {};
 
 		Node* from;
 		Node* to;
@@ -63,7 +64,9 @@ protected:
 	void mousePressEvent(QMouseEvent* event) override;
 
 private:
+	Vec2D<int> get_cursor_pos_on_canvas() const;
 	void left_clicked(QMouseEvent* event);
+	void right_clicked(QMouseEvent* event);
 	void render_editor();
 	void zoom(double factor);
 	void output(const std::string& message);
@@ -78,7 +81,7 @@ private:
 	void render_nodes(QPixmap& pixmap);
 	void adjust_all_nodes();
 	Editor::Node* get_clicked_node(const std::vector<std::unique_ptr<Editor::Node>>& nodes, const Vec2D<int>& click_pos);
-	bool add_edge(Editor::Node* from, Editor::Node* to);
+	bool add_edge(Editor::Node* from, Editor::Node* to, bool render = true);
 	Editor::Node* get_node_pointer_by_id(const std::vector<std::unique_ptr<Editor::Node>>& nodes, int id) const;
 	void setNodesAndEdgesInvisible() const;
 
