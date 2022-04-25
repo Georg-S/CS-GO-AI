@@ -3,9 +3,8 @@
 #include <string>
 
 template <typename T>
-class Vec3D
+struct Vec3D
 {
-public:
 	Vec3D() : x(0), y(0), z(0) {}
 	Vec3D(T x, T y, T z) : x(x), y(y), z(z)  {}
 
@@ -44,7 +43,7 @@ public:
 };
 
 template <typename T>
-Vec3D<T> operator+(const Vec3D<T>& left, const Vec3D<T>& right)
+const Vec3D<T> operator+(const Vec3D<T>& left, const Vec3D<T>& right)
 {
 	Vec3D<T> result;
 	result.x = left.x + right.x;
@@ -55,7 +54,7 @@ Vec3D<T> operator+(const Vec3D<T>& left, const Vec3D<T>& right)
 }
 
 template <typename T>
-Vec3D<T> operator-(const Vec3D<T>& left, const Vec3D<T>& right)
+const Vec3D<T> operator-(const Vec3D<T>& left, const Vec3D<T>& right)
 {
 	Vec3D<T> result;
 	result.x = left.x - right.x;
@@ -66,7 +65,7 @@ Vec3D<T> operator-(const Vec3D<T>& left, const Vec3D<T>& right)
 }
 
 template <typename T, typename R>
-Vec3D<T> operator/(const Vec3D<T>& left, R num)
+const Vec3D<T> operator/(const Vec3D<T>& left, R num)
 {
 	Vec3D<T> result;
 	result.x = left.x / num;
@@ -77,7 +76,7 @@ Vec3D<T> operator/(const Vec3D<T>& left, R num)
 }
 
 template <typename T, typename R>
-Vec3D<T> operator*(const Vec3D<T>& left, T num)
+const Vec3D<T> operator*(const Vec3D<T>& left, T num)
 {
 	Vec3D<T> result;
 	result.x = left.x * num;

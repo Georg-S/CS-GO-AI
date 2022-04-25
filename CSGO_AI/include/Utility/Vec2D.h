@@ -2,9 +2,8 @@
 #include <string>
 
 template <typename T>
-class Vec2D
+struct Vec2D
 {
-public:
 	Vec2D() : x(0), y(0) {};
 	Vec2D(T x, T y) : x(x), y(y) {};
 
@@ -26,7 +25,7 @@ public:
 };
 
 template <typename T>
-Vec2D<T> operator-(const Vec2D<T>& left, const Vec2D<T>& right)
+const Vec2D<T> operator-(const Vec2D<T>& left, const Vec2D<T>& right)
 {
 	Vec2D<T> result;
 	result.x = left.x - right.x;
