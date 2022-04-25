@@ -1,9 +1,5 @@
 #include "CSGO/MemoryManager.h"
 
-MemoryManager::MemoryManager()
-{
-}
-
 MemoryManager::~MemoryManager()
 {
 	if (process != NULL)
@@ -27,7 +23,7 @@ bool MemoryManager::attach_to_process(const char* window_name)
 	return true;
 }
 
-DWORD MemoryManager::get_module_address(const char* module_name)
+DWORD MemoryManager::get_module_address(const char* module_name) const
 {
 	HMODULE modules[1024];
 	DWORD bytes_needed;
@@ -56,7 +52,7 @@ DWORD MemoryManager::get_module_address(const char* module_name)
 	return 0;
 }
 
-void MemoryManager::print_4_byte_hex(DWORD number)
+void MemoryManager::print_4_byte_hex(DWORD number) const
 {
 	printf_s("0x%08x", number);
 }

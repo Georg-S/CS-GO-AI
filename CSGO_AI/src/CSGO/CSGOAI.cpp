@@ -5,13 +5,31 @@ CSGOAi::CSGOAi()
 	game_info_handler = std::make_shared<GameInformationhandler>();
 }
 
+void CSGOAi::update()
+{
+	if (!game_info_handler->is_attached_to_process())
+		return;
+
+	game_info_handler->update_game_information();
+
+	if (activated_behavior.triggerBot)
+		triggerbot.update(game_info_handler.get());
+	if (activated_behavior.aimbot)
+		aimbot.update(game_info_handler.get());
+	if (activated_behavior.movement)
+		movement_strategy.update(game_info_handler.get());
+}
+
 bool CSGOAi::load_config(const std::string& file_name)
 {
-	if (!ConfigReader::read_in_config_data(config, file_name)) 
+	auto readConfig = Config::read_in_config_data(file_name);
+	if (!readConfig)
 	{
 		Logging::log_error("Config couldn't be read, make sure you have a valid config");
 		return false;
 	}
+	config = readConfig.value();
+
 	return true;
 }
 
@@ -61,22 +79,7 @@ void CSGOAi::set_activated_behavior(const ActivatedFeatures& behavior)
 	activated_behavior = behavior;
 }
 
-std::shared_ptr<GameInformationhandler> CSGOAi::get_game_info_handler()
+std::shared_ptr<GameInformationhandler> CSGOAi::get_game_info_handler() const
 {
 	return game_info_handler;
-}
-
-void CSGOAi::update()
-{
-	if (!game_info_handler->is_attached_to_process())
-		return;
-
-	game_info_handler->update_game_information();
-
-	if (activated_behavior.triggerBot)
-		triggerbot.update(game_info_handler.get());
-	if (activated_behavior.aimbot)
-		aimbot.update(game_info_handler.get());
-	if (activated_behavior.movement)
-		movement_strategy.update(game_info_handler.get());
 }

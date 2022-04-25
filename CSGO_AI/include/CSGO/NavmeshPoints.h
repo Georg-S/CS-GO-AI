@@ -28,7 +28,7 @@ private:
 	Button save_button;
 	Button close_button;
 	Offsets* offsets;
-	ConfigData config;
+	Config config;
 	MemoryManager mem_manager;
 	DWORD client_dll_address;
 	DWORD engine_address;

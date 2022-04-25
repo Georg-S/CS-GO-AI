@@ -29,10 +29,10 @@ public:
 	bool load_navmesh();
 	bool attach_to_csgo_process();
 	void set_activated_behavior(const ActivatedFeatures& behavior);
-	std::shared_ptr<GameInformationhandler> get_game_info_handler();
+	std::shared_ptr<GameInformationhandler> get_game_info_handler() const;
 
 private:
-	ConfigData config;
+	Config config;
 	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
 	MovementStrategy movement_strategy;
 	Triggerbot triggerbot;

@@ -1,12 +1,11 @@
 #include "CSGO/GameInformationHandler.h"
 
 GameInformationhandler::GameInformationhandler()
-{
-    client_dll_address = 0;
-    engine_address = 0;
-}
+    : client_dll_address(0)
+    , engine_address(0)
+{}
 
-bool GameInformationhandler::init(const ConfigData& config)
+bool GameInformationhandler::init(const Config& config)
 {
     mem_manager.attach_to_process(config.windowname.c_str());
 

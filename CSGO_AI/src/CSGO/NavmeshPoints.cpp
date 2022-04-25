@@ -7,11 +7,13 @@ NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_h
 
 bool NavmeshPoints::init()
 {
-	if (!ConfigReader::read_in_config_data(config, "config.json"))
+	auto readConfig = Config::read_in_config_data("config.json");
+	if (!readConfig)
 	{
 		Logging::log_error("Loading config failed, check config file");
 		return false;
 	}
+	config = readConfig.value();
 
 	if (!Offsets::load_offsets_from_file("offsets.json"))
 	{

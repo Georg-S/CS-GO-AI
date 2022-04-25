@@ -48,7 +48,7 @@ class GameInformationhandler
 {
 public:
 	GameInformationhandler();
-	bool init(const ConfigData& config);
+	bool init(const Config& config);
 	void update_game_information();
 
 	GameInformation get_game_information() const;
@@ -69,7 +69,6 @@ private:
 
 	bool attached_to_process = false;
 	GameInformation game_information;
-	ConfigData config_data;
 	MemoryManager mem_manager;
 	DWORD client_dll_address;
 	DWORD engine_address;

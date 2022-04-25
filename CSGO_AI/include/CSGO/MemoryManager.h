@@ -12,13 +12,13 @@
 class MemoryManager
 {
 public:
-	MemoryManager();
+	MemoryManager() = default;
 	~MemoryManager();
 	bool attach_to_process(const char* window_name);
-	DWORD get_module_address(const char* module_name);
-	void print_4_byte_hex(DWORD address);
+	DWORD get_module_address(const char* module_name) const;
+	void print_4_byte_hex(DWORD address) const;
 
-	void read_string_from_memory(DWORD address, char* buffer, DWORD size, bool* success = nullptr) 
+	void read_string_from_memory(DWORD address, char* buffer, DWORD size, bool* success = nullptr) const
 	{
 		if (!ReadProcessMemory(process, (LPVOID)address, buffer, size, NULL))
 		{
@@ -32,7 +32,7 @@ public:
 	}
 
 	template <typename type>
-	type read_memory(DWORD address, bool* success = nullptr)
+	type read_memory(DWORD address, bool* success = nullptr) const
 	{
 		type result{};
 		if (!ReadProcessMemory(process, (LPVOID)address, &result, sizeof(type), NULL)) 

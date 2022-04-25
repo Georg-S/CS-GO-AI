@@ -14,10 +14,9 @@ struct Node
 	};
 
 	Node(int id, Vec3D<float> position)
-	{
-		this->id = id;
-		this->position = position;
-	}
+		: id(id)
+		, position(std::move(position))
+	{}
 
 	int id;
 	Vec3D<float> position;
