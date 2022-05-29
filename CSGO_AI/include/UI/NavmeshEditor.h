@@ -8,6 +8,9 @@
 #include <qmessagebox.h>
 #include <fstream>
 #include <vector>
+#include <math.h>
+#include <optional>
+#include <iostream>
 #include "Utility/Logging.h"
 #include "Utility/Vec3D.h"
 #include "Utility/Vec2D.h"
@@ -66,6 +69,8 @@ protected:
 private:
 	Vec2D<int> get_cursor_pos_on_canvas() const;
 	void left_clicked(QMouseEvent* event);
+	void delete_node_and_corresponding_edges(Editor::Node* node);
+	void delete_edge(Editor::Edge* edge);
 	void right_clicked(QMouseEvent* event);
 	void render_editor();
 	void zoom(double factor);
@@ -81,6 +86,7 @@ private:
 	void render_nodes(QPixmap& pixmap);
 	void adjust_all_nodes();
 	Editor::Node* get_clicked_node(const std::vector<std::unique_ptr<Editor::Node>>& nodes, const Vec2D<int>& click_pos);
+	Editor::Edge* get_clicked_edge(const std::vector<std::unique_ptr<Editor::Edge>>& edges, const Vec2D<int>& click_pos);
 	bool add_edge(Editor::Node* from, Editor::Node* to, bool render = true);
 	Editor::Node* get_node_pointer_by_id(const std::vector<std::unique_ptr<Editor::Node>>& nodes, int id) const;
 	void setNodesAndEdgesInvisible() const;

@@ -7,6 +7,27 @@ static void setElementsVisible(const std::vector<T>& elems, bool visible)
 		elem->render = visible;
 }
 
+// Gets the minimum distance from a point p to a line segment defined by v and w
+template <typename T>
+static std::optional<float> minimum_distance(Vec2D<T> v, Vec2D<T> w, Vec2D<T> p)
+{
+	const float lineSegmentLengthSquared = distanceSquared(v, w);
+	if (lineSegmentLengthSquared == 0.0)
+		return distance(p, v); // True if v == w
+
+	const auto lineSegmentDirection = w - v;
+	const float t = dotProduct(p - v, lineSegmentDirection) / lineSegmentLengthSquared;
+	if (t < 0)
+		return {};	// Projected point is not on the line segment
+	if (t > 1)
+		return {};	// Projected point is not on the line segment
+
+	// We project the vector p - v onto the line segment defined by w - v
+	const Vec2D<T> projection = v + t * lineSegmentDirection;
+
+	return distance(p, projection);
+}
+
 NavmeshEditor::NavmeshEditor(QWidget* parent, QLineEdit* output_line) : QScrollArea(parent), output_line(output_line), displayed_map(new QLabel)
 {
 	displayed_map->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -78,33 +99,65 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 	render_editor();
 }
 
+void NavmeshEditor::delete_node_and_corresponding_edges(Editor::Node* node)
+{
+	const int node_id = node->id;
+	for (int i = 0; i < edges.size();)
+	{
+		if ((edges[i]->from->id == node_id) || (edges[i]->to->id == node_id))
+			edges.erase(edges.begin() + i);
+		else
+			i++;
+	}
+
+	for (int i = 0; i < nodes.size();)
+	{
+		if (nodes[i]->id == node_id)
+			nodes.erase(nodes.begin() + i);
+		else
+			i++;
+	}
+}
+
+void NavmeshEditor::delete_edge(Editor::Edge* edge)
+{
+	const int fromId = edge->from->id;
+	const int toId = edge->to->id;
+	for(int i = 0; i < edges.size();) 
+	{
+		// Remove two edges, one for each direction
+		if ((fromId == edges[i]->from->id) && (toId == edges[i]->to->id)
+			|| (fromId == edges[i]->to->id) && (toId == edges[i]->from->id))
+		{
+			edges.erase(edges.begin() + i);
+			continue;
+		}
+		i++;
+	}
+}
+
 void NavmeshEditor::right_clicked(QMouseEvent* event)
 {
 	auto cursor = get_cursor_pos_on_canvas();
 	const auto node = get_clicked_node(nodes, cursor);
-	if (!node)
+	if(node)
+	{
+		auto messageBoxSelection = QMessageBox(QMessageBox::Question, "Remove node", "Do you want to remove the node?", QMessageBox::Yes | QMessageBox::No).exec();
+		if (QMessageBox::Yes == messageBoxSelection)
+			delete_node_and_corresponding_edges(node);
+
+		render_editor();
+		return;
+	}
+
+	const auto edge = get_clicked_edge(edges, cursor);
+	if (!edge)
 		return;
 
-	const int node_id = node->id;
-	auto messageBoxSelection = QMessageBox(QMessageBox::Question, "Remove node", "Do you want to remove the node?", QMessageBox::Yes | QMessageBox::No).exec();
+	auto messageBoxSelection = QMessageBox(QMessageBox::Question, "Remove edge", "Do you want to remove the edge?", QMessageBox::Yes | QMessageBox::No).exec();
 	if (QMessageBox::Yes == messageBoxSelection)
-	{
-		for (int i = 0; i < edges.size();) 
-		{
-			if ((edges[i]->from->id == node_id) || (edges[i]->to->id == node_id))
-				edges.erase(edges.begin() + i);
-			else 
-				i++;
-		}
+		delete_edge(edge);
 
-		for (int i = 0; i < nodes.size();) 
-		{
-			if (nodes[i]->id == node_id)
-				nodes.erase(nodes.begin() + i);
-			else 
-				i++;
-		}
-	}
 	render_editor();
 }
 
@@ -458,6 +511,28 @@ Editor::Node* NavmeshEditor::get_clicked_node(const std::vector<std::unique_ptr<
 		}
 	}
 
+	return result;
+}
+
+Editor::Edge* NavmeshEditor::get_clicked_edge(const std::vector<std::unique_ptr<Editor::Edge>>& edges, const Vec2D<int>& click_pos)
+{
+	constexpr int edgeSelectedThreshold = 12;
+
+	int closest_distance = INT_MAX;
+	Editor::Edge* result = nullptr;
+
+	for (const auto& edge : edges)
+	{
+		auto distanceToEdge = minimum_distance(edge->from->canvas_pos, edge->to->canvas_pos, click_pos);
+		if (!distanceToEdge)
+			continue;
+
+		closest_distance = std::min(static_cast<int>(distanceToEdge.value()), closest_distance);
+
+		if (distanceToEdge.value() < (edgeSelectedThreshold / zoom_factor))
+			result = edge.get();
+	}
+	std::cout << closest_distance << std::endl;
 	return result;
 }
 
