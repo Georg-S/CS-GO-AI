@@ -1,6 +1,9 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <string>
+
+constexpr float PI = static_cast<float>(M_PI);
 
 template <typename T>
 struct Vec3D

@@ -126,7 +126,7 @@ Movement MovementStrategy::calculate_move_info(const GameInformation& game_info,
 float MovementStrategy::calc_angle_between_two_positions(const Vec3D<float>& pos1, const Vec3D<float>& pos2) const
 {
 	auto vec = pos2 - pos1;
-	return (std::atan2(vec.y, vec.x) / M_PI * 180);
+	return (std::atan2(vec.y, vec.x) / PI * 180);
 }
 
 float MovementStrategy::calc_walk_angle(float view_angle, float position_angle) const

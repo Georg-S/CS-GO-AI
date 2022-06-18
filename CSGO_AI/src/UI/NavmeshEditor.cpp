@@ -102,7 +102,7 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 void NavmeshEditor::delete_node_and_corresponding_edges(Editor::Node* node)
 {
 	const int node_id = node->id;
-	for (int i = 0; i < edges.size();)
+	for (std::size_t i = 0; i < edges.size();)
 	{
 		if ((edges[i]->from->id == node_id) || (edges[i]->to->id == node_id))
 			edges.erase(edges.begin() + i);
@@ -110,7 +110,7 @@ void NavmeshEditor::delete_node_and_corresponding_edges(Editor::Node* node)
 			i++;
 	}
 
-	for (int i = 0; i < nodes.size();)
+	for (std::size_t i = 0; i < nodes.size();)
 	{
 		if (nodes[i]->id == node_id)
 			nodes.erase(nodes.begin() + i);
@@ -123,7 +123,7 @@ void NavmeshEditor::delete_edge(Editor::Edge* edge)
 {
 	const int fromId = edge->from->id;
 	const int toId = edge->to->id;
-	for(int i = 0; i < edges.size();) 
+	for(std::size_t i = 0; i < edges.size();) 
 	{
 		// Remove two edges, one for each direction
 		if ((fromId == edges[i]->from->id) && (toId == edges[i]->to->id)

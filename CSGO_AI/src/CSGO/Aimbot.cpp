@@ -17,16 +17,16 @@ void Aimbot::update(GameInformationhandler* info_handler)
 
 Vec2D<float> Aimbot::calc_view_vec_aim_to_head(const Vec3D<float>& player_head, const Vec3D<float>& enemy_head)
 {
-	Vec2D<float> result;
 	const Vec3D<float> vec_to_enemy = enemy_head - player_head;
-	const Vec3D<float> z_vec{0, 0, 1};
+	const auto z_vec = Vec3D<float>(0, 0, 1);
 
 	float cos = z_vec.dot_product(vec_to_enemy) / (z_vec.calc_abs() * vec_to_enemy.calc_abs());
-	float vertical_angle = acos(cos) / M_PI * 180;
+	float vertical_angle = acos(cos) / PI * 180;
 	vertical_angle -= 90;
 
+	Vec2D<float> result = {};
 	result.x = vertical_angle;
-	result.y = atan2(vec_to_enemy.y, vec_to_enemy.x) / M_PI * 180;
+	result.y = atan2(vec_to_enemy.y, vec_to_enemy.x) / PI * 180;
 
 	return result;
 }
