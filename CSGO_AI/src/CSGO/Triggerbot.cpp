@@ -7,7 +7,7 @@ void Triggerbot::update(GameInformationhandler* handler)
 
 	const GameInformation game_info = handler->get_game_information();
 
-	if (game_info.controlled_player.shots_fired > 0)
+	if ((game_info.controlled_player.shots_fired > 0) || (game_info.controlled_player.health <= 0))
 		handler->set_player_shooting(false);
 
 	if (!game_info.player_in_crosshair)

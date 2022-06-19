@@ -3,13 +3,17 @@ project(CSGO_AI)
 project(NavmeshPointsaver)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}")
+include(windeployqt)
+
+
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
    list(APPEND CMAKE_PREFIX_PATH $ENV{QT_64_MSVC2017})
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
    list(APPEND CMAKE_PREFIX_PATH $ENV{QT_x86_MSVC2017})
 endif()
 
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
 set (UTILITY_HEADER
 	"include/Utility/json.hpp"
@@ -124,3 +128,6 @@ add_custom_command(TARGET CSGO_AI
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
 					${CMAKE_SOURCE_DIR}"/Navmesh"
 					"$<TARGET_FILE_DIR:CSGO_AI>/Navmesh")
+
+windeployqt(CSGO_AI)
+
