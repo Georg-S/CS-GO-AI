@@ -35,7 +35,8 @@ bool CSGOAi::load_config(const std::string& file_name)
 
 bool CSGOAi::load_offsets(const std::string& file_name)
 {
-	if (!Offsets::load_offsets_from_file(file_name)) 
+	auto success = game_info_handler->loadOffsets(file_name);
+	if (!success)
 	{
 		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");
 		return false;

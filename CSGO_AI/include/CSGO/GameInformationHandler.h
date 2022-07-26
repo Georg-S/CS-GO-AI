@@ -47,8 +47,9 @@ struct GameInformation
 class GameInformationhandler
 {
 public:
-	GameInformationhandler();
+	GameInformationhandler() = default;
 	bool init(const Config& config);
+	bool loadOffsets(const std::string& file_name);
 	void update_game_information();
 
 	GameInformation get_game_information() const;
@@ -70,6 +71,7 @@ private:
 	bool attached_to_process = false;
 	GameInformation game_information;
 	MemoryManager mem_manager;
-	DWORD client_dll_address;
-	DWORD engine_address;
+	DWORD client_dll_address = 0;
+	DWORD engine_address = 0;
+	Offsets offsets = {};
 };

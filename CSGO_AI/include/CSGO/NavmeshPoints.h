@@ -17,7 +17,6 @@ class NavmeshPoints
 {
 public:
 	NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler);
-	bool init();
 	bool update();
 	void add_point();
 	void set_add_point_button(int key_code);

@@ -5,32 +5,6 @@ NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_h
 	this->game_info_handler = game_info_handler;
 }
 
-bool NavmeshPoints::init()
-{
-	auto readConfig = Config::read_in_config_data("config.json");
-	if (!readConfig)
-	{
-		Logging::log_error("Loading config failed, check config file");
-		return false;
-	}
-	config = readConfig.value();
-
-	if (!Offsets::load_offsets_from_file("offsets.json"))
-	{
-		Logging::log_error("Loading offsets failed, check offsets file");
-		return false;
-	}
-
-	game_info_handler = std::make_shared<GameInformationhandler>();
-	if (!game_info_handler->init(config))
-	{
-		Logging::log_error("Error getting dll address ");
-		return false;
-	}
-
-	return true;
-}
-
 bool NavmeshPoints::update()
 {
 	if (!game_info_handler->is_attached_to_process())
