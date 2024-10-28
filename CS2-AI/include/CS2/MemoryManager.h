@@ -15,27 +15,29 @@ public:
 	MemoryManager() = default;
 	~MemoryManager();
 	bool attach_to_process(const char* window_name);
-	DWORD get_module_address(const char* module_name) const;
-	void print_4_byte_hex(DWORD address) const;
+	uintptr_t get_module_address(const char* module_name) const;
+	void print_4_byte_hex(uintptr_t address) const;
 
-	void read_string_from_memory(DWORD address, char* buffer, DWORD size, bool* success = nullptr) const
+	void read_string_from_memory(uintptr_t address, char* buffer, size_t size, bool* success = nullptr) const
 	{
-		if (!ReadProcessMemory(process, (LPVOID)address, buffer, size, NULL))
+		if (!ReadProcessMemory(process, reinterpret_cast<LPVOID>(address), buffer, size, nullptr))
 		{
-			if (success != nullptr)
+			if (success)
 				*success = false;
 			if (debug_print)
 				Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 		}
-		else if (success != nullptr)
+		else if (success) 
+		{
 			*success = false;
+		}
 	}
 
 	template <typename type>
-	type read_memory(DWORD address, bool* success = nullptr) const
+	type read_memory(uintptr_t address, bool* success = nullptr) const
 	{
 		type result{};
-		if (!ReadProcessMemory(process, (LPVOID)address, &result, sizeof(type), NULL)) 
+		if (!ReadProcessMemory(process, reinterpret_cast<LPVOID>(address), &result, sizeof(type), NULL))
 		{
 			if (success != nullptr)
 				*success = false;
@@ -49,9 +51,9 @@ public:
 	}
 
 	template <typename type>
-	bool write_memory(DWORD address, const type& data)
+	bool write_memory(uintptr_t address, const type& data)
 	{
-		if (!WriteProcessMemory(this->process, (LPVOID)address, &data, sizeof(data), NULL) && debug_print) 
+		if (!WriteProcessMemory(this->process, reinterpret_cast<LPVOID>(address), &data, sizeof(data), NULL) && debug_print)
 		{
 			Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 			return false;

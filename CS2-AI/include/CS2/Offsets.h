@@ -10,26 +10,27 @@ struct Offsets
 public:
 	//Will be read from the Offset file
 		//client.dll
-	DWORD local_player_offset;
-	DWORD crosshair_offset;
-	DWORD shots_fired_offset;
-	DWORD entity_list_start_offset;
-	DWORD player_health_offset;
-	DWORD team_offset;
-	DWORD entity_listelement_size;
-	DWORD position;
-	DWORD force_attack;
-	DWORD force_forward;
-	DWORD force_backward;
-	DWORD force_left;
-	DWORD force_right;
+	uintptr_t local_player_controller_offset;
+	uintptr_t local_player_pawn;
+	uintptr_t crosshair_offset;
+	uintptr_t shots_fired_offset;
+	uintptr_t entity_list_start_offset;
+	uintptr_t player_health_offset;
+	uintptr_t team_offset;
+	uintptr_t entity_listelement_size;
+	uintptr_t position;
+	uintptr_t force_attack;
+	uintptr_t force_forward;
+	uintptr_t force_backward;
+	uintptr_t force_left;
+	uintptr_t force_right;
+	uintptr_t model_state;
+	uintptr_t sceneNode;
+	uintptr_t player_pawn_handle;
 
 	//engine.dll
-	DWORD client_state;
-	DWORD client_state_view_angle;
-	DWORD client_state_max_players;
-	DWORD bone_matrix;
-	DWORD current_map;
+	uintptr_t client_state_view_angle;
+	uintptr_t current_map;
 };
 
-std::optional <Offsets> load_offsets_from_file(const std::string& filename);
+std::optional <Offsets> load_offsets_from_files();

@@ -1,0 +1,7 @@
+{
+  "client_dll_name": "client.dll",
+  "engine_dll_name": "engine2.dll",
+  "window_name": "Counter-Strike 2",
+  "trigger_button": 79,
+  "delay": 100
+}

@@ -49,7 +49,7 @@ class GameInformationhandler
 public:
 	GameInformationhandler() = default;
 	bool init(const Config& config);
-	bool loadOffsets(const std::string& file_name);
+	bool loadOffsets();
 	void update_game_information();
 
 	GameInformation get_game_information() const;
@@ -59,19 +59,19 @@ public:
 	void set_player_shooting(bool val);
 
 private:
-	ControlledPlayer read_controlled_player_information(DWORD player_address, DWORD engine_client_state_address);
-	std::vector<PlayerInformation> read_other_players(DWORD player_address, DWORD engine_client_state_address);
-	Movement read_controlled_player_movement(DWORD player_address);
-	Vec3D<float> get_head_bone_position(DWORD entity);
-	std::shared_ptr<PlayerInformation> read_player_in_crosshair(DWORD player_address);
+	ControlledPlayer read_controlled_player_information(uintptr_t player_address, uintptr_t engine_client_state_address);
+	std::vector<PlayerInformation> read_other_players(uintptr_t player_address, uintptr_t engine_client_state_address);
+	Movement read_controlled_player_movement(uintptr_t player_address);
+	Vec3D<float> get_head_bone_position(uintptr_t player_pawn);
+	std::shared_ptr<PlayerInformation> read_player_in_crosshair(uintptr_t player_address);
 	std::shared_ptr<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
-	void read_in_current_map(DWORD engine_client_state_address, char* buffer, DWORD buffer_size);
+	void read_in_current_map(uintptr_t engine_client_state_address, char* buffer, size_t buffer_size);
 	bool read_in_if_controlled_player_is_shooting();
 
 	bool attached_to_process = false;
 	GameInformation game_information;
 	MemoryManager mem_manager;
-	DWORD client_dll_address = 0;
-	DWORD engine_address = 0;
+	uintptr_t client_dll_address = 0;
+	uintptr_t engine_address = 0;
 	Offsets offsets = {};
 };

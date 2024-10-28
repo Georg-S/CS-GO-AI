@@ -6,9 +6,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}")
 include(windeployqt)
 
-if	(WIN32)
+if	(MSVC)
     list(APPEND CMAKE_PREFIX_PATH $ENV{QT_64_MSVC2017})
-endif(WIN32)
+endif(MSVC)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
@@ -46,6 +46,7 @@ set (CS2_HEADER
 	"include/CS2/NavmeshPoints.h"
 	"include/CS2/Offsets.h"
 	"include/CS2/Triggerbot.h"
+	"include/CS2/Constants.h"
 )
 
 set (HEADERS
@@ -106,17 +107,15 @@ set_property(TARGET CS2_AI PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURC
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CS2_AI)
 target_link_libraries(CS2_AI Qt6::Widgets)
 
-add_custom_command(TARGET CS2_AI 
-                   POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-				   ${CMAKE_SOURCE_DIR}"/config.json"
-				   "$<TARGET_FILE_DIR:CS2_AI>/config.json")
+if	(MSVC)
+	target_compile_options(CS2_AI PRIVATE "/MP")
+endif(MSVC)
 
 add_custom_command(TARGET CS2_AI 
-					POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-					${CMAKE_SOURCE_DIR}"/offsets.json"
-					"$<TARGET_FILE_DIR:CS2_AI>/offsets.json")
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory 
+				   ${CMAKE_SOURCE_DIR}"/Configuration"
+				   "$<TARGET_FILE_DIR:CS2_AI>/Configuration")
 
 add_custom_command(TARGET CS2_AI 
 					POST_BUILD

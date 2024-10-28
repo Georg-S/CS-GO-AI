@@ -55,13 +55,13 @@ void CS2Runner::add_point()
 void CS2Runner::load_config()
 {
 	QMutexLocker lock(&mutex);
-	csgo_ai_handler->load_config("config.json");
+	csgo_ai_handler->load_config();
 }
 
 void CS2Runner::load_offsets()
 {
 	QMutexLocker lock(&mutex);
-	csgo_ai_handler->load_offsets("offsets.json");
+	csgo_ai_handler->load_offsets();
 }
 
 void CS2Runner::load_navmesh()

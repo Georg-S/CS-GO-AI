@@ -20,9 +20,9 @@ void CS2Ai::update()
 		movement_strategy.update(game_info_handler.get());
 }
 
-bool CS2Ai::load_config(const std::string& file_name)
+bool CS2Ai::load_config()
 {
-	auto readConfig = Config::read_in_config_data(file_name);
+	auto readConfig = Config::read_in_config_data();
 	if (!readConfig)
 	{
 		Logging::log_error("Config couldn't be read, make sure you have a valid config");
@@ -33,9 +33,9 @@ bool CS2Ai::load_config(const std::string& file_name)
 	return true;
 }
 
-bool CS2Ai::load_offsets(const std::string& file_name)
+bool CS2Ai::load_offsets()
 {
-	auto success = game_info_handler->loadOffsets(file_name);
+	auto success = game_info_handler->loadOffsets();
 	if (!success)
 	{
 		Logging::log_error("Offsets couldn't be read, make sure you have a valid offsets file");

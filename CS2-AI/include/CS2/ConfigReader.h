@@ -16,5 +16,5 @@ struct Config
 	int delay = 0;
 	DWORD trigger_button = 0;
 
-	static std::optional<Config> read_in_config_data(const std::string& file_name);
+	static std::optional<Config> read_in_config_data();
 };
