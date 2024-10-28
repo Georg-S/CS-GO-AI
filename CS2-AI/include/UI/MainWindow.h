@@ -6,10 +6,10 @@
 #include <qthread.h>
 #include <memory>
 #include <qtimer.h>
-#include "CSGO/CSGOAI.h"
+#include "CS2/CS2AI.h"
 #include "ui_MainWindow.h"
-#include "CSGO/NavmeshPoints.h"
-#include "CSGORunner.h"
+#include "CS2/NavmeshPoints.h"
+#include "CS2Runner.h"
 #include "Utility/Logging.h"
 #include "QTBoxLogger.h"
 #include "NavmeshEditorWidget.h"
@@ -37,7 +37,7 @@ private:
 
     Ui::MainWindow* ui = nullptr;
     QThread* csgo_runner_thread = nullptr;
-    CSGORunner* csgo_runner = nullptr;
+    CS2Runner* csgo_runner = nullptr;
     QTimer* log_updater = nullptr;
     std::unique_ptr<QTBoxLogger> box_logger = nullptr;
 signals:

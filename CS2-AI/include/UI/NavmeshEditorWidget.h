@@ -5,19 +5,19 @@
 #include <qwidget.h>
 #include "ui_NavmeshEditorWidget.h"
 #include "NavmeshEditor.h"
-#include "CSGORunner.h"
+#include "CS2Runner.h"
 
 class NavmeshEditorWidget : public QWidget 
 {
 	Q_OBJECT;
 public:
-	explicit NavmeshEditorWidget(CSGORunner* csgo_runner, QWidget* parent = nullptr);
+	explicit NavmeshEditorWidget(CS2Runner* csgo_runner, QWidget* parent = nullptr);
 	~NavmeshEditorWidget();
 
 private:
 	Ui::NavmeshEditorWidget* ui;
 	std::unique_ptr<NavmeshEditor> navmesh_editor;
-	CSGORunner* csgo_runner = nullptr;
+	CS2Runner* csgo_runner = nullptr;
 
 private slots:
 	void on_button_load_map_clicked();

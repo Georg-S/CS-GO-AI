@@ -19,10 +19,10 @@ struct ActivatedFeatures
 	bool triggerBot = false;
 };
 
-class CSGOAi 
+class CS2Ai 
 {
 public:
-	CSGOAi();
+	CS2Ai();
 	void update();
 	bool load_config(const std::string& file_name);
 	bool load_offsets(const std::string& file_name);

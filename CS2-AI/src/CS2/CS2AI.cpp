@@ -1,11 +1,11 @@
-#include "CSGO/CSGOAI.h"
+#include "CS2/CS2AI.h"
 
-CSGOAi::CSGOAi()
+CS2Ai::CS2Ai()
 {
 	game_info_handler = std::make_shared<GameInformationhandler>();
 }
 
-void CSGOAi::update()
+void CS2Ai::update()
 {
 	if (!game_info_handler->is_attached_to_process())
 		return;
@@ -20,7 +20,7 @@ void CSGOAi::update()
 		movement_strategy.update(game_info_handler.get());
 }
 
-bool CSGOAi::load_config(const std::string& file_name)
+bool CS2Ai::load_config(const std::string& file_name)
 {
 	auto readConfig = Config::read_in_config_data(file_name);
 	if (!readConfig)
@@ -33,7 +33,7 @@ bool CSGOAi::load_config(const std::string& file_name)
 	return true;
 }
 
-bool CSGOAi::load_offsets(const std::string& file_name)
+bool CS2Ai::load_offsets(const std::string& file_name)
 {
 	auto success = game_info_handler->loadOffsets(file_name);
 	if (!success)
@@ -44,7 +44,7 @@ bool CSGOAi::load_offsets(const std::string& file_name)
 	return true;
 }
 
-bool CSGOAi::load_navmesh()
+bool CS2Ai::load_navmesh()
 {
 	if (!game_info_handler->is_attached_to_process()) 
 	{
@@ -70,17 +70,17 @@ bool CSGOAi::load_navmesh()
 	return loading_successful;
 }
 
-bool CSGOAi::attach_to_csgo_process()
+bool CS2Ai::attach_to_csgo_process()
 {
 	return game_info_handler->init(config);
 }
 
-void CSGOAi::set_activated_behavior(const ActivatedFeatures& behavior)
+void CS2Ai::set_activated_behavior(const ActivatedFeatures& behavior)
 {
 	activated_behavior = behavior;
 }
 
-std::shared_ptr<GameInformationhandler> CSGOAi::get_game_info_handler() const
+std::shared_ptr<GameInformationhandler> CS2Ai::get_game_info_handler() const
 {
 	return game_info_handler;
 }

@@ -1,4 +1,4 @@
-#include "CSGO/Offsets.h"
+#include "CS2/Offsets.h"
 
 using json = nlohmann::json;
 static constexpr int HEX = 16;

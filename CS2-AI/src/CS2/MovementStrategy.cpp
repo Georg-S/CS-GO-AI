@@ -1,4 +1,4 @@
-#include "CSGO/MovementStrategy.h"
+#include "CS2/MovementStrategy.h"
 
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {

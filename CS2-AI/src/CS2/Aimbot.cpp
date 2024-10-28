@@ -1,4 +1,4 @@
-#include "CSGO/Aimbot.h"
+#include "CS2/Aimbot.h"
 
 
 void Aimbot::update(GameInformationhandler* info_handler)

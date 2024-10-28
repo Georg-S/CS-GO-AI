@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <utility>
 #include "UI/MainWindow.h"
-#include "CSGO/CSGOAI.h"
+#include "CS2/CS2AI.h"
 
 int main(int argc, char* argv[])
 {

@@ -1,4 +1,4 @@
-#include "CSGO/GameInformationHandler.h"
+#include "CS2/GameInformationHandler.h"
 
 bool GameInformationhandler::init(const Config& config)
 {

@@ -431,9 +431,9 @@ void NavmeshEditor::load_edges(const json& navmesh_json)
 		auto from_node = get_node_pointer_by_id(nodes, from_id);
 		auto to_node = get_node_pointer_by_id(nodes, to_id);
 		if (!from_node)
-			output_error("Cannot create edge, Node " + QString(from_id) + " not found");
+			output_error("Cannot create edge, Node " + QString::number(from_id) + " not found");
 		else if (!to_node)
-			output_error("Cannot create edge, Node " + QString(to_id) + " not found");
+			output_error("Cannot create edge, Node " + QString::number(to_id) + " not found");
 
 		edges.push_back(std::make_unique<Editor::Edge>(from_node, to_node, weight));
 	}

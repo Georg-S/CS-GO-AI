@@ -13,14 +13,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	log_updater->start();
 
 	csgo_runner_thread = new QThread();
-	csgo_runner = new CSGORunner();
+	csgo_runner = new CS2Runner();
 	csgo_runner->moveToThread(csgo_runner_thread);
 
 	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(csgo_runner, this));
 
-	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CSGORunner::run);
-	connect(csgo_runner, &CSGORunner::finished, csgo_runner_thread, &QThread::quit);
-	connect(csgo_runner, &CSGORunner::finished, csgo_runner, &CSGORunner::deleteLater);
+	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CS2Runner::run);
+	connect(csgo_runner, &CS2Runner::finished, csgo_runner_thread, &QThread::quit);
+	connect(csgo_runner, &CS2Runner::finished, csgo_runner, &CS2Runner::deleteLater);
 	connect(csgo_runner_thread, &QThread::finished, csgo_runner_thread, &QThread::deleteLater);
 	csgo_runner_thread->start();
 }

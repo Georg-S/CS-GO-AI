@@ -1,8 +1,8 @@
-#include "CSGO/MemoryManager.h"
+#include "CS2/MemoryManager.h"
 
 MemoryManager::~MemoryManager()
 {
-	if (process != NULL)
+	if (process)
 		CloseHandle(process);
 }
 
@@ -12,7 +12,7 @@ bool MemoryManager::attach_to_process(const char* window_name)
 	if (!handle)
 		return false;
 
-	DWORD process_ID;
+	DWORD process_ID = 0;
 	GetWindowThreadProcessId(handle, &process_ID);
 	process = OpenProcess(PROCESS_ALL_ACCESS, false, process_ID);
 	if (!process)
@@ -25,19 +25,19 @@ bool MemoryManager::attach_to_process(const char* window_name)
 
 DWORD MemoryManager::get_module_address(const char* module_name) const
 {
-	HMODULE modules[1024];
-	DWORD bytes_needed;
+	HMODULE modules[1024] = {};
+	DWORD bytes_needed = 0;
 
 	if (!EnumProcessModules(process, modules, sizeof(modules), &bytes_needed))
 		return 0;
 
 	const int module_count = bytes_needed / sizeof(HMODULE);
-	for (int i = 0; i < module_count; i++)
+	for (size_t i = 0; i < module_count; i++)
 	{
-		TCHAR name[MAX_PATH];
-		GetModuleBaseName(process, modules[i], name, sizeof(name));
+		CHAR name[MAX_PATH] = "";
+		GetModuleBaseNameA(process, modules[i], name, sizeof(name));
 
-		if (!_tcscmp(name, module_name))
+		if (!strcmp(name, module_name))
 		{
 			if (debug_print)
 			{

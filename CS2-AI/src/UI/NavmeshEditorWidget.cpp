@@ -1,6 +1,6 @@
 #include "UI/NavmeshEditorWidget.h"
 
-NavmeshEditorWidget::NavmeshEditorWidget(CSGORunner* csgo_runner, QWidget* parent) : QWidget(parent), ui(new Ui::NavmeshEditorWidget)
+NavmeshEditorWidget::NavmeshEditorWidget(CS2Runner* csgo_runner, QWidget* parent) : QWidget(parent), ui(new Ui::NavmeshEditorWidget)
 {
 	ui->setupUi(this);
 	navmesh_editor = std::make_unique<NavmeshEditor>(this, ui->lineEdit_navmesh_output);

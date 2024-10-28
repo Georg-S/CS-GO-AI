@@ -60,6 +60,6 @@ public:
 	}
 
 private:
-	HANDLE process = NULL;
+	HANDLE process = nullptr;
 	static constexpr bool debug_print = false;
 };
