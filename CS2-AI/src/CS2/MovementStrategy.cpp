@@ -33,7 +33,7 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 
 	const Vec3D<float> player_pos = game_info.controlled_player.position;
 
-	if (next_node == nullptr)
+	if (!next_node)
 		next_node = get_closest_node_to_position(player_pos);
 
 	auto distance = next_node->position.distance(player_pos);

@@ -78,4 +78,5 @@ private:
 	uintptr_t client_dll_address = 0;
 	uintptr_t engine_address = 0;
 	Offsets offsets = {};
+	Config config = {};
 };
