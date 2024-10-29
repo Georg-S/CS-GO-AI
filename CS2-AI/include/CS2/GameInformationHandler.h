@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <optional>
 #include "Offsets.h"
 #include "Utility/Vec3D.h"
 #include "Utility/Vec2D.h"
@@ -39,8 +40,8 @@ struct GameInformation
 {
 	ControlledPlayer controlled_player;
 	std::vector<PlayerInformation> other_players;
-	std::shared_ptr<PlayerInformation> player_in_crosshair = nullptr;
-	std::shared_ptr<PlayerInformation> closest_enemy_player = nullptr;
+	std::optional<PlayerInformation> player_in_crosshair;
+	std::optional<PlayerInformation> closest_enemy_player;
 	char current_map[64] = "";
 };
 
@@ -63,8 +64,11 @@ private:
 	std::vector<PlayerInformation> read_other_players(uintptr_t player_address, uintptr_t engine_client_state_address);
 	Movement read_controlled_player_movement(uintptr_t player_address);
 	Vec3D<float> get_head_bone_position(uintptr_t player_pawn);
-	std::shared_ptr<PlayerInformation> read_player_in_crosshair(uintptr_t player_address);
-	std::shared_ptr<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
+	uintptr_t get_list_entity(uintptr_t id, uintptr_t entity_list);
+	uintptr_t get_entity_controller_or_pawn(uintptr_t list_entity, uintptr_t id);
+	std::optional<PlayerInformation> read_player(uintptr_t entity_list_begin, uintptr_t id, uintptr_t player_address);
+	std::optional<PlayerInformation> read_player_in_crosshair(uintptr_t player_controller, uintptr_t player_pawn);
+	std::optional<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
 	void read_in_current_map(uintptr_t engine_client_state_address, char* buffer, size_t buffer_size);
 	bool read_in_if_controlled_player_is_shooting();
 

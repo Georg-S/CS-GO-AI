@@ -2,6 +2,7 @@
 #include <string>
 #include <filesystem>
 
+const DWORD button_pressed_value = 65537;
 const std::filesystem::path config_folder_path = "Configuration";
 const std::filesystem::path config_file_path = config_folder_path / "config.json";
 const std::filesystem::path general_offsets_file_path = config_folder_path / "offsets.json";

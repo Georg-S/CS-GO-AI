@@ -2,7 +2,7 @@
 #include <qobject.h>
 #include <string>
 #include <math.h>
-#include <qmutex.h>
+#include <mutex>
 #include <qthread.h>
 #include <iostream>
 #include <memory>
@@ -38,7 +38,7 @@ public slots:
     void run();
 
 private:
-    QMutex mutex;
+    std::mutex mutex;
     ModeRunning mode = ModeRunning::AI;
     bool is_running = true;
     std::unique_ptr<CS2Ai> csgo_ai_handler = nullptr;

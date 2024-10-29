@@ -11,15 +11,20 @@ CS2Runner::CS2Runner(): QObject(nullptr)
 
 void CS2Runner::run()
 {
-	while (is_running)
+	while (is_running) 
+	{
 		update();
+		// 1 ms sleep because else activating the behaviors would take too long since the lock is taken all the time
+		// Could be solved by e.g. making the "ActivatedFeatures" atomic but for now the sleep should be enough
+		Sleep(1); 
+	}
 
 	deleteLater();
 }
 
 void CS2Runner::update()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	if(mode == ModeRunning::AI)
 		csgo_ai_handler->update();
 	else if (mode == ModeRunning::POINT_CREATOR)
@@ -28,19 +33,19 @@ void CS2Runner::update()
 
 void CS2Runner::set_mode(ModeRunning mode)
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	this->mode = mode;
 }
 
 void CS2Runner::set_add_point_key(int key_code)
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	csgo_navmesh_points_handler->set_add_point_button(key_code);
 }
 
 bool CS2Runner::save_navmesh_points()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	bool success = this->csgo_navmesh_points_handler->save_to_file();
 
 	return success;
@@ -48,31 +53,31 @@ bool CS2Runner::save_navmesh_points()
 
 void CS2Runner::add_point()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	csgo_navmesh_points_handler->add_point();
 }
 
 void CS2Runner::load_config()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	csgo_ai_handler->load_config();
 }
 
 void CS2Runner::load_offsets()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	csgo_ai_handler->load_offsets();
 }
 
 void CS2Runner::load_navmesh()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	csgo_ai_handler->load_navmesh();
 }
 
 void CS2Runner::attach_to_process()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	if (!csgo_ai_handler->attach_to_csgo_process())
 		Logging::log_error("Error getting dll address / Error attaching to CS-GO process");
 	else
@@ -81,12 +86,12 @@ void CS2Runner::attach_to_process()
 
 void CS2Runner::set_activated_behavior(const ActivatedFeatures& behavior)
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	csgo_ai_handler->set_activated_behavior(behavior);
 }
 
 std::pair<bool, Vec3D<float>> CS2Runner::get_current_position()
 {
-	QMutexLocker lock(&mutex);
+	std::scoped_lock lock(mutex);
 	return csgo_navmesh_points_handler->get_current_position();
 }
