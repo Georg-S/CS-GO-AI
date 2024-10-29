@@ -1,5 +1,7 @@
 #include "CS2/GameInformationHandler.h"
 
+#include "Utility/Logging.h"
+
 bool GameInformationhandler::init(const Config& config)
 {
     mem_manager.attach_to_process(config.windowname.c_str());
@@ -92,7 +94,12 @@ std::shared_ptr<PlayerInformation> GameInformationhandler::get_closest_enemy(con
 
 void GameInformationhandler::read_in_current_map(uintptr_t engine_client_state_address, char* buffer, size_t buffer_size)
 {
-    mem_manager.read_string_from_memory(engine_client_state_address + offsets.current_map, buffer, buffer_size);
+    constexpr uintptr_t global_var_map = 0x180;
+
+    auto global_vars = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.global_vars);
+    auto map_name_ptr = mem_manager.read_memory<uintptr_t>(global_vars + global_var_map);
+
+    mem_manager.read_string_from_memory(map_name_ptr, buffer, buffer_size);
 }
 
 bool GameInformationhandler::read_in_if_controlled_player_is_shooting()
@@ -100,8 +107,7 @@ bool GameInformationhandler::read_in_if_controlled_player_is_shooting()
     // Not shooting 16777472
     constexpr DWORD shooting_value = 65537;
     DWORD val = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_attack);
-    //DWORD test = mem_manager.write_memory<DWORD>(client_dll_address + 25351712, shooting_value);
-    //DWORD test = mem_manager.write_memory<bool>(client_dll_address + 25351712, false);
+    //DWORD test = mem_manager.write_memory<DWORD>(client_dll_address + offsets.force_attack, shooting_value);
 
     return val == shooting_value;
 }
@@ -174,12 +180,10 @@ Movement GameInformationhandler::read_controlled_player_movement(uintptr_t playe
     Movement return_value = {};
 
     // Walking value == 65537
-    auto val = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_forward);
-
-    return_value.forward = mem_manager.read_memory<bool>(client_dll_address + offsets.force_forward);
-    return_value.backward = mem_manager.read_memory<bool>(client_dll_address + offsets.force_backward);
-    return_value.left = mem_manager.read_memory<bool>(client_dll_address + offsets.force_left);
-    return_value.right = mem_manager.read_memory<bool>(client_dll_address + offsets.force_right);
+    return_value.forward = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_forward) == 65537;
+    return_value.backward = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_backward) == 65537;
+    return_value.left = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_left) == 65537;
+    return_value.right = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_right) == 65537;
 
     return return_value;
 }
@@ -188,7 +192,7 @@ Vec3D<float> GameInformationhandler::get_head_bone_position(uintptr_t player_paw
 {
     constexpr DWORD bone_matrix_offset = 0x80;
     constexpr DWORD head_bone_index = 0x6;
-    constexpr DWORD matrix_size = 0x32;
+    constexpr DWORD matrix_size = 0x20;
 
     auto game_scene_node = mem_manager.read_memory<uintptr_t>(player_pawn + offsets.sceneNode);
     auto bone_matrix = mem_manager.read_memory<uintptr_t>(game_scene_node + offsets.model_state + bone_matrix_offset);

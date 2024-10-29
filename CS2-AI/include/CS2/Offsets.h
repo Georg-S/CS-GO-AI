@@ -8,8 +8,7 @@
 struct Offsets
 {
 public:
-	//Will be read from the Offset file
-		//client.dll
+	//Will be read from the offsets files
 	uintptr_t local_player_controller_offset;
 	uintptr_t local_player_pawn;
 	uintptr_t crosshair_offset;
@@ -27,10 +26,9 @@ public:
 	uintptr_t model_state;
 	uintptr_t sceneNode;
 	uintptr_t player_pawn_handle;
-
-	//engine.dll
 	uintptr_t client_state_view_angle;
 	uintptr_t current_map;
+	uintptr_t global_vars;
 };
 
 std::optional <Offsets> load_offsets_from_files();

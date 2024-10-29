@@ -34,18 +34,20 @@ public:
 	}
 
 	template <typename type>
-	type read_memory(uintptr_t address, bool* success = nullptr) const
+	[[nodiscard]] type read_memory(uintptr_t address, bool* success = nullptr) const
 	{
 		type result{};
-		if (!ReadProcessMemory(process, reinterpret_cast<LPVOID>(address), &result, sizeof(type), NULL))
+		if (!ReadProcessMemory(process, reinterpret_cast<LPVOID>(address), &result, sizeof(type), nullptr))
 		{
 			if (success != nullptr)
 				*success = false;
-			if(debug_print)
+			if (debug_print)
 				Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 		}
-		else if (success != nullptr)
-			*success = false;
+		else if (success) 
+		{
+			*success = true;
+		}
 
 		return result;
 	}

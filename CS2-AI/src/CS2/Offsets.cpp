@@ -26,8 +26,9 @@ std::optional<Offsets> load_offsets_from_files()
 		offsets.local_player_controller_offset = static_cast<uintptr_t>(general_offsets_json["client.dll"]["dwLocalPlayerController"]);
 		offsets.entity_list_start_offset = static_cast<uintptr_t>(general_offsets_json["client.dll"]["dwEntityList"]);
 		offsets.local_player_pawn = static_cast<uintptr_t>(general_offsets_json["client.dll"]["dwLocalPlayerPawn"]);
-
+		offsets.global_vars = static_cast<uintptr_t>(general_offsets_json["client.dll"]["dwGlobalVars"]);
 		offsets.client_state_view_angle = static_cast<uintptr_t>(general_offsets_json["client.dll"]["dwViewAngles"]);
+
 		offsets.player_health_offset = static_cast<uintptr_t>(client_offsets_json["client.dll"]["classes"]["C_BaseEntity"]["fields"]["m_iHealth"]);
 		offsets.player_pawn_handle = static_cast<uintptr_t>(client_offsets_json["client.dll"]["classes"]["CCSPlayerController"]["fields"]["m_hPlayerPawn"]);
 		offsets.team_offset = static_cast<uintptr_t>(client_offsets_json["client.dll"]["classes"]["C_BaseEntity"]["fields"]["m_iTeamNum"]);

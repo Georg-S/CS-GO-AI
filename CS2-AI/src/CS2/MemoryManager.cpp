@@ -8,7 +8,7 @@ MemoryManager::~MemoryManager()
 
 bool MemoryManager::attach_to_process(const char* window_name)
 {
-	HWND handle = FindWindowA(NULL, window_name);
+	HWND handle = FindWindowA(nullptr, window_name);
 	if (!handle)
 		return false;
 
