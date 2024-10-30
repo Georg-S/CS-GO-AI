@@ -10,7 +10,7 @@ if	(MSVC)
     list(APPEND CMAKE_PREFIX_PATH $ENV{QT_64_MSVC2017})
 endif(MSVC)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set (UTILITY_HEADER
 	"include/Utility/json.hpp"
@@ -107,10 +107,6 @@ set_property(TARGET CS2_AI PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURC
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CS2_AI)
 target_link_libraries(CS2_AI Qt6::Widgets)
 
-if	(MSVC)
-	target_compile_options(CS2_AI PRIVATE "/MP")
-endif(MSVC)
-
 add_custom_command(TARGET CS2_AI 
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory 
@@ -123,6 +119,8 @@ add_custom_command(TARGET CS2_AI
 					${CMAKE_SOURCE_DIR}"/Navmesh"
 					"$<TARGET_FILE_DIR:CS2_AI>/Navmesh")
 
-# TODO fix windeployqt
-# windeployqt(CS2_AI)
+if	(MSVC)
+	target_compile_options(CS2_AI PRIVATE "/MP")
+	windeployqt(CS2_AI)
+endif (MSVC)
 

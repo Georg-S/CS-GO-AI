@@ -16,7 +16,6 @@ function(windeployqt target)
                 --verbose 1
                 --release
                 --no-svg
-                --no-angle
                 --no-opengl
                 --no-opengl-sw
                 --no-compiler-runtime

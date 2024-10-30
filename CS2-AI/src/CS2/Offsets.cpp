@@ -14,12 +14,10 @@ std::optional<Offsets> load_offsets_from_files()
 	{
 		std::ifstream general_stream(general_offsets_file_path);
 		std::ifstream client_stream(client_offsets_file_path);
-		std::ifstream engine_stream(engine_offsets_file_path);
 		std::ifstream buttons_stream(buttons_offsets_file_path);
 
 		auto general_offsets_json = json::parse(general_stream);
 		auto client_offsets_json = json::parse(client_stream);
-		auto engine_offsets_json = json::parse(engine_stream);
 		auto buttons_offsets_json = json::parse(buttons_stream);
 
 		offsets.entity_listelement_size = 0x10;
