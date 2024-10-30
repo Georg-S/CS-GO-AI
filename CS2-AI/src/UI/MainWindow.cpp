@@ -12,17 +12,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 	connect(log_updater, &QTimer::timeout, this, &MainWindow::update_logger);
 	log_updater->start();
 
-	csgo_runner_thread = new QThread();
-	csgo_runner = new CS2Runner();
-	csgo_runner->moveToThread(csgo_runner_thread);
+	cs2_runner_thread = new QThread();
+	cs2_runner = new CS2Runner();
+	cs2_runner->moveToThread(cs2_runner_thread);
 
-	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(csgo_runner, this));
+	ui->editor_tab_layout->addWidget(new NavmeshEditorWidget(cs2_runner, this));
 
-	connect(csgo_runner_thread, &QThread::started, csgo_runner, &CS2Runner::run);
-	connect(csgo_runner, &CS2Runner::finished, csgo_runner_thread, &QThread::quit);
-	connect(csgo_runner, &CS2Runner::finished, csgo_runner, &CS2Runner::deleteLater);
-	connect(csgo_runner_thread, &QThread::finished, csgo_runner_thread, &QThread::deleteLater);
-	csgo_runner_thread->start();
+	connect(cs2_runner_thread, &QThread::started, cs2_runner, &CS2Runner::run);
+	connect(cs2_runner, &CS2Runner::finished, cs2_runner_thread, &QThread::quit);
+	connect(cs2_runner, &CS2Runner::finished, cs2_runner, &CS2Runner::deleteLater);
+	connect(cs2_runner_thread, &QThread::finished, cs2_runner_thread, &QThread::deleteLater);
+	cs2_runner_thread->start();
 }
 
 MainWindow::~MainWindow()
@@ -38,7 +38,7 @@ void MainWindow::update_behavior_executed()
 	features.aimbot = ui->checkBox_aimbot->isChecked();
 	features.movement = ui->checkBox_movement->isChecked();
 
-	csgo_runner->set_activated_behavior(features);
+	cs2_runner->set_activated_behavior(features);
 }
 
 void MainWindow::update_logger()
@@ -121,14 +121,14 @@ void MainWindow::on_checkBox_triggerbot_stateChanged()
 
 void MainWindow::on_button_reload_files_clicked()
 {
-	csgo_runner->load_config();
-	csgo_runner->load_offsets();
-	csgo_runner->load_navmesh();
+	cs2_runner->load_config();
+	cs2_runner->load_offsets();
+	cs2_runner->load_navmesh();
 }
 
 void MainWindow::on_button_reattach_clicked()
 {
-	csgo_runner->attach_to_process();
+	cs2_runner->attach_to_process();
 }
 
 void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
@@ -144,7 +144,7 @@ void MainWindow::on_lineEdit_keycode_textChanged(const QString& str)
 
 	std::string buf = str.toStdString();
 	int key_code = get_key_code_from_char(buf.at(0));
-	csgo_runner->set_add_point_key(key_code);
+	cs2_runner->set_add_point_key(key_code);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -155,12 +155,12 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 	else if ((SelectedTab)index == SelectedTab::POINTS)
 		mode = ModeRunning::POINT_CREATOR;
 
-	csgo_runner->set_mode(mode);
+	cs2_runner->set_mode(mode);
 }
 
 void MainWindow::on_button_save_points_clicked()
 {
-	if (this->csgo_runner->save_navmesh_points())
+	if (this->cs2_runner->save_navmesh_points())
 		Logging::log_success("File successfully saved");
 	else
 		Logging::log_error("Error saving file");
@@ -168,10 +168,10 @@ void MainWindow::on_button_save_points_clicked()
 
 void MainWindow::on_button_add_point_clicked()
 {
-	csgo_runner->add_point();
+	cs2_runner->add_point();
 }
 
 void MainWindow::on_button_reattach_2_clicked()
 {
-	csgo_runner->attach_to_process();
+	cs2_runner->attach_to_process();
 }

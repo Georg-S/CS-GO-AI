@@ -3,6 +3,7 @@
 void MovementStrategy::update(GameInformationhandler* game_info_handler)
 {
 	const GameInformation game_info = game_info_handler->get_game_information();
+	const auto current_time_ms = get_current_time_in_ms();
 
 	handle_navmesh_load(std::string(game_info.current_map));
 
@@ -12,10 +13,11 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	if (!game_info.closest_enemy_player || !game_info.controlled_player.health)
 	{
 		next_node = nullptr;
+		// Add delay here, because it can happen that the health is not zero anymore but the new position is not yet set
+		delay_time = current_time_ms + 1500; 
 		return;
 	}
 
-	const auto current_time_ms = get_current_time_in_ms();
 
 	if (current_time_ms < delay_time)
 	{

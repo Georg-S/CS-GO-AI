@@ -70,7 +70,7 @@ bool CS2Ai::load_navmesh()
 	return loading_successful;
 }
 
-bool CS2Ai::attach_to_csgo_process()
+bool CS2Ai::attach_to_cs2_process()
 {
 	return game_info_handler->init(config);
 }

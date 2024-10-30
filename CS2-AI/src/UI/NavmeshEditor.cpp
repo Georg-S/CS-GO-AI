@@ -305,7 +305,7 @@ bool NavmeshEditor::save_navmesh()
 	return true;
 }
 
-void NavmeshEditor::add_node(const Vec3D<float>& csgo_pos)
+void NavmeshEditor::add_node(const Vec3D<float>& cs2_pos)
 {
 	if (!valid_json_loaded)
 	{
@@ -313,8 +313,8 @@ void NavmeshEditor::add_node(const Vec3D<float>& csgo_pos)
 		return;
 	}
 
-	nodes.push_back(std::make_unique<Editor::Node>(next_node_id, false, csgo_pos));
-	output("Node created: " + std::to_string(next_node_id) + ", Ingame coordinates: " + csgo_pos.to_string());
+	nodes.push_back(std::make_unique<Editor::Node>(next_node_id, false, cs2_pos));
+	output("Node created: " + std::to_string(next_node_id) + ", Ingame coordinates: " + cs2_pos.to_string());
 	adjust_all_nodes();
 	render_editor();
 	next_node_id++;
@@ -463,11 +463,11 @@ void NavmeshEditor::set_corner_nodes()
 
 void NavmeshEditor::adjust_all_nodes()
 {
-	auto cs_go_diff_vec = corner_node_2->pos - corner_node_1->pos;
+	auto cs2_diff_vec = corner_node_2->pos - corner_node_1->pos;
 	auto canvas_diff_vec = corner_node_2->canvas_pos - corner_node_1->canvas_pos;
 
-	int x_go_coord_diff = cs_go_diff_vec.x;
-	int y_go_coord_diff = cs_go_diff_vec.y;
+	int x_go_coord_diff = cs2_diff_vec.x;
+	int y_go_coord_diff = cs2_diff_vec.y;
 
 	if (x_go_coord_diff == 0 || y_go_coord_diff == 0)
 		return;
@@ -475,8 +475,8 @@ void NavmeshEditor::adjust_all_nodes()
 	int x_canvas_coord_diff = canvas_diff_vec.x;
 	int y_canvas_coord_diff = canvas_diff_vec.y;
 
-	float x_ratio = (float)x_canvas_coord_diff / x_go_coord_diff;
-	float y_ratio = (float)y_canvas_coord_diff / y_go_coord_diff;
+	float x_ratio = static_cast<float>(x_canvas_coord_diff) / x_go_coord_diff;
+	float y_ratio = static_cast<float>(y_canvas_coord_diff) / y_go_coord_diff;
 
 
 	for (auto& node : nodes)
@@ -547,7 +547,7 @@ bool NavmeshEditor::add_edge(Editor::Node* from, Editor::Node* to, bool render)
 			return false;
 	}
 	const float distance = from->pos.distance(to->pos);
-	edges.push_back(std::make_unique<Editor::Edge>(from, to, distance, render));
+	edges.emplace_back(std::make_unique<Editor::Edge>(from, to, distance, render));
 
 	return true;
 }

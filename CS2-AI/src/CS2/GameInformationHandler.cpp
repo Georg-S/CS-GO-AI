@@ -58,14 +58,6 @@ void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
 	mem_manager.write_memory<Vec2D<float>>(client_dll_address + offsets.client_state_view_angle, view_vec);
 }
 
-static uint64_t getCurrentTimeInMillis()
-{
-	auto now = std::chrono::system_clock::now();
-	auto duration = now.time_since_epoch();
-
-	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-}
-
 void GameInformationhandler::set_player_movement(const Movement& movement)
 {
 	// Writing to "offsets.force_forward" etc. seems to not work, therefore spam key events to the CS2 process

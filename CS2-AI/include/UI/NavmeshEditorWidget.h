@@ -11,13 +11,13 @@ class NavmeshEditorWidget : public QWidget
 {
 	Q_OBJECT;
 public:
-	explicit NavmeshEditorWidget(CS2Runner* csgo_runner, QWidget* parent = nullptr);
+	explicit NavmeshEditorWidget(CS2Runner* cs2_runner, QWidget* parent = nullptr);
 	~NavmeshEditorWidget();
 
 private:
 	Ui::NavmeshEditorWidget* ui;
 	std::unique_ptr<NavmeshEditor> navmesh_editor;
-	CS2Runner* csgo_runner = nullptr;
+	CS2Runner* cs2_runner = nullptr;
 
 private slots:
 	void on_button_load_map_clicked();

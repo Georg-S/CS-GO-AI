@@ -60,7 +60,7 @@ public:
 	void load_image(const QString& file_name);
 	void place_corner_points();
 	bool save_navmesh();
-	void add_node(const Vec3D<float>& csgo_pos);
+	void add_node(const Vec3D<float>& cs2_pos);
 
 protected:
 	void wheelEvent(QWheelEvent* event) override;

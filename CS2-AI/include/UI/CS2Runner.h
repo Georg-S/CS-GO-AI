@@ -41,6 +41,6 @@ private:
     std::mutex mutex;
     ModeRunning mode = ModeRunning::AI;
     bool is_running = true;
-    std::unique_ptr<CS2Ai> csgo_ai_handler = nullptr;
-    std::unique_ptr<NavmeshPoints> csgo_navmesh_points_handler = nullptr;
+    std::unique_ptr<CS2Ai> cs2_ai_handler = nullptr;
+    std::unique_ptr<NavmeshPoints> cs2_navmesh_points_handler = nullptr;
 };

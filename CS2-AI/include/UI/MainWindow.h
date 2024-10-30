@@ -36,8 +36,8 @@ private:
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 
     Ui::MainWindow* ui = nullptr;
-    QThread* csgo_runner_thread = nullptr;
-    CS2Runner* csgo_runner = nullptr;
+    QThread* cs2_runner_thread = nullptr;
+    CS2Runner* cs2_runner = nullptr;
     QTimer* log_updater = nullptr;
     std::unique_ptr<QTBoxLogger> box_logger = nullptr;
 signals:

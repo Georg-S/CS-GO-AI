@@ -27,7 +27,7 @@ public:
 	bool load_config();
 	bool load_offsets();
 	bool load_navmesh();
-	bool attach_to_csgo_process();
+	bool attach_to_cs2_process();
 	void set_activated_behavior(const ActivatedFeatures& behavior);
 	std::shared_ptr<GameInformationhandler> get_game_info_handler() const;
 
