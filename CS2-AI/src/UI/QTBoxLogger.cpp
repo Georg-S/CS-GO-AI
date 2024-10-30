@@ -2,7 +2,7 @@
 
 QTBoxLogger::QTBoxLogger(std::initializer_list<QTextEdit*> text_edits)
 {
-	boxes = text_edits;
+	m_boxes = text_edits;
 }
 
 void QTBoxLogger::log(const std::string& str)
@@ -22,21 +22,21 @@ void QTBoxLogger::log_success(const std::string& str)
 
 void QTBoxLogger::push_message(const LogMessage& message)
 {
-	QMutexLocker lock(&mutex);
-	messages.push_back(message);
+	QMutexLocker lock(&m_mutex);
+	m_messages.push_back(message);
 }
 
 void QTBoxLogger::update() // Should only be called from the owning thread
 {
-	QMutexLocker lock(&mutex);
-	for (const auto& message : messages) 
+	QMutexLocker lock(&m_mutex);
+	for (const auto& message : m_messages) 
 	{
-		for (auto textEdit : boxes) 
+		for (auto textEdit : m_boxes) 
 		{
 			log(textEdit, message.color, message.message);
 		}
 	}
-	messages.clear();
+	m_messages.clear();
 }
 
 void QTBoxLogger::log(QTextEdit* textEdit, Qt::GlobalColor color, const std::string& string)

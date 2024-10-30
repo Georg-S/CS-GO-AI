@@ -28,72 +28,72 @@ static std::optional<float> minimum_distance(Vec2D<T> v, Vec2D<T> w, Vec2D<T> p)
 	return distance(p, projection);
 }
 
-NavmeshEditor::NavmeshEditor(QWidget* parent, QLineEdit* output_line) : QScrollArea(parent), output_line(output_line), displayed_map(new QLabel)
+NavmeshEditor::NavmeshEditor(QWidget* parent, QLineEdit* output_line) : QScrollArea(parent), m_output_line(output_line), m_displayed_map(new QLabel)
 {
-	displayed_map->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	displayed_map->setScaledContents(true);
-	setWidget(displayed_map);
+	m_displayed_map->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	m_displayed_map->setScaledContents(true);
+	setWidget(m_displayed_map);
 }
 
 Vec2D<int> NavmeshEditor::get_cursor_pos_on_canvas() const
 {
-	auto mapped_pos = displayed_map->mapFromGlobal(QCursor::pos());
-	auto scaled_cursor_pos = mapped_pos / zoom_factor;
+	auto mapped_pos = m_displayed_map->mapFromGlobal(QCursor::pos());
+	auto scaled_cursor_pos = mapped_pos / m_zoom_factor;
 	return Vec2D<int>(scaled_cursor_pos.x(), scaled_cursor_pos.y());
 }
 
 void NavmeshEditor::left_clicked(QMouseEvent* event)
 {
-	if (image.isNull())
+	if (m_image.isNull())
 		return;
 
 	auto cursor_pos_on_canvas = get_cursor_pos_on_canvas();
 
-	if (editor_state == State::PLACE_CORNER_1)
+	if (m_editor_state == State::PLACE_CORNER_1)
 	{
-		corner_node_1->canvas_pos = cursor_pos_on_canvas;
-		corner_node_1->render = true;
-		editor_state = State::PLACE_CORNER_2;
-		output("Place second node: " + QString::fromStdString(corner_node_2->pos.to_string()));
+		m_corner_node_1->canvas_pos = cursor_pos_on_canvas;
+		m_corner_node_1->render = true;
+		m_editor_state = State::PLACE_CORNER_2;
+		output("Place second node: " + QString::fromStdString(m_corner_node_2->pos.to_string()));
 	}
-	else if (editor_state == State::PLACE_CORNER_2)
+	else if (m_editor_state == State::PLACE_CORNER_2)
 	{
-		corner_node_2->canvas_pos = cursor_pos_on_canvas;
-		corner_node_2->render = true;
-		editor_state = State::ADD_EDGES;
+		m_corner_node_2->canvas_pos = cursor_pos_on_canvas;
+		m_corner_node_2->render = true;
+		m_editor_state = State::ADD_EDGES;
 		output_success("Corner nodes set: edges can be added");
 		adjust_all_nodes();
-		setElementsVisible(edges, true);
+		setElementsVisible(m_edges, true);
 	}
-	else if (editor_state == State::ADD_EDGES)
+	else if (m_editor_state == State::ADD_EDGES)
 	{
-		if (!selected_node_1)
+		if (!m_selected_node_1)
 		{
-			selected_node_1 = get_clicked_node(nodes, cursor_pos_on_canvas);
-			if (selected_node_1)
-				output("Selected Node: " + std::to_string(selected_node_1->id) + ", Ingame coordinates: " + selected_node_1->pos.to_string());
+			m_selected_node_1 = get_clicked_node(m_nodes, cursor_pos_on_canvas);
+			if (m_selected_node_1)
+				output("Selected Node: " + std::to_string(m_selected_node_1->id) + ", Ingame coordinates: " + m_selected_node_1->pos.to_string());
 		}
-		else if (!selected_node_2)
+		else if (!m_selected_node_2)
 		{
-			selected_node_2 = get_clicked_node(nodes, cursor_pos_on_canvas);
+			m_selected_node_2 = get_clicked_node(m_nodes, cursor_pos_on_canvas);
 		}
 
-		if (selected_node_1 && selected_node_2)
+		if (m_selected_node_1 && m_selected_node_2)
 		{
-			if (selected_node_1->id == selected_node_2->id)
+			if (m_selected_node_1->id == m_selected_node_2->id)
 			{
 				output_error("Can't create an edge from and to the same node");
 			}
 			else
 			{
 				// Right now only create bidirectional edges
-				add_edge(selected_node_1, selected_node_2);
-				add_edge(selected_node_2, selected_node_1);
-				output("Edge created between ID: " + std::to_string(selected_node_1->id) + " and: " + std::to_string(selected_node_2->id));
+				add_edge(m_selected_node_1, m_selected_node_2);
+				add_edge(m_selected_node_2, m_selected_node_1);
+				output("Edge created between ID: " + std::to_string(m_selected_node_1->id) + " and: " + std::to_string(m_selected_node_2->id));
 			}
 
-			selected_node_1 = nullptr;
-			selected_node_2 = nullptr;
+			m_selected_node_1 = nullptr;
+			m_selected_node_2 = nullptr;
 		}
 	}
 	render_editor();
@@ -102,18 +102,18 @@ void NavmeshEditor::left_clicked(QMouseEvent* event)
 void NavmeshEditor::delete_node_and_corresponding_edges(Editor::Node* node)
 {
 	const int node_id = node->id;
-	for (std::size_t i = 0; i < edges.size();)
+	for (std::size_t i = 0; i < m_edges.size();)
 	{
-		if ((edges[i]->from->id == node_id) || (edges[i]->to->id == node_id))
-			edges.erase(edges.begin() + i);
+		if ((m_edges[i]->from->id == node_id) || (m_edges[i]->to->id == node_id))
+			m_edges.erase(m_edges.begin() + i);
 		else
 			i++;
 	}
 
-	for (std::size_t i = 0; i < nodes.size();)
+	for (std::size_t i = 0; i < m_nodes.size();)
 	{
-		if (nodes[i]->id == node_id)
-			nodes.erase(nodes.begin() + i);
+		if (m_nodes[i]->id == node_id)
+			m_nodes.erase(m_nodes.begin() + i);
 		else
 			i++;
 	}
@@ -123,13 +123,13 @@ void NavmeshEditor::delete_edge(Editor::Edge* edge)
 {
 	const int fromId = edge->from->id;
 	const int toId = edge->to->id;
-	for(std::size_t i = 0; i < edges.size();) 
+	for(std::size_t i = 0; i < m_edges.size();) 
 	{
 		// Remove two edges, one for each direction
-		if ((fromId == edges[i]->from->id) && (toId == edges[i]->to->id)
-			|| (fromId == edges[i]->to->id) && (toId == edges[i]->from->id))
+		if ((fromId == m_edges[i]->from->id) && (toId == m_edges[i]->to->id)
+			|| (fromId == m_edges[i]->to->id) && (toId == m_edges[i]->from->id))
 		{
-			edges.erase(edges.begin() + i);
+			m_edges.erase(m_edges.begin() + i);
 			continue;
 		}
 		i++;
@@ -139,7 +139,7 @@ void NavmeshEditor::delete_edge(Editor::Edge* edge)
 void NavmeshEditor::right_clicked(QMouseEvent* event)
 {
 	auto cursor = get_cursor_pos_on_canvas();
-	const auto node = get_clicked_node(nodes, cursor);
+	const auto node = get_clicked_node(m_nodes, cursor);
 	if(node)
 	{
 		auto messageBoxSelection = QMessageBox(QMessageBox::Question, "Remove node", "Do you want to remove the node?", QMessageBox::Yes | QMessageBox::No).exec();
@@ -150,7 +150,7 @@ void NavmeshEditor::right_clicked(QMouseEvent* event)
 		return;
 	}
 
-	const auto edge = get_clicked_edge(edges, cursor);
+	const auto edge = get_clicked_edge(m_edges, cursor);
 	if (!edge)
 		return;
 
@@ -163,31 +163,31 @@ void NavmeshEditor::right_clicked(QMouseEvent* event)
 
 NavmeshEditor::~NavmeshEditor()
 {
-	if (displayed_map)
-		delete displayed_map;
+	if (m_displayed_map)
+		delete m_displayed_map;
 }
 
 void NavmeshEditor::render_editor()
 {
-	if (image.isNull())
+	if (m_image.isNull())
 		return;
 
-	QPixmap map = QPixmap::fromImage(image);
+	QPixmap map = QPixmap::fromImage(m_image);
 	render_edges(map);
 	render_nodes(map);
-	displayed_map->setPixmap(map);
-	displayed_map->resize(zoom_factor * map.size());
+	m_displayed_map->setPixmap(map);
+	m_displayed_map->resize(m_zoom_factor * map.size());
 }
 
 void NavmeshEditor::render_edges(QPixmap& map)
 {
-	if (!corner_nodes_placed)
+	if (!m_corner_nodes_placed)
 		return;
 
 	QPainter painter(&map);
 
 	painter.setPen(QPen(Qt::black, 4));
-	for (const auto& edge : edges)
+	for (const auto& edge : m_edges)
 	{
 		if (!edge->render)
 			continue;
@@ -203,10 +203,10 @@ void NavmeshEditor::render_nodes(QPixmap& map)
 	QPainter painter(&map);
 
 	painter.setBrush(Qt::red);
-	for (const auto& node : nodes)
+	for (const auto& node : m_nodes)
 	{
 		if (node->render)
-			painter.drawEllipse(QPoint(node->canvas_pos.x, node->canvas_pos.y), (int)(NODE_SIZE / zoom_factor), (int)(NODE_SIZE / zoom_factor));
+			painter.drawEllipse(QPoint(node->canvas_pos.x, node->canvas_pos.y), (int)(NODE_SIZE / m_zoom_factor), (int)(NODE_SIZE / m_zoom_factor));
 	}
 }
 
@@ -219,7 +219,7 @@ void NavmeshEditor::load_image(const QString& file_name)
 		return;
 	}
 
-	image = img;
+	m_image = img;
 	render_editor();
 }
 
@@ -236,7 +236,7 @@ void NavmeshEditor::load_navmesh(const QString& file_name)
 
 		load_nodes(navmesh_json);
 		load_edges(navmesh_json);
-		map_name = navmesh_json["map_name"];
+		m_map_name = navmesh_json["map_name"];
 	}
 	catch (std::exception const& e)
 	{
@@ -248,16 +248,16 @@ void NavmeshEditor::place_corner_points()
 {
 	set_corner_nodes();
 
-	if (!corner_node_1 || !corner_node_2)
+	if (!m_corner_node_1 || !m_corner_node_2)
 	{
 		output_error("Couldn't find two corner points, please load a valid navmesh");
 		return;
 	}
 
-	editor_state = State::PLACE_CORNER_1;
+	m_editor_state = State::PLACE_CORNER_1;
 	setNodesAndEdgesInvisible();
 	render_editor();
-	output("Place first node: " + QString::fromStdString(corner_node_1->pos.to_string()));
+	output("Place first node: " + QString::fromStdString(m_corner_node_1->pos.to_string()));
 }
 
 bool NavmeshEditor::save_navmesh()
@@ -266,26 +266,26 @@ bool NavmeshEditor::save_navmesh()
 	{
 		std::ofstream my_file;
 		std::string file_name = "Navmesh/json/";
-		if (map_name == "")
+		if (m_map_name == "")
 			file_name = file_name + "no_name" + ".json";
 		else
-			file_name = file_name + map_name + ".json";
+			file_name = file_name + m_map_name + ".json";
 
 		my_file.open(file_name);
 		json nav_json;
-		nav_json["map_name"] = map_name;
+		nav_json["map_name"] = m_map_name;
 
-		for (unsigned int i = 0; i < nodes.size(); i++)
+		for (unsigned int i = 0; i < m_nodes.size(); i++)
 		{
-			nav_json["nodes"][i]["x"] = nodes[i]->pos.x;
-			nav_json["nodes"][i]["y"] = nodes[i]->pos.y;
-			nav_json["nodes"][i]["z"] = nodes[i]->pos.z;
-			nav_json["nodes"][i]["id"] = nodes[i]->id;
-			nav_json["nodes"][i]["corner"] = nodes[i]->corner;
+			nav_json["nodes"][i]["x"] = m_nodes[i]->pos.x;
+			nav_json["nodes"][i]["y"] = m_nodes[i]->pos.y;
+			nav_json["nodes"][i]["z"] = m_nodes[i]->pos.z;
+			nav_json["nodes"][i]["id"] = m_nodes[i]->id;
+			nav_json["nodes"][i]["corner"] = m_nodes[i]->corner;
 		}
 
 		int counter = 0;
-		for (const auto& edge : edges)
+		for (const auto& edge : m_edges)
 		{
 			nav_json["edges"][counter]["from"] = edge->from->id;
 			nav_json["edges"][counter]["to"] = edge->to->id;
@@ -307,24 +307,24 @@ bool NavmeshEditor::save_navmesh()
 
 void NavmeshEditor::add_node(const Vec3D<float>& cs2_pos)
 {
-	if (!valid_json_loaded)
+	if (!m_valid_json_loaded)
 	{
 		output_error("No valid json loaded, can't add node");
 		return;
 	}
 
-	nodes.push_back(std::make_unique<Editor::Node>(next_node_id, false, cs2_pos));
-	output("Node created: " + std::to_string(next_node_id) + ", Ingame coordinates: " + cs2_pos.to_string());
+	m_nodes.push_back(std::make_unique<Editor::Node>(m_next_node_id, false, cs2_pos));
+	output("Node created: " + std::to_string(m_next_node_id) + ", Ingame coordinates: " + cs2_pos.to_string());
 	adjust_all_nodes();
 	render_editor();
-	next_node_id++;
+	m_next_node_id++;
 }
 
 void NavmeshEditor::wheelEvent(QWheelEvent* event)
 {
 	QPoint movement = event->angleDelta();
 
-	if (image.isNull() || (movement.x() != 0))
+	if (m_image.isNull() || (movement.x() != 0))
 		return;
 
 	bool up = (movement.y() > 0);
@@ -349,9 +349,9 @@ void NavmeshEditor::zoom(double factor)
 	constexpr double max_factor = 5;
 	constexpr double min_factor = 0.2;
 
-	zoom_factor *= factor;
-	zoom_factor = std::min(zoom_factor, max_factor);
-	zoom_factor = std::max(zoom_factor, min_factor);
+	m_zoom_factor *= factor;
+	m_zoom_factor = std::min(m_zoom_factor, max_factor);
+	m_zoom_factor = std::max(m_zoom_factor, min_factor);
 
 	render_editor();
 }
@@ -381,8 +381,8 @@ void NavmeshEditor::output(const QString& message, Qt::GlobalColor color)
 	QPalette palette = QPalette();
 	palette.setColor(QPalette::Text, color);
 
-	output_line->setPalette(palette);
-	output_line->setText(message);
+	m_output_line->setPalette(palette);
+	m_output_line->setText(message);
 }
 
 void NavmeshEditor::load_nodes(const json& navmesh_json)
@@ -390,8 +390,8 @@ void NavmeshEditor::load_nodes(const json& navmesh_json)
 	if (!navmesh_json.contains("nodes"))
 		return;
 
-	nodes.clear();
-	valid_json_loaded = false;
+	m_nodes.clear();
+	m_valid_json_loaded = false;
 	int corner_count = 0;
 	int highest_id = 0;
 	for (const auto& json_node : navmesh_json["nodes"])
@@ -407,12 +407,12 @@ void NavmeshEditor::load_nodes(const json& navmesh_json)
 		if (corner)
 			corner_count++;
 
-		nodes.push_back(std::make_unique<Editor::Node>(id, corner, pos));
+		m_nodes.push_back(std::make_unique<Editor::Node>(id, corner, pos));
 	}
-	next_node_id = highest_id + 1;
+	m_next_node_id = highest_id + 1;
 
 	if (corner_count >= 2)
-		valid_json_loaded = true;
+		m_valid_json_loaded = true;
 	else
 		output_error("Invalid Navmesh: No corner nodes defined");
 }
@@ -428,34 +428,34 @@ void NavmeshEditor::load_edges(const json& navmesh_json)
 		int to_id = json_edge["to"];
 		float weight = json_edge["weight"];
 
-		auto from_node = get_node_pointer_by_id(nodes, from_id);
-		auto to_node = get_node_pointer_by_id(nodes, to_id);
+		auto from_node = get_node_pointer_by_id(m_nodes, from_id);
+		auto to_node = get_node_pointer_by_id(m_nodes, to_id);
 		if (!from_node)
 			output_error("Cannot create edge, Node " + QString::number(from_id) + " not found");
 		else if (!to_node)
 			output_error("Cannot create edge, Node " + QString::number(to_id) + " not found");
 
-		edges.push_back(std::make_unique<Editor::Edge>(from_node, to_node, weight));
+		m_edges.push_back(std::make_unique<Editor::Edge>(from_node, to_node, weight));
 	}
 }
 
 void NavmeshEditor::set_corner_nodes()
 {
-	corner_node_1 = nullptr;
-	corner_node_2 = nullptr;
+	m_corner_node_1 = nullptr;
+	m_corner_node_2 = nullptr;
 
-	for (const auto& node : nodes)
+	for (const auto& node : m_nodes)
 	{
 		if (!node->corner)
 			continue;
 
-		if (!corner_node_1)
+		if (!m_corner_node_1)
 		{
-			corner_node_1 = node.get();
+			m_corner_node_1 = node.get();
 		}
-		else if (!corner_node_2)
+		else if (!m_corner_node_2)
 		{
-			corner_node_2 = node.get();
+			m_corner_node_2 = node.get();
 			return;
 		}
 	}
@@ -463,8 +463,8 @@ void NavmeshEditor::set_corner_nodes()
 
 void NavmeshEditor::adjust_all_nodes()
 {
-	auto cs2_diff_vec = corner_node_2->pos - corner_node_1->pos;
-	auto canvas_diff_vec = corner_node_2->canvas_pos - corner_node_1->canvas_pos;
+	auto cs2_diff_vec = m_corner_node_2->pos - m_corner_node_1->pos;
+	auto canvas_diff_vec = m_corner_node_2->canvas_pos - m_corner_node_1->canvas_pos;
 
 	int x_go_coord_diff = cs2_diff_vec.x;
 	int y_go_coord_diff = cs2_diff_vec.y;
@@ -479,13 +479,13 @@ void NavmeshEditor::adjust_all_nodes()
 	float y_ratio = static_cast<float>(y_canvas_coord_diff) / y_go_coord_diff;
 
 
-	for (auto& node : nodes)
+	for (auto& node : m_nodes)
 	{
-		if (node->id == corner_node_1->id || node->id == corner_node_2->id)
+		if (node->id == m_corner_node_1->id || node->id == m_corner_node_2->id)
 			continue;
 
-		auto go_diff_vec = node->pos - corner_node_1->pos;
-		Vec2D<int> canvas_pos = corner_node_1->canvas_pos;
+		auto go_diff_vec = node->pos - m_corner_node_1->pos;
+		Vec2D<int> canvas_pos = m_corner_node_1->canvas_pos;
 
 		canvas_pos.x += go_diff_vec.x * x_ratio;
 		canvas_pos.y += go_diff_vec.y * y_ratio;
@@ -493,7 +493,7 @@ void NavmeshEditor::adjust_all_nodes()
 		node->canvas_pos = canvas_pos;
 		node->render = true;
 	}
-	corner_nodes_placed = true;
+	m_corner_nodes_placed = true;
 }
 
 Editor::Node* NavmeshEditor::get_clicked_node(const std::vector<std::unique_ptr<Editor::Node>>& nodes, const Vec2D<int>& click_pos)
@@ -504,7 +504,7 @@ Editor::Node* NavmeshEditor::get_clicked_node(const std::vector<std::unique_ptr<
 	for (const auto& node : nodes)
 	{
 		int distance = node->canvas_pos.distance(click_pos);
-		if ((distance < (int)(NODE_SIZE / zoom_factor)) && (distance < closest_distance))
+		if ((distance < (int)(NODE_SIZE / m_zoom_factor)) && (distance < closest_distance))
 		{
 			closest_distance = distance;
 			result = node.get();
@@ -529,7 +529,7 @@ Editor::Edge* NavmeshEditor::get_clicked_edge(const std::vector<std::unique_ptr<
 
 		closest_distance = std::min(static_cast<int>(distanceToEdge.value()), closest_distance);
 
-		if (distanceToEdge.value() < (edgeSelectedThreshold / zoom_factor))
+		if (distanceToEdge.value() < (edgeSelectedThreshold / m_zoom_factor))
 			result = edge.get();
 	}
 	std::cout << closest_distance << std::endl;
@@ -541,13 +541,13 @@ bool NavmeshEditor::add_edge(Editor::Node* from, Editor::Node* to, bool render)
 	if (from->id == to->id)
 		return false;
 
-	for (const auto& edge : edges)
+	for (const auto& edge : m_edges)
 	{
 		if ((from->id == edge->from->id) && (to->id == edge->to->id))
 			return false;
 	}
 	const float distance = from->pos.distance(to->pos);
-	edges.emplace_back(std::make_unique<Editor::Edge>(from, to, distance, render));
+	m_edges.emplace_back(std::make_unique<Editor::Edge>(from, to, distance, render));
 
 	return true;
 }
@@ -565,6 +565,6 @@ Editor::Node* NavmeshEditor::get_node_pointer_by_id(const std::vector<std::uniqu
 
 void NavmeshEditor::setNodesAndEdgesInvisible() const
 {
-	setElementsVisible(nodes, false);
-	setElementsVisible(edges, false);
+	setElementsVisible(m_nodes, false);
+	setElementsVisible(m_edges, false);
 }

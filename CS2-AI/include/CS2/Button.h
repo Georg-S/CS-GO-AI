@@ -14,11 +14,11 @@ public:
 
 private:
 	bool is_key_down(unsigned short key_state) const;
-	std::string button_name;
-	int button = 0;
-	bool was_previous_update_down = false;
-	bool new_click = false;
-	bool toggled = false;
+	std::string m_button_name;
+	int m_button = 0;
+	bool m_was_previous_update_down = false;
+	bool m_new_click = false;
+	bool m_toggled = false;
 	static constexpr int plus_key_code = 0xBB;
 };
 

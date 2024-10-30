@@ -20,7 +20,7 @@ public:
 
 	void read_string_from_memory(uintptr_t address, char* buffer, size_t size, bool* success = nullptr) const
 	{
-		if (!ReadProcessMemory(process, reinterpret_cast<LPVOID>(address), buffer, size, nullptr))
+		if (!ReadProcessMemory(m_process, reinterpret_cast<LPVOID>(address), buffer, size, nullptr))
 		{
 			if (success)
 				*success = false;
@@ -37,7 +37,7 @@ public:
 	[[nodiscard]] type read_memory(uintptr_t address, bool* success = nullptr) const
 	{
 		type result{};
-		if (!ReadProcessMemory(process, reinterpret_cast<LPVOID>(address), &result, sizeof(type), nullptr))
+		if (!ReadProcessMemory(m_process, reinterpret_cast<LPVOID>(address), &result, sizeof(type), nullptr))
 		{
 			if (success != nullptr)
 				*success = false;
@@ -55,7 +55,7 @@ public:
 	template <typename type>
 	bool write_memory(uintptr_t address, const type& data)
 	{
-		if (!WriteProcessMemory(this->process, reinterpret_cast<LPVOID>(address), &data, sizeof(data), NULL) && debug_print)
+		if (!WriteProcessMemory(m_process, reinterpret_cast<LPVOID>(address), &data, sizeof(data), NULL) && debug_print)
 		{
 			Logging::log_error("Error Reading Memory Error Code: " + std::to_string(GetLastError()));
 			return false;
@@ -64,6 +64,6 @@ public:
 	}
 
 private:
-	HANDLE process = nullptr;
+	HANDLE m_process = nullptr;
 	static constexpr bool debug_print = false;
 };

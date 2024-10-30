@@ -7,47 +7,44 @@
 
 bool GameInformationhandler::init(const Config& config)
 {
-	this->config = config;
-	mem_manager.attach_to_process(config.windowname.c_str());
+	m_config = config;
+	m_process_memory.attach_to_process(config.windowname.c_str());
 
-	client_dll_address = mem_manager.get_module_address(config.client_dll_name.c_str());
-	engine_address = mem_manager.get_module_address(config.engine_dll_name.c_str());
+	m_client_dll_address = m_process_memory.get_module_address(config.client_dll_name.c_str());
+	m_attached_to_process = m_client_dll_address;
 
-	attached_to_process = client_dll_address && engine_address;
-
-	return attached_to_process;
+	return m_attached_to_process;
 }
 
 bool GameInformationhandler::loadOffsets()
 {
 	auto offsets = load_offsets_from_files();
 	if (offsets)
-		this->offsets = offsets.value();
+		m_offsets = offsets.value();
 
 	return offsets.has_value();
 }
 
 void GameInformationhandler::update_game_information()
 {
-	auto player_controller_address = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.local_player_controller_offset);
-	auto player_pawn_address = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.local_player_pawn);
-	auto engine_client_state = engine_address;
+	auto player_controller_address = m_process_memory.read_memory<uintptr_t>(m_client_dll_address + m_offsets.local_player_controller_offset);
+	auto player_pawn_address = m_process_memory.read_memory<uintptr_t>(m_client_dll_address + m_offsets.local_player_pawn);
 
-	game_information.controlled_player = read_controlled_player_information(player_controller_address, engine_client_state);
-	game_information.player_in_crosshair = read_player_in_crosshair(player_controller_address, player_pawn_address);
-	game_information.other_players = read_other_players(player_controller_address, engine_client_state);
-	game_information.closest_enemy_player = get_closest_enemy(game_information);
-	read_in_current_map(engine_client_state, game_information.current_map, std::size(game_information.current_map));
+	m_game_information.controlled_player = read_controlled_player_information(player_controller_address);
+	m_game_information.player_in_crosshair = read_player_in_crosshair(player_controller_address, player_pawn_address);
+	m_game_information.other_players = read_other_players(player_controller_address);
+	m_game_information.closest_enemy_player = get_closest_enemy(m_game_information);
+	read_in_current_map(m_game_information.current_map, std::size(m_game_information.current_map));
 }
 
 GameInformation GameInformationhandler::get_game_information() const
 {
-	return game_information;
+	return m_game_information;
 }
 
 bool GameInformationhandler::is_attached_to_process() const
 {
-	return attached_to_process;
+	return m_attached_to_process;
 }
 
 void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
@@ -55,7 +52,7 @@ void GameInformationhandler::set_view_vec(const Vec2D<float>& view_vec)
 	if (isnan(view_vec.x) || isnan(view_vec.y))
 		return;
 
-	mem_manager.write_memory<Vec2D<float>>(client_dll_address + offsets.client_state_view_angle, view_vec);
+	m_process_memory.write_memory<Vec2D<float>>(m_client_dll_address + m_offsets.client_state_view_angle, view_vec);
 }
 
 void GameInformationhandler::set_player_movement(const Movement& movement)
@@ -63,7 +60,7 @@ void GameInformationhandler::set_player_movement(const Movement& movement)
 	// Writing to "offsets.force_forward" etc. seems to not work, therefore spam key events to the CS2 process
 	auto send_key_event = [this](bool value, DWORD key_code)
 	{
-		HWND hwnd = FindWindowA(nullptr, config.windowname.c_str());
+		HWND hwnd = FindWindowA(nullptr, m_config.windowname.c_str());
 		if (!hwnd)
 			return;
 
@@ -95,7 +92,7 @@ void GameInformationhandler::set_player_shooting(bool val)
 
 	DWORD mem_val = val ? button_pressed_value : not_shooting_value;
 
-	mem_manager.write_memory<DWORD>(client_dll_address + offsets.force_attack, mem_val);
+	m_process_memory.write_memory<DWORD>(m_client_dll_address + m_offsets.force_attack, mem_val);
 }
 
 std::optional<PlayerInformation> GameInformationhandler::get_closest_enemy(const GameInformation& game_info)
@@ -118,33 +115,33 @@ std::optional<PlayerInformation> GameInformationhandler::get_closest_enemy(const
 	return closest_enemy;
 }
 
-void GameInformationhandler::read_in_current_map(uintptr_t engine_client_state_address, char* buffer, size_t buffer_size)
+void GameInformationhandler::read_in_current_map(char* buffer, size_t buffer_size)
 {
 	constexpr uintptr_t global_var_map = 0x180;
 
-	auto global_vars = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.global_vars);
-	auto map_name_ptr = mem_manager.read_memory<uintptr_t>(global_vars + global_var_map);
+	auto global_vars = m_process_memory.read_memory<uintptr_t>(m_client_dll_address + m_offsets.global_vars);
+	auto map_name_ptr = m_process_memory.read_memory<uintptr_t>(global_vars + global_var_map);
 
-	mem_manager.read_string_from_memory(map_name_ptr, buffer, buffer_size);
+	m_process_memory.read_string_from_memory(map_name_ptr, buffer, buffer_size);
 }
 
 bool GameInformationhandler::read_in_if_controlled_player_is_shooting()
 {
-	DWORD val = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_attack);
+	DWORD val = m_process_memory.read_memory<DWORD>(m_client_dll_address + m_offsets.force_attack);
 
 	return val == button_pressed_value;
 }
 
-ControlledPlayer GameInformationhandler::read_controlled_player_information(uintptr_t player_address, uintptr_t engine_client_state_address)
+ControlledPlayer GameInformationhandler::read_controlled_player_information(uintptr_t player_address)
 {
 	ControlledPlayer dest{};
-	dest.view_vec = mem_manager.read_memory<Vec2D<float>>(client_dll_address + offsets.client_state_view_angle);
-	dest.team = mem_manager.read_memory<int>(player_address + offsets.team_offset);
+	dest.view_vec = m_process_memory.read_memory<Vec2D<float>>(m_client_dll_address + m_offsets.client_state_view_angle);
+	dest.team = m_process_memory.read_memory<int>(player_address + m_offsets.team_offset);
 
-	auto local_player_pawn = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.local_player_pawn);
-	dest.health = mem_manager.read_memory<int>(local_player_pawn + offsets.player_health_offset);
-	dest.position = mem_manager.read_memory<Vec3D<float>>(local_player_pawn + offsets.position);
-	dest.shots_fired = mem_manager.read_memory<DWORD>(local_player_pawn + offsets.shots_fired_offset);
+	auto local_player_pawn = m_process_memory.read_memory<uintptr_t>(m_client_dll_address + m_offsets.local_player_pawn);
+	dest.health = m_process_memory.read_memory<int>(local_player_pawn + m_offsets.player_health_offset);
+	dest.position = m_process_memory.read_memory<Vec3D<float>>(local_player_pawn + m_offsets.position);
+	dest.shots_fired = m_process_memory.read_memory<DWORD>(local_player_pawn + m_offsets.shots_fired_offset);
 	dest.shooting = read_in_if_controlled_player_is_shooting();
 	dest.movement = read_controlled_player_movement(player_address);
 	dest.head_position = get_head_bone_position(local_player_pawn);
@@ -152,11 +149,11 @@ ControlledPlayer GameInformationhandler::read_controlled_player_information(uint
 	return dest;
 }
 
-std::vector<PlayerInformation> GameInformationhandler::read_other_players(uintptr_t player_address, uintptr_t engine_client_state_address)
+std::vector<PlayerInformation> GameInformationhandler::read_other_players(uintptr_t player_address)
 {
 	constexpr size_t max_players = 64;
 	std::vector<PlayerInformation> other_players;
-	uintptr_t entity_list_start_address = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.entity_list_start_offset);
+	uintptr_t entity_list_start_address = m_process_memory.read_memory<uintptr_t>(m_client_dll_address + m_offsets.entity_list_start_offset);
 	if (!entity_list_start_address)
 		return other_players;
 
@@ -170,7 +167,7 @@ std::vector<PlayerInformation> GameInformationhandler::read_other_players(uintpt
 		if (!current_controller || current_controller == player_address)
 			continue;
 
-		auto controller_pawn_handle = mem_manager.read_memory<uintptr_t>(current_controller + offsets.player_pawn_handle);
+		auto controller_pawn_handle = m_process_memory.read_memory<uintptr_t>(current_controller + m_offsets.player_pawn_handle);
 		if (!controller_pawn_handle)
 			continue;
 
@@ -185,10 +182,10 @@ std::vector<PlayerInformation> GameInformationhandler::read_other_players(uintpt
 Movement GameInformationhandler::read_controlled_player_movement(uintptr_t player_address)
 {
 	Movement return_value = {};
-	return_value.forward = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_forward) == button_pressed_value;
-	return_value.backward = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_backward) == button_pressed_value;
-	return_value.left = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_left) == button_pressed_value;
-	return_value.right = mem_manager.read_memory<DWORD>(client_dll_address + offsets.force_right) == button_pressed_value;
+	return_value.forward = m_process_memory.read_memory<DWORD>(m_client_dll_address + m_offsets.force_forward) == button_pressed_value;
+	return_value.backward = m_process_memory.read_memory<DWORD>(m_client_dll_address + m_offsets.force_backward) == button_pressed_value;
+	return_value.left = m_process_memory.read_memory<DWORD>(m_client_dll_address + m_offsets.force_left) == button_pressed_value;
+	return_value.right = m_process_memory.read_memory<DWORD>(m_client_dll_address + m_offsets.force_right) == button_pressed_value;
 
 	return return_value;
 }
@@ -199,9 +196,9 @@ Vec3D<float> GameInformationhandler::get_head_bone_position(uintptr_t player_paw
 	constexpr DWORD head_bone_index = 0x6;
 	constexpr DWORD matrix_size = 0x20;
 
-	auto game_scene_node = mem_manager.read_memory<uintptr_t>(player_pawn + offsets.sceneNode);
-	auto bone_matrix = mem_manager.read_memory<uintptr_t>(game_scene_node + offsets.model_state + bone_matrix_offset);
-	auto bone = mem_manager.read_memory<Vec3D<float>>(bone_matrix + (head_bone_index * matrix_size));
+	auto game_scene_node = m_process_memory.read_memory<uintptr_t>(player_pawn + m_offsets.sceneNode);
+	auto bone_matrix = m_process_memory.read_memory<uintptr_t>(game_scene_node + m_offsets.model_state + bone_matrix_offset);
+	auto bone = m_process_memory.read_memory<Vec3D<float>>(bone_matrix + (head_bone_index * matrix_size));
 
 	return bone;
 }
@@ -209,13 +206,13 @@ Vec3D<float> GameInformationhandler::get_head_bone_position(uintptr_t player_paw
 uintptr_t GameInformationhandler::get_list_entity(uintptr_t id, uintptr_t entity_list)
 {
 	// Bit magic to get the list entity, even if a pawn handle was given instead of an ID
-	return mem_manager.read_memory<uintptr_t>(entity_list + ((8 * ((id & 0x7FFF) >> 9)) + 0x10));
+	return m_process_memory.read_memory<uintptr_t>(entity_list + ((8 * ((id & 0x7FFF) >> 9)) + 0x10));
 }
 
 uintptr_t GameInformationhandler::get_entity_controller_or_pawn(uintptr_t list_entity, uintptr_t id)
 {
 	// Bit magic to get the controller or pawn, even if a pointer was given instead of an ID
-	return mem_manager.read_memory<uintptr_t>(list_entity + (id & 0x1FF) * 0x78);
+	return m_process_memory.read_memory<uintptr_t>(list_entity + (id & 0x1FF) * 0x78);
 }
 
 std::optional<PlayerInformation> GameInformationhandler::read_player(uintptr_t entity_list_begin, uintptr_t id, uintptr_t player_address)
@@ -229,21 +226,21 @@ std::optional<PlayerInformation> GameInformationhandler::read_player(uintptr_t e
 		return {};
 
 	PlayerInformation ent;
-	ent.position = mem_manager.read_memory<Vec3D<float>>(current_controller + offsets.position);
-	ent.health = mem_manager.read_memory<DWORD>(current_controller + offsets.player_health_offset);
-	ent.team = mem_manager.read_memory<int>(current_controller + offsets.team_offset);
+	ent.position = m_process_memory.read_memory<Vec3D<float>>(current_controller + m_offsets.position);
+	ent.health = m_process_memory.read_memory<DWORD>(current_controller + m_offsets.player_health_offset);
+	ent.team = m_process_memory.read_memory<int>(current_controller + m_offsets.team_offset);
 	ent.head_position = get_head_bone_position(current_controller);
 	return ent;
 }
 
 std::optional<PlayerInformation> GameInformationhandler::read_player_in_crosshair(uintptr_t player_controller, uintptr_t player_pawn)
 {
-	const auto cross_hair_ID = mem_manager.read_memory<int>(player_pawn + offsets.crosshair_offset);
+	const auto cross_hair_ID = m_process_memory.read_memory<int>(player_pawn + m_offsets.crosshair_offset);
 
 	if (cross_hair_ID <= 0)
 		return {};
 
-	uintptr_t entity_list_start_address = mem_manager.read_memory<uintptr_t>(client_dll_address + offsets.entity_list_start_offset);
+	uintptr_t entity_list_start_address = m_process_memory.read_memory<uintptr_t>(m_client_dll_address + m_offsets.entity_list_start_offset);
 	if (!entity_list_start_address)
 		return {};
 

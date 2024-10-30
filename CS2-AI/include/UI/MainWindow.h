@@ -35,11 +35,11 @@ private:
     void set_checked(bool value, std::initializer_list<QCheckBox*> checkboxes);
     void set_enabled(bool value, std::initializer_list<QCheckBox*> checkboxes);
 
-    Ui::MainWindow* ui = nullptr;
-    QThread* cs2_runner_thread = nullptr;
-    CS2Runner* cs2_runner = nullptr;
-    QTimer* log_updater = nullptr;
-    std::unique_ptr<QTBoxLogger> box_logger = nullptr;
+    Ui::MainWindow* m_ui = nullptr;
+    QThread* m_cs2_runner_thread = nullptr;
+    CS2Runner* m_cs2_runner = nullptr;
+    QTimer* m_log_updater = nullptr;
+    std::unique_ptr<QTBoxLogger> m_box_logger = nullptr;
 signals:
     void stopped();
 private slots:

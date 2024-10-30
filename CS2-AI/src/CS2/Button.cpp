@@ -2,32 +2,32 @@
 
 Button::Button(const std::string& button_name, int button)
 {
-	this->button_name = button_name;
-	this->button = button;
+	m_button_name = button_name;
+	m_button = button;
 }
 
 void Button::update()
 {
-	int key_state = GetAsyncKeyState(button);
+	int key_state = GetAsyncKeyState(m_button);
 
 	if (is_key_down(key_state)) 
 	{
-		if (!was_previous_update_down) 
+		if (!m_was_previous_update_down) 
 		{
-			new_click = true;
-			toggled = !toggled;
+			m_new_click = true;
+			m_toggled = !m_toggled;
 		}
 		else 
 		{
-			new_click = false;
+			m_new_click = false;
 		}
 
-		was_previous_update_down = true;
+		m_was_previous_update_down = true;
 	}
 	else 
 	{
-		was_previous_update_down = false;
-		new_click = false;
+		m_was_previous_update_down = false;
+		m_new_click = false;
 	}
 }
 
@@ -40,16 +40,16 @@ bool Button::is_key_down(unsigned short key_state) const
 
 void Button::set_toggle_button(int button)
 {
-	this->button = button;
+	m_button = button;
 	update();
 }
 
 bool Button::was_clicked() const
 {
-	return new_click;
+	return m_new_click;
 }
 
 bool Button::is_toggled() const
 {
-	return toggled;
+	return m_toggled;
 }

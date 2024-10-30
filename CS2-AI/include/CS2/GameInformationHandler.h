@@ -60,8 +60,8 @@ public:
 	void set_player_shooting(bool val);
 
 private:
-	ControlledPlayer read_controlled_player_information(uintptr_t player_address, uintptr_t engine_client_state_address);
-	std::vector<PlayerInformation> read_other_players(uintptr_t player_address, uintptr_t engine_client_state_address);
+	ControlledPlayer read_controlled_player_information(uintptr_t player_address);
+	std::vector<PlayerInformation> read_other_players(uintptr_t player_address);
 	Movement read_controlled_player_movement(uintptr_t player_address);
 	Vec3D<float> get_head_bone_position(uintptr_t player_pawn);
 	uintptr_t get_list_entity(uintptr_t id, uintptr_t entity_list);
@@ -69,14 +69,13 @@ private:
 	std::optional<PlayerInformation> read_player(uintptr_t entity_list_begin, uintptr_t id, uintptr_t player_address);
 	std::optional<PlayerInformation> read_player_in_crosshair(uintptr_t player_controller, uintptr_t player_pawn);
 	std::optional<PlayerInformation> get_closest_enemy(const GameInformation& game_info);
-	void read_in_current_map(uintptr_t engine_client_state_address, char* buffer, size_t buffer_size);
+	void read_in_current_map(char* buffer, size_t buffer_size);
 	bool read_in_if_controlled_player_is_shooting();
 
-	bool attached_to_process = false;
-	GameInformation game_information;
-	MemoryManager mem_manager;
-	uintptr_t client_dll_address = 0;
-	uintptr_t engine_address = 0;
-	Offsets offsets = {};
-	Config config = {};
+	bool m_attached_to_process = false;
+	GameInformation m_game_information;
+	MemoryManager m_process_memory;
+	uintptr_t m_client_dll_address = 0;
+	Offsets m_offsets = {};
+	Config m_config = {};
 };

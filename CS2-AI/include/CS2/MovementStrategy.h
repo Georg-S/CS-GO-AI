@@ -34,12 +34,12 @@ private:
 	void load_edges(const json& json);
 	std::shared_ptr<Node> get_closest_node_to_position(const Vec3D<float>& position);
 
-	json navmesh_json;
-	std::vector<std::shared_ptr<Node>> nodes;
-	std::shared_ptr<Node> next_node = nullptr;
-	std::vector<std::shared_ptr<Node>> current_route;
-	std::string loaded_map;
-	bool valid_navmesh_loaded;
-	long long delay_time = 0;
-	bool debug_print_route = false;
+	json m_navmesh_json;
+	std::vector<std::shared_ptr<Node>> m_nodes;
+	std::shared_ptr<Node> m_next_node = nullptr;
+	std::vector<std::shared_ptr<Node>> m_current_route;
+	std::string m_loaded_map;
+	bool m_valid_navmesh_loaded;
+	long long m_delay_time = 0;
+	bool m_debug_print_route = false;
 };

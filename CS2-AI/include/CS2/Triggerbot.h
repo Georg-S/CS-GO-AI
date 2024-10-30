@@ -7,5 +7,5 @@ class Triggerbot
 public:
 	void update(GameInformationhandler* handler);
 private:
-	long long delay_time = 0;
+	long long m_delay_time = 0;
 };

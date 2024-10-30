@@ -32,11 +32,10 @@ public:
 	std::shared_ptr<GameInformationhandler> get_game_info_handler() const;
 
 private:
-	Config config;
-	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
-	MovementStrategy movement_strategy;
-	Triggerbot triggerbot;
-	Aimbot aimbot;
-	Button toggle_button;
-	ActivatedFeatures activated_behavior;
+	Config m_config;
+	std::shared_ptr<GameInformationhandler> m_game_info_handler = nullptr;
+	MovementStrategy m_movement_strategy;
+	Triggerbot m_triggerbot;
+	Aimbot m_aimbot;
+	ActivatedFeatures m_activated_behavior;
 };

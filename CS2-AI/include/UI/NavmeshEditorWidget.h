@@ -15,9 +15,9 @@ public:
 	~NavmeshEditorWidget();
 
 private:
-	Ui::NavmeshEditorWidget* ui;
-	std::unique_ptr<NavmeshEditor> navmesh_editor;
-	CS2Runner* cs2_runner = nullptr;
+	Ui::NavmeshEditorWidget* m_ui;
+	std::unique_ptr<NavmeshEditor> m_navmesh_editor;
+	CS2Runner* m_cs2_runner = nullptr;
 
 private slots:
 	void on_button_load_map_clicked();

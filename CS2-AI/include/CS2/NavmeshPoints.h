@@ -24,14 +24,9 @@ public:
 	std::pair<bool, Vec3D<float>> get_current_position() const;
 
 private:
-	Button save_button;
-	Button close_button;
-	Offsets* offsets;
-	Config config;
-	MemoryManager mem_manager;
-	DWORD client_dll_address;
-	DWORD engine_address;
-	std::string map_name = "";
-	std::vector<Vec3D<float>> points;
-	std::shared_ptr<GameInformationhandler> game_info_handler = nullptr;
+	Button m_save_button;
+	Config m_config;
+	std::string m_map_name = "";
+	std::vector<Vec3D<float>> m_points;
+	std::shared_ptr<GameInformationhandler> m_game_info_handler = nullptr;
 };

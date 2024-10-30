@@ -2,17 +2,17 @@
 
 NavmeshPoints::NavmeshPoints(std::shared_ptr<GameInformationhandler> game_info_handler)
 {
-	this->game_info_handler = game_info_handler;
+	m_game_info_handler = game_info_handler;
 }
 
 bool NavmeshPoints::update()
 {
-	if (!game_info_handler->is_attached_to_process())
+	if (!m_game_info_handler->is_attached_to_process())
 		return false;
 
-	save_button.update();
+	m_save_button.update();
 
-	if (!save_button.was_clicked())
+	if (!m_save_button.was_clicked())
 		return false;
 
 	add_point();
@@ -22,26 +22,26 @@ bool NavmeshPoints::update()
 
 void NavmeshPoints::add_point()
 {
-	if (!game_info_handler->is_attached_to_process())
+	if (!m_game_info_handler->is_attached_to_process())
 		return;
 
-	game_info_handler->update_game_information();
-	auto game_info = game_info_handler->get_game_information();
+	m_game_info_handler->update_game_information();
+	auto game_info = m_game_info_handler->get_game_information();
 	auto position = game_info.controlled_player.position;
 
-	if (map_name == "") 
+	if (m_map_name == "") 
 	{
-		map_name = std::string(game_info.current_map);
-		std::replace(map_name.begin(), map_name.end(), '/', '_');
+		m_map_name = std::string(game_info.current_map);
+		std::replace(m_map_name.begin(), m_map_name.end(), '/', '_');
 	}
 
-	points.push_back(position);
+	m_points.push_back(position);
 	Logging::log("Point added: " + position.to_string());
 }
 
 void NavmeshPoints::set_add_point_button(int key_code)
 {
-	save_button.set_toggle_button(key_code);
+	m_save_button.set_toggle_button(key_code);
 }
 
 bool NavmeshPoints::save_to_file()
@@ -50,20 +50,20 @@ bool NavmeshPoints::save_to_file()
 	{
 		std::ofstream my_file;
 		std::string file_name = "Navmesh/json/";
-		if (map_name == "")
+		if (m_map_name == "")
 			file_name = file_name + "no_name" + ".json";
 		else
-			file_name = file_name + map_name + ".json";
+			file_name = file_name + m_map_name + ".json";
 
 		my_file.open(file_name);
 		json nav_json;
-		nav_json["map_name"] = map_name;
+		nav_json["map_name"] = m_map_name;
 
-		for (unsigned int i = 0; i < this->points.size(); i++)
+		for (unsigned int i = 0; i < m_points.size(); i++)
 		{
-			nav_json["nodes"][i]["x"] = this->points[i].x;
-			nav_json["nodes"][i]["y"] = this->points[i].y;
-			nav_json["nodes"][i]["z"] = this->points[i].z;
+			nav_json["nodes"][i]["x"] = m_points[i].x;
+			nav_json["nodes"][i]["y"] = m_points[i].y;
+			nav_json["nodes"][i]["z"] = m_points[i].z;
 			nav_json["nodes"][i]["id"] = i;
 			nav_json["nodes"][i]["corner"] = (i < 2);
 		}
@@ -81,11 +81,11 @@ bool NavmeshPoints::save_to_file()
 
 std::pair<bool, Vec3D<float>> NavmeshPoints::get_current_position() const
 {
-	if (!game_info_handler->is_attached_to_process())
+	if (!m_game_info_handler->is_attached_to_process())
 		return std::pair<bool, Vec3D<float>>(false, Vec3D<float>());
 
-	game_info_handler->update_game_information();
-	auto game_info = game_info_handler->get_game_information();
+	m_game_info_handler->update_game_information();
+	auto game_info = m_game_info_handler->get_game_information();
 	auto position = game_info.controlled_player.position;
 
 	return std::pair<bool, Vec3D<float>>(true, position);

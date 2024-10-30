@@ -22,9 +22,9 @@ void Triggerbot::update(GameInformationhandler* handler)
 	const auto current_time_ms = get_current_time_in_ms();
 	
 	constexpr int delay_in_ms = 500;
-	if (current_time_ms >= delay_time)
+	if (current_time_ms >= m_delay_time)
 	{
-		delay_time = current_time_ms + delay_in_ms;
+		m_delay_time = current_time_ms + delay_in_ms;
 		handler->set_player_shooting(true);
 	}
 }

@@ -24,7 +24,7 @@ private:
 	void log(QTextEdit* textEdit, Qt::GlobalColor color, const std::string& string);
 	void log(QTextEdit* textEdit, Qt::GlobalColor color, const QString& string);
 
-	QMutex mutex;
-	std::vector<LogMessage> messages;
-	std::vector<QTextEdit*> boxes;
+	QMutex m_mutex;
+	std::vector<LogMessage> m_messages;
+	std::vector<QTextEdit*> m_boxes;
 };

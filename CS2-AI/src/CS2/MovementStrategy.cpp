@@ -7,19 +7,19 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 
 	handle_navmesh_load(std::string(game_info.current_map));
 
-	if (!valid_navmesh_loaded)
+	if (!m_valid_navmesh_loaded)
 		return;
 
 	if (!game_info.closest_enemy_player || !game_info.controlled_player.health)
 	{
-		next_node = nullptr;
+		m_next_node = nullptr;
 		// Add delay here, because it can happen that the health is not zero anymore but the new position is not yet set
-		delay_time = current_time_ms + 1500; 
+		m_delay_time = current_time_ms + 1500; 
 		return;
 	}
 
 
-	if (current_time_ms < delay_time)
+	if (current_time_ms < m_delay_time)
 	{
 		game_info_handler->set_player_movement(Movement{});
 		return;
@@ -29,54 +29,54 @@ void MovementStrategy::update(GameInformationhandler* game_info_handler)
 	{
 		constexpr int delay_in_ms = 500;
 		game_info_handler->set_player_movement(Movement{});
-		delay_time = current_time_ms + delay_in_ms;
+		m_delay_time = current_time_ms + delay_in_ms;
 		return;
 	}
 
 	const Vec3D<float> player_pos = game_info.controlled_player.position;
 
-	if (!next_node)
-		next_node = get_closest_node_to_position(player_pos);
+	if (!m_next_node)
+		m_next_node = get_closest_node_to_position(player_pos);
 
-	auto distance = next_node->position.distance(player_pos);
+	auto distance = m_next_node->position.distance(player_pos);
 	if (distance <= 15)
 	{
 		auto current_closest_enemy_node = get_closest_node_to_position(game_info.closest_enemy_player->position);
-		current_route = Dijkstra::get_route(next_node, current_closest_enemy_node);
-		if (current_route.size() > 1)
-			next_node = current_route[1];
+		m_current_route = Dijkstra::get_route(m_next_node, current_closest_enemy_node);
+		if (m_current_route.size() > 1)
+			m_next_node = m_current_route[1];
 
-		if (debug_print_route)
-			Dijkstra::log_route(current_route);
+		if (m_debug_print_route)
+			Dijkstra::log_route(m_current_route);
 	}
 
-	if (next_node)
+	if (m_next_node)
 	{
-		Movement move = calculate_move_info(game_info, next_node);
+		Movement move = calculate_move_info(game_info, m_next_node);
 		game_info_handler->set_player_movement(move);
 	}
 }
 
 void MovementStrategy::handle_navmesh_load(const std::string& map_name)
 {
-	if (map_name == loaded_map)
+	if (map_name == m_loaded_map)
 		return;
 
 	if (map_name == "")
 	{
-		loaded_map = "";
-		valid_navmesh_loaded = false;
+		m_loaded_map = "";
+		m_valid_navmesh_loaded = false;
 		return;
 	}
 
-	loaded_map = map_name;
+	m_loaded_map = map_name;
 
-	std::string processed_map_name = loaded_map;
+	std::string processed_map_name = m_loaded_map;
 	std::replace(processed_map_name.begin(), processed_map_name.end(), '/', '_');
 
 	std::string file_path = "Navmesh/json/" + processed_map_name + ".json";
 	if (load_in_navmesh(file_path))
-		valid_navmesh_loaded = true;
+		m_valid_navmesh_loaded = true;
 }
 
 bool MovementStrategy::load_in_navmesh(const std::string& filename)
@@ -85,11 +85,11 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 	{
 		std::ifstream ifs(filename);
 
-		navmesh_json = json::parse(ifs);
+		m_navmesh_json = json::parse(ifs);
 		ifs.close();
 
-		load_nodes(navmesh_json);
-		load_edges(navmesh_json);
+		load_nodes(m_navmesh_json);
+		load_edges(m_navmesh_json);
 	}
 	catch (std::exception const& e)
 	{
@@ -101,18 +101,18 @@ bool MovementStrategy::load_in_navmesh(const std::string& filename)
 
 void MovementStrategy::set_debug_print_route(bool value)
 {
-	this->debug_print_route = value;
+	m_debug_print_route = value;
 }
 
 void MovementStrategy::reset_loaded_navmesh()
 {
-	valid_navmesh_loaded = false;
-	loaded_map = "";
+	m_valid_navmesh_loaded = false;
+	m_loaded_map = "";
 }
 
 bool MovementStrategy::is_valid_navmesh_loaded() const
 {
-	return valid_navmesh_loaded;
+	return m_valid_navmesh_loaded;
 }
 
 Movement MovementStrategy::calculate_move_info(const GameInformation& game_info, const std::shared_ptr<Node> node)
@@ -197,7 +197,7 @@ void MovementStrategy::load_nodes(const json& json)
 		pos.y = json_node["y"];
 		pos.z = json_node["z"];
 
-		nodes.push_back(std::make_shared<Node>(id, pos));
+		m_nodes.push_back(std::make_shared<Node>(id, pos));
 	}
 }
 
@@ -221,7 +221,7 @@ void MovementStrategy::load_edges(const json& json)
 
 std::shared_ptr<Node> MovementStrategy::get_node_by_id(int id) const
 {
-	for (const auto& node : this->nodes)
+	for (const auto& node : m_nodes)
 	{
 		if (node->id == id)
 			return node;
@@ -235,7 +235,7 @@ std::shared_ptr<Node> MovementStrategy::get_closest_node_to_position(const Vec3D
 	std::shared_ptr<Node> closest_node = nullptr;
 	float closest_distance = FLT_MAX;
 
-	for (auto& node : nodes)
+	for (auto& node : m_nodes)
 	{
 		float distance_to_node = node->position.distance(position);
 
